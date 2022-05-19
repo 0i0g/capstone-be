@@ -21,11 +21,11 @@ namespace Data_EF.Extensions
                 entityData.SetQueryFilter((LambdaExpression) filter);
             }
 
-            entityData.AddIndex(entityData.FindProperty(nameof(SafeEntity.IsDeleted)));
+            entityData.AddIndex(entityData.FindProperty(nameof(ISafeEntity.IsDeleted)));
         }
 
         private static LambdaExpression GetSoftDeleteFilter<TEntity>()
-            where TEntity : SafeEntity
+            where TEntity : ISafeEntity
         {
             Expression<Func<TEntity, bool>> filter = x => x.IsDeleted == false;
             return filter;

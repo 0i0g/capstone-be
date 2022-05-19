@@ -5,16 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Application.RequestModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<IActionResult> Login();
+        Task<IActionResult> Login(UserLoginModel model);
 
         AuthUser VerifyToken(string token);
 
-        Task<IActionResult> GetAccessToken();
+        Task<IActionResult> GetAccessToken(GetAccessTokenModel model);
     }
 }

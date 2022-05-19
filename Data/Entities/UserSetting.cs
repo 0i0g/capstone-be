@@ -11,12 +11,13 @@ namespace Data.Entities
     {
         public Guid Id { get; set; }
 
+        #region User
+
         [Required]
         public Guid UserId { get; set; }
 
         public User User { get; set; }
 
-        [Required]
-        public Guid CurrentBuId { get; set; }
+        #endregion
     }
 }

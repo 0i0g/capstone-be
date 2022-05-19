@@ -1,9 +1,7 @@
 using Data_EF.Repositories;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +10,7 @@ namespace Data_EF
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private AppDbContext _db;
+        private readonly AppDbContext _db;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         #region Repositories
@@ -60,35 +58,16 @@ namespace Data_EF
                 var now = DateTime.Now;
                 var user = (AuthUser)_httpContextAccessor.HttpContext.Items["CurrentUser"];
                 var userId = user?.Id ?? Guid.Empty;
-                var currentBu = user?.CurrentBU ?? Guid.Empty;
 
                 // On create
                 var addedEntries = _db.ChangeTracker.Entries().Where(x => x.State == EntityState.Added);
                 foreach (var entry in addedEntries)
                 {
                     // Add actor and time
-                    if (entry.Entity is SafeEntity se)
+                    if (entry.Entity is ISafeEntity se)
                     {
                         // se.CreatedAt = now;
                         se.CreatedBy = userId;
-                    }
-
-                    if (entry.Entity.GetType().GetProperty("InBuId") != null)
-                    {
-                        entry.Entity.GetType().GetProperty("InBuId").SetValue(entry.Entity,currentBu);
-                    }
-
-                    // Add in Bu
-                    // foreach (var pro in entry.Entity.GetType().GetProperties())
-                    // {
-                    //     if (!pro.Name.Equals("InBuId")) continue;
-                    //     entry.Property("InBuId").CurrentValue = currentBu;
-                    //     break;
-                    // }
-
-                    if (entry.Property("InBuId") != null)
-                    {
-                        entry.Property("InBuId").CurrentValue = currentBu;
                     }
                 }
 
@@ -101,7 +80,7 @@ namespace Data_EF
                         if (!pro.Name.Equals("IsDeleted")) continue;
                         if (entry.CurrentValues[pro.Name] is bool current && entry.OriginalValues[pro.Name] is bool original)
                         {
-                            if (entry.Entity is SafeEntity se)
+                            if (entry.Entity is ISafeEntity se)
                             {
                                 if (!original && current)
                                 {
@@ -124,7 +103,7 @@ namespace Data_EF
                 // ignored
             }
 
-            return await this._db.SaveChangesAsync();
+            return await _db.SaveChangesAsync();
         }
 
         #endregion

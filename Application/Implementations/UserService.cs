@@ -32,7 +32,17 @@ namespace Application.Implementations
 
         public IActionResult GetProfile()
         {
-            return ApiResponse.Ok();
+            var user = _userRepository.GetMany(x => x.Id == CurrentUser.Id).Select(x => new ProfileViewModel
+            {
+                Email = x.Email,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Avatar = x.Avatar != null ? x.Avatar.GetUrl() : null
+            }).FirstOrDefault();
+
+            if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);
+
+            return ApiResponse.Ok(user);
         }
     }
 }

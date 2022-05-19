@@ -13,7 +13,5 @@ namespace Data.Entities
         public ICollection<string> Roles { get; set; }
 
         public ICollection<string> Permissions { get; set; }
-
-        public Guid CurrentBU { get; set; }
     }
 }

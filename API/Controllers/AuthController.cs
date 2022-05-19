@@ -4,12 +4,16 @@ using Application.RequestModels;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Application.RequestModels.Auth;
+using Microsoft.Extensions.Configuration;
+using Utilities.Helper;
 
 namespace API.Controllers
 {
     public class AuthController : BaseController
     {
         private IAuthService _authService;
+        
         public AuthController(IAuthService authService)
         {
             _authService = authService;
@@ -19,21 +23,22 @@ namespace API.Controllers
         [HttpGet]
         public IActionResult Welcome()
         {
-            return ApiResponse.Ok("Welcome to Warehouse Management");
+            return ApiResponse.Ok($"Welcome to {ConfigurationHelper.Configuration.GetValue<string>("AppName")}");
         }
 
+       
         [Route("auth/login")]
         [HttpPost]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(UserLoginModel model)
         {
-            return await _authService.Login();
+            return await _authService.Login(model);
         }
 
         [Route("auth/getaccesstoken")]
         [HttpPost]
-        public async Task<IActionResult> GetAccessToken()
+        public async Task<IActionResult> GetAccessToken(GetAccessTokenModel model)
         {
-            return await _authService.GetAccessToken();
+            return await _authService.GetAccessToken(model);
         }
     }
 }

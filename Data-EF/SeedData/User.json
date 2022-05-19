@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "CF3211BF-DEEA-4844-A4A2-59A022BBCF82",
+    "Username": "admin",
+    "Password": "21232f297a57a5a743894a0e4a801fc3",
+    "Email": "hoangnm191999@gmail.com",
+    "FirstName": "Nguyễn",
+    "LastName": "Hoàng",
+    "PhoneNumber": "0123123123",
+    "Gender": "MALE",
+    "ConfirmedAt": "2022-05-19T23:44:31.1866667",
+    "Confirmed": true,
+    "IsActive": true,
+    "AvatarId": "639D3FA5-C7F3-4334-AFE2-1F72FD7A68FD",
+    "CreatedAt": "2022-05-19T23:44:31.1866667",
+    "IsDeleted": false
+  }
+]

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Data_EF.Repositories
 {
-    public interface IUserRepository : IRepository<User>, ISafeEntityRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
     }
 }
