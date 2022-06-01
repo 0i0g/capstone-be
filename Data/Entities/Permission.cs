@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using Data.Enums.Permissions;
 
 namespace Data.Entities
 {
@@ -6,12 +8,15 @@ namespace Data.Entities
     {
         public Guid Id { get; set; }
 
-        public string PermissionType { get; set; }
+        public EnumUserPermission UserPermission { get; set; }
 
-        public int Level { get; set; }
+        public EnumWarehousePermission WarehousePermission { get; set; }
+
+        public EnumProductPermission ProductPermission { get; set; }
 
         #region UserGroup
 
+        [Required]
         public Guid GroupId { get; set; }
 
         public UserGroup Group { get; set; }

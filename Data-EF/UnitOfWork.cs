@@ -17,6 +17,7 @@ namespace Data_EF
 
         private IUserRepository _user;
         private IAuthTokenRepository _authToken;
+        private IUserGroupRepository _userGroup;
         private IUserSettingRepository _userSetting;
 
         #endregion
@@ -37,6 +38,14 @@ namespace Data_EF
         public IAuthTokenRepository AuthToken
         {
             get { return _authToken ??= new AuthTokenRepository(_db); }
+        }
+        
+        public IUserGroupRepository UserGroup
+        {
+            get
+            {
+                return _userGroup ??= new UserGroupRepository(_db);
+            }
         }
         
         public IUserSettingRepository UserSetting

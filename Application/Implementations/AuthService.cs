@@ -32,8 +32,7 @@ namespace Application.Implementations
         private readonly IUserSettingRepository _userSettingRepository;
         private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IUnitOfWork unitOfWork, ILogger<AuthService> logger,
-            IHttpContextAccessor httpContextAccessor)
+        public AuthService(IUnitOfWork unitOfWork, ILogger<AuthService> logger)
         {
             _unitOfWork = unitOfWork;
             _userRepository = unitOfWork.User;
@@ -57,8 +56,9 @@ namespace Application.Implementations
                 .Include(x => x.UserInGroups)
                 .ThenInclude(x => x.Group)
                 .ThenInclude(x => x.Permissions)
-                .Include(x => x.UserSetting)
-                .Include(x=>x.Avatar)
+                .Include(x => x.UserInGroups)
+                .ThenInclude(x => x.Group)
+                .ThenInclude(x => x.InWarehouse)
                 .FirstOrDefault();
 
             if (user == null)
@@ -80,6 +80,11 @@ namespace Application.Implementations
             if (user.Confirmed == false)
             {
                 return ApiResponse.NotFound(MessageConstant.UserNotConfirmed);
+            }
+
+            if (user.UserInGroups.Count == 0)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserNotInAnyGroup);
             }
 
             // Generate token
@@ -120,13 +125,15 @@ namespace Application.Implementations
 
                 if (payload.TryGetValue("userId", out var id) &&
                     payload.TryGetValue("groups", out var roles) &&
-                    payload.TryGetValue("permissions", out var permissions))
+                    payload.TryGetValue("permissions", out var permissions) &&
+                    payload.TryGetValue("warehouseId", out var warehouseId))
                 {
                     authUser = new AuthUser
                     {
                         Id = Guid.Parse(id),
                         Roles = roles.Split(','),
                         Permissions = permissions.Split(','),
+                        WarehouseId = warehouseId == null ? null : Guid.Parse(warehouseId)
                     };
                 }
             }
@@ -146,6 +153,10 @@ namespace Application.Implementations
                 .ThenInclude(x => x.UserInGroups)
                 .ThenInclude(x => x.Group)
                 .ThenInclude(x => x.Permissions)
+                .Include(x=>x.User)
+                .ThenInclude(x => x.UserInGroups)
+                .ThenInclude(x => x.Group)
+                .ThenInclude(x => x.InWarehouse)
                 .Select(x => x.User)
                 .FirstOrDefault(x => x.IsDeleted == false && x.IsActive == true && x.Confirmed == true);
 
@@ -173,12 +184,13 @@ namespace Application.Implementations
             {
                 foreach (var permission in group.Permissions)
                 {
-                    var perExisted = permissions.FirstOrDefault(x => x.PermissionType == permission.PermissionType);
+                    var perExisted = permissions.FirstOrDefault(x => x.Name == permission.Name);
                     if (perExisted == null)
                     {
                         permissions.Add(new PermissionViewModel
                         {
-                            PermissionType = permission.PermissionType,
+                            Name = permission.Name,
+                            Type = permission.Type,
                             Level = permission.Level
                         });
                     }
@@ -197,6 +209,7 @@ namespace Application.Implementations
             const int expiryMinuteDefault = 525600; // 1 year
             var _groups = string.Join(",", groups);
             var _permissions = string.Join(",", permissions);
+            var warehouseId = user.UserInGroups.FirstOrDefault()?.Group.InWarehouseId;
             var expiryMinuteValue = ConfigurationHelper.Configuration["JWT:ExpiryMinute"];
             int expiryMinute = int.TryParse(expiryMinuteValue, out expiryMinute) ? expiryMinute : expiryMinuteDefault;
 
@@ -207,6 +220,7 @@ namespace Application.Implementations
                 .AddClaim("userId", user.Id.ToString())
                 .AddClaim("groups", _groups)
                 .AddClaim("permissions", _permissions)
+                .AddClaim("warehouseId", warehouseId)
                 .Encode();
         }
 

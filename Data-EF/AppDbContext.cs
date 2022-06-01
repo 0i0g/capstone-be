@@ -1,9 +1,7 @@
 ﻿using System;
 using Data.Entities;
-using Data.Enums;
 using Data_EF.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Utilities.Helper;
 
 namespace Data_EF
@@ -32,7 +30,13 @@ namespace Data_EF
 
             modelBuilder.Entity<AuthToken>(entity => { entity.Property(x => x.Id).HasDefaultValueSql("NEWID()"); });
 
-            modelBuilder.Entity<Permission>(entity => { entity.Property(x => x.Id).HasDefaultValueSql("NEWID()"); });
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(x => x.ProductPermission).HasConversion<string>();
+                entity.Property(x => x.UserPermission).HasConversion<string>();
+                entity.Property(x => x.WarehousePermission).HasConversion<string>();
+            });
 
             modelBuilder.Entity<User>(entity =>
             {
@@ -40,10 +44,10 @@ namespace Data_EF
                 entity.HasOne(x => x.UserSetting).WithOne(x => x.User).HasForeignKey<UserSetting>(x => x.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
                 entity.HasMany(x => x.UserInGroups).WithOne(x => x.User).HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.NoAction); 
+                    .OnDelete(DeleteBehavior.NoAction);
                 entity.HasMany(x => x.AuthTokens).WithOne(x => x.User).HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(x => x.Avatar).WithOne(x => x.User).HasForeignKey<User>(x => x.AvatarId);                
+                entity.HasOne(x => x.Avatar).WithOne(x => x.User).HasForeignKey<User>(x => x.AvatarId);
 
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
                 entity.HasIndex(x => x.Username).IsUnique();
@@ -60,6 +64,7 @@ namespace Data_EF
                 entity.HasMany(x => x.Permissions).WithOne(x => x.Group).HasForeignKey(x => x.GroupId);
 
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+                entity.HasIndex(x => x.Name).IsUnique();
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
             });
@@ -74,6 +79,14 @@ namespace Data_EF
             });
 
             modelBuilder.Entity<UserSetting>(entity => { entity.Property(x => x.Id).HasDefaultValueSql("NEWID()"); });
+
+            modelBuilder.Entity<Warehouse>(entity =>
+            {
+                entity.HasMany(x => x.UserGroups).WithOne(x => x.InWarehouse).HasForeignKey(x => x.InWarehouseId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            });
 
             #endregion
 
