@@ -33,6 +33,13 @@ namespace Data_EF
             modelBuilder.Entity<AuthToken>(entity => { entity.Property(x => x.Id).HasDefaultValueSql("NEWID()"); });
 
             modelBuilder.Entity<Permission>(entity => { entity.Property(x => x.Id).HasDefaultValueSql("NEWID()"); });
+            
+            modelBuilder.Entity<Test>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+                entity.HasOne(x => x.User).WithOne(x => x.Test).HasForeignKey<Test>(x => x.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
 
             modelBuilder.Entity<User>(entity =>
             {

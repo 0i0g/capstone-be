@@ -7,7 +7,7 @@ namespace Utilities.Constants
     public static class MessageConstant
     {
         /* Authentication */
-        public static readonly ResponseMessage UserNotFound = new() { Code = "1001", Value = "Username does not exist" };
+        public static readonly ResponseMessage AccountNotFound = new() { Code = "1001", Value = "Username does not exist" };
         public static readonly ResponseMessage IncorrectPassword = new() { Code = "1002", Value = "Password does not match with the username" };
         public static readonly ResponseMessage UserDeleted = new() { Code = "1003", Value = "Your account is deleted" };
         public static readonly ResponseMessage UserNotConfirmed = new() { Code = "1004", Value = "Your account is not activated" };
@@ -18,11 +18,12 @@ namespace Utilities.Constants
 
         /* HTTP */
         public static readonly ResponseMessage InternalServerError = new() { Code = "5000", Value = "InternalServerError" };
-        public static readonly ResponseMessage InvalidParams = new() { Code = "5003", Value = "Invalid params" };
-        public static readonly ResponseMessage InvalidEnumAction = new() { Code = "5003", Value = "Invalid action" };
+        public static readonly ResponseMessage InvalidParams = new() { Code = "5001", Value = "Invalid params" };
+        public static readonly ResponseMessage InvalidEnumAction = new() { Code = "5002", Value = "Invalid action" };
 
         /* User */
         public static readonly ResponseMessage ProfileNotFound = new() { Code = "1004", Value = "User does not exist or has been deleted" };
+        public static readonly ResponseMessage UserNotFound = new() { Code = "1005", Value = "User does not exist or has been deleted" };
 
     }
 

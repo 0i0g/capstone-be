@@ -18,6 +18,7 @@ namespace Data_EF
         private IUserRepository _user;
         private IAuthTokenRepository _authToken;
         private IUserSettingRepository _userSetting;
+        private ITestRepository _testSetting;
 
         #endregion
 
@@ -33,18 +34,20 @@ namespace Data_EF
         {
             get { return _user ??= new UserRepository(_db, _httpContextAccessor); }
         }
-        
+
         public IAuthTokenRepository AuthToken
         {
             get { return _authToken ??= new AuthTokenRepository(_db); }
         }
-        
+
         public IUserSettingRepository UserSetting
         {
-            get
-            {
-                return _userSetting ??= new UserSettingRepository(_db);
-            }
+            get { return _userSetting ??= new UserSettingRepository(_db); }
+        }
+
+        public ITestRepository TestSetting
+        {
+            get { return _testSetting ??= new TestRepository(_db, _httpContextAccessor); }
         }
 
         #endregion
@@ -56,7 +59,7 @@ namespace Data_EF
             try
             {
                 var now = DateTime.Now;
-                var user = (AuthUser)_httpContextAccessor.HttpContext.Items["CurrentUser"];
+                var user = (AuthUser) _httpContextAccessor.HttpContext.Items["CurrentUser"];
                 var userId = user?.Id ?? Guid.Empty;
 
                 // On create
@@ -78,7 +81,8 @@ namespace Data_EF
                     foreach (var pro in entry.Entity.GetType().GetProperties())
                     {
                         if (!pro.Name.Equals("IsDeleted")) continue;
-                        if (entry.CurrentValues[pro.Name] is bool current && entry.OriginalValues[pro.Name] is bool original)
+                        if (entry.CurrentValues[pro.Name] is bool current &&
+                            entry.OriginalValues[pro.Name] is bool original)
                         {
                             if (entry.Entity is ISafeEntity se)
                             {
@@ -94,6 +98,7 @@ namespace Data_EF
                                 }
                             }
                         }
+
                         break;
                     }
                 }

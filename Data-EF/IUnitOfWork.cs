@@ -12,6 +12,8 @@ namespace Data_EF
         public IAuthTokenRepository AuthToken { get; }
 
         public IUserSettingRepository UserSetting { get; }
+        
+        public ITestRepository TestSetting { get; }
 
         #endregion
 
