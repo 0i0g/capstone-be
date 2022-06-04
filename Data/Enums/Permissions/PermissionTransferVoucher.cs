@@ -3,7 +3,7 @@
 namespace Data.Enums.Permissions
 {
     [Flags]
-    public enum EnumUserPermission
+    public enum PermissionTransferVoucher
     {
         None = 0,
         Create = 1,

@@ -15,10 +15,31 @@ namespace Data_EF
 
         #region Repositories
 
-        private IUserRepository _user;
+        private IAttachmentRepository _attachment;
+
         private IAuthTokenRepository _authToken;
+
+        private IBeginningVoucherRepository _beginningVoucher;
+
+        private IBeginningVoucherDetailRepository _beginningVoucherDetail;
+
+        private ICategoryRepository _category;
+
+        private ICheckingVoucherRepository _checkingVoucher;
+
+        private ICheckingVoucherDetailRepository _checkingVoucherDetail;
+
+        private ICustomerRepository _customer;
+
+        private IProductRepository _product;
+
+        private IUserRepository _user;
+
         private IUserGroupRepository _userGroup;
-        private IUserSettingRepository _userSetting;
+
+        private IVoucherPrefixCodeRepository _voucherPrefixCode;
+
+        private IWarehouseRepository _warehouse;
 
         #endregion
 
@@ -30,30 +51,69 @@ namespace Data_EF
 
         #region Get Repositories
 
-        public IUserRepository User
+        public IAttachmentRepository Attachment
         {
-            get { return _user ??= new UserRepository(_db, _httpContextAccessor); }
+            get { return _attachment ??= new AttachmentRepository(_db); }
         }
-        
+
         public IAuthTokenRepository AuthToken
         {
             get { return _authToken ??= new AuthTokenRepository(_db); }
         }
-        
+
+        public IBeginningVoucherRepository BeginningVoucher
+        {
+            get { return _beginningVoucher ??= new BeginningVoucherRepository(_db); }
+        }
+
+        public IBeginningVoucherDetailRepository BeginningVoucherDetail
+        {
+            get { return _beginningVoucherDetail ??= new BeginningVoucherDetailRepository(_db); }
+        }
+
+        public ICategoryRepository Category
+        {
+            get { return _category ??= new CategoryRepository(_db); }
+        }
+
+        public ICheckingVoucherRepository CheckingVoucher
+        {
+            get { return _checkingVoucher ??= new CheckingVoucherRepository(_db); }
+        }
+
+        public ICheckingVoucherDetailRepository CheckingVoucherDetail
+        {
+            get { return _checkingVoucherDetail ??= new CheckingVoucherDetailRepository(_db); }
+        }
+
+        public ICustomerRepository Customer
+        {
+            get { return _customer ??= new CustomerRepository(_db); }
+        }
+
+        public IProductRepository Product
+        {
+            get { return _product ??= new ProductRepository(_db); }
+        }
+
+        public IUserRepository User
+        {
+            get { return _user ??= new UserRepository(_db); }
+        }
+
         public IUserGroupRepository UserGroup
         {
-            get
-            {
-                return _userGroup ??= new UserGroupRepository(_db);
-            }
+            get { return _userGroup ??= new UserGroupRepository(_db); }
         }
-        
-        public IUserSettingRepository UserSetting
+
+        public IVoucherPrefixCodeRepository VoucherPrefixCode
         {
-            get
-            {
-                return _userSetting ??= new UserSettingRepository(_db);
-            }
+            get { return _voucherPrefixCode ??= new VoucherPrefixCodeRepository(_db); }
+        }
+
+        public IWarehouseRepository Warehouse
+        {
+            get { return _warehouse ??= new WarehouseRepository(_db); }
         }
 
         #endregion
@@ -65,7 +125,7 @@ namespace Data_EF
             try
             {
                 var now = DateTime.Now;
-                var user = (AuthUser)_httpContextAccessor.HttpContext.Items["CurrentUser"];
+                var user = (AuthUser) _httpContextAccessor.HttpContext.Items["CurrentUser"];
                 var userId = user?.Id ?? Guid.Empty;
 
                 // On create
@@ -87,7 +147,8 @@ namespace Data_EF
                     foreach (var pro in entry.Entity.GetType().GetProperties())
                     {
                         if (!pro.Name.Equals("IsDeleted")) continue;
-                        if (entry.CurrentValues[pro.Name] is bool current && entry.OriginalValues[pro.Name] is bool original)
+                        if (entry.CurrentValues[pro.Name] is bool current &&
+                            entry.OriginalValues[pro.Name] is bool original)
                         {
                             if (entry.Entity is ISafeEntity se)
                             {
@@ -103,6 +164,7 @@ namespace Data_EF
                                 }
                             }
                         }
+
                         break;
                     }
                 }

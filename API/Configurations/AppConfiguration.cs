@@ -22,6 +22,7 @@ namespace API.Configurations
             // Every request
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IWarehouseUserGroupService, WarehouseUserGroupService>();
 
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();

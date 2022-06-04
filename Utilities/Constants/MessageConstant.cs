@@ -13,6 +13,7 @@ namespace Utilities.Constants
         public static readonly ResponseMessage UserNotConfirmed = new() { Code = "1004", Value = "Your account is not activated" };
         public static readonly ResponseMessage UserNotInAnyGroup = new() { Code = "1004", Value = "Your account was not assigned to any warehouse" };
         public static readonly ResponseMessage UserBanned = new() { Code = "1005", Value = "Your account is banned" };
+        public static readonly ResponseMessage RequiredWarehouse = new() { Code = "1005", Value = "You must be in warehouse to perform this action" };
 
         /* Authorization */
         public static readonly ResponseMessage RolePermissionForbidden = new() { Code = "2001", Value = "{0}" };
@@ -29,6 +30,7 @@ namespace Utilities.Constants
         /* UserGroup */
         public static readonly ResponseMessage UserGroupNameExisted = new() { Code = "4001", Value = "Group name already exists" };
         public static readonly ResponseMessage UserGroupNotFound = new() { Code = "4001", Value = "Group does not exist or has been deleted" };
+        public static readonly ResponseMessage DuplicateUserGroup = new() { Code = "4001", Value = "User already belongs to this group" };
 
     }
 

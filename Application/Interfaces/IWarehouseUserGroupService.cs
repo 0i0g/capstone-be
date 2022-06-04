@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Application.RequestModels;
-using Application.RequestModels.UserGroup;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Interfaces
 {
-    public interface IUserGroupService
+    public interface IWarehouseUserGroupService
     {
         Task<IActionResult> CreateUserGroup(CreateUserGroupModel model);
         
         Task<IActionResult> UpdateUserGroup(UpdateUserGroupModel model);
-
+        
+        Task<IActionResult> AddUserInToGroup(AddUserInToGroupModel model);
+        
         Task<IActionResult> UpdateUserGroupPermission(UpdateUserGroupPermissionModel model);
 
         Task<IActionResult> RemoveUserGroup(Guid id);

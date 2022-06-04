@@ -1,6 +1,9 @@
-﻿namespace Data.Enums.Permissions
+﻿using System;
+
+namespace Data.Enums.Permissions
 {
-    public enum EnumWarehousePermission
+    [Flags]
+    public enum PermissionUser
     {
         None = 0,
         Create = 1,

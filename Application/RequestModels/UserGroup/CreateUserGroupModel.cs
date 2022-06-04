@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.RequestModels.UserGroup
+namespace Application.RequestModels
 {
     public class CreateUserGroupModel
     {

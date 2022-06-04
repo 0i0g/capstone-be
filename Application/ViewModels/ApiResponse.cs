@@ -73,6 +73,16 @@ namespace Application.ViewModels
 
         #endregion
 
+        #region Conflict
+
+        public static ObjectResult Conflict() => new(new ApiResponse()) { StatusCode = StatusCodes.Status409Conflict };
+
+        public static ObjectResult Conflict(ResponseMessage message) =>
+            new(new ApiResponse { MessageCode = message.Code, Message = message.Value })
+                { StatusCode = StatusCodes.Status409Conflict };
+
+        #endregion
+        
         #region InternalServerError
 
         public static ObjectResult InternalServerError() => new(new ApiResponse()) { StatusCode = StatusCodes.Status500InternalServerError };

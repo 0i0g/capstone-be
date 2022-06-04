@@ -33,11 +33,11 @@ namespace API.Configurations.Filter
 
             var forbiddenMessage = "You need" + (_role != null ? $" Role `{_role}`" : "") + " to perform this action";
 
-            if (context.HttpContext.Items["CurrentUser"] is AuthUser user && _role!.Length != 0 && !user.Roles.Any(r => _role.Contains(r)))
-            {
-                context.Result =
-                    ApiResponse.Forbidden(MessageConstant.RolePermissionForbidden.WithValues(forbiddenMessage));
-            }
+            // if (context.HttpContext.Items["CurrentUser"] is AuthUser user && _role!.Length != 0 && !user.Roles.Any(r => _role.Contains(r)))
+            // {
+            //     context.Result =
+            //         ApiResponse.Forbidden(MessageConstant.RolePermissionForbidden.WithValues(forbiddenMessage));
+            // }
         }
     }
 }

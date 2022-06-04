@@ -7,13 +7,31 @@ namespace Data_EF
     {
         #region Repositories
 
-        public IUserRepository User { get; }
+        public IAttachmentRepository Attachment { get; }
 
         public IAuthTokenRepository AuthToken { get; }
 
-        public IUserGroupRepository UserGroup { get; }
+        public IBeginningVoucherRepository BeginningVoucher { get; }
+
+        public IBeginningVoucherDetailRepository BeginningVoucherDetail { get; }
+
+        public ICategoryRepository Category { get; }
         
-        public IUserSettingRepository UserSetting { get; }
+        public ICheckingVoucherRepository CheckingVoucher { get; }
+        
+        public ICheckingVoucherDetailRepository CheckingVoucherDetail { get; }
+        
+        public ICustomerRepository Customer { get; }
+        
+        public IProductRepository Product { get; }
+
+        public IUserRepository User { get; }
+
+        public IUserGroupRepository UserGroup { get; }
+
+        public IVoucherPrefixCodeRepository VoucherPrefixCode { get; }
+
+        public IWarehouseRepository Warehouse { get; }
 
         #endregion
 

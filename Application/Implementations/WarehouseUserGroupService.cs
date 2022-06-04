@@ -3,11 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.RequestModels;
-using Application.RequestModels.UserGroup;
 using Application.ViewModels;
 using Application.ViewModels.Permission;
 using Application.ViewModels.UserGroup;
 using Data.Entities;
+using Data.Enums;
+using Data.Enums.Permissions;
 using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,19 @@ using Utilities.Extensions;
 
 namespace Application.Implementations
 {
-    public class UserGroupService : BaseService, IUserGroupService
+    public class WarehouseUserGroupService : BaseService, IWarehouseUserGroupService
     {
         private readonly IUserGroupRepository _userGroupRepository;
-        private readonly ILogger<UserGroupService> _logger;
+        private readonly IQueryable<UserGroup> _userGroupInWarehouseQueryable;
+        private readonly ILogger<WarehouseUserGroupService> _logger;
 
-        public UserGroupService(IServiceProvider provider, ILogger<UserGroupService> logger) : base(provider)
+        public WarehouseUserGroupService(IServiceProvider provider, ILogger<WarehouseUserGroupService> logger) :
+            base(provider)
         {
             _userGroupRepository = _unitOfWork.UserGroup;
+            _userGroupInWarehouseQueryable = _userGroupRepository.GetMany(x =>
+                x.Type == EnumUserGroupType.WAREHOUSE && x.InWarehouseId == CurrentUser.Warehouse &&
+                x.IsDeleted != true);
             _logger = logger;
         }
 
@@ -39,7 +45,9 @@ namespace Application.Implementations
             _userGroupRepository.Add(new UserGroup
             {
                 Name = model.Name,
-                Description = model.Description
+                Description = model.Description,
+                Type = EnumUserGroupType.WAREHOUSE,
+                InWarehouseId = CurrentUser.Warehouse!.Value
             });
 
             await _unitOfWork.SaveChanges();
@@ -76,20 +84,57 @@ namespace Application.Implementations
 
         public async Task<IActionResult> UpdateUserGroupPermission(UpdateUserGroupPermissionModel model)
         {
-            var userGroup = _userGroupRepository.GetMany(x => x.Id == model.Id).Include(x => x.Permissions)
-                .FirstOrDefault();
+            var userGroup = _userGroupInWarehouseQueryable.FirstOrDefault(x => x.Id == model.GroupId);
             if (userGroup == null)
             {
                 return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
             }
 
-            var newListPermissions = model.Permissions.Select(x => new Permission
+            if (userGroup.IsDefault == true)
             {
-                Name = x.PermissionType,
-                Level = x.Level,
-            }).GroupBy(x => x.Name).Select(x => x.Last()).ToList();
+                return ApiResponse.BadRequest(MessageConstant.UserGroupNotFound);
+            }
 
-            userGroup.Permissions = newListPermissions;
+            userGroup.PermissionBeginningInventoryVoucher = model.PermissionBeginningInventoryVoucher;
+            userGroup.PermissionCustomer = model.PermissionCustomer;
+            userGroup.PermissionDeliveryRequestVoucher = model.PermissionDeliveryRequestVoucher;
+            userGroup.PermissionDeliveryVoucher = model.PermissionDeliveryVoucher;
+            userGroup.PermissionInventoryCheckingVoucher = model.PermissionInventoryCheckingVoucher;
+            userGroup.PermissionInventoryFixingVoucher = model.PermissionInventoryFixingVoucher;
+            userGroup.PermissionProduct = model.PermissionProduct;
+            userGroup.PermissionReceiveRequestVoucher = model.PermissionReceiveRequestVoucher;
+            userGroup.PermissionReceiveVoucher = model.PermissionReceiveVoucher;
+            userGroup.PermissionTransferRequestVoucher = model.PermissionTransferRequestVoucher;
+            userGroup.PermissionTransferVoucher = model.PermissionTransferVoucher;
+            userGroup.PermissionUser = model.PermissionUser;
+
+            _userGroupRepository.Update(userGroup);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+
+        public async Task<IActionResult> AddUserInToGroup(AddUserInToGroupModel model)
+        {
+            var userGroup = _userGroupInWarehouseQueryable.FirstOrDefault(x => x.Id == model.GroupId);
+            if (userGroup == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
+            }
+
+            var user = _userGroupInWarehouseQueryable.Include(x => x.UserInGroups)
+                .FirstOrDefault(x => x.Id == model.UserId);
+            if (user == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserNotFound);
+            }
+
+            if (user.UserInGroups.Any(x => x.GroupId == userGroup.Id))
+            {
+                return ApiResponse.Conflict(MessageConstant.DuplicateUserGroup);
+            }
+
+            userGroup.UserInGroups.Add(new UserInGroup() {UserId = user.Id});
             _userGroupRepository.Update(userGroup);
             await _unitOfWork.SaveChanges();
 
@@ -119,11 +164,18 @@ namespace Application.Implementations
                 Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
-                Permissions = x.Permissions.Select(y => new PermissionViewModel()
-                {
-                    Name = y.Name,
-                    Level = y.Level
-                }).ToList()
+                PermissionBeginningInventoryVoucher = x.PermissionBeginningInventoryVoucher,
+                PermissionCustomer = x.PermissionCustomer,
+                PermissionDeliveryRequestVoucher = x.PermissionDeliveryRequestVoucher,
+                PermissionDeliveryVoucher = x.PermissionDeliveryVoucher,
+                PermissionInventoryCheckingVoucher = x.PermissionInventoryCheckingVoucher,
+                PermissionInventoryFixingVoucher = x.PermissionInventoryFixingVoucher,
+                PermissionProduct = x.PermissionProduct,
+                PermissionReceiveRequestVoucher = x.PermissionReceiveRequestVoucher,
+                PermissionReceiveVoucher = x.PermissionReceiveVoucher,
+                PermissionTransferRequestVoucher = x.PermissionTransferRequestVoucher,
+                PermissionTransferVoucher = x.PermissionTransferVoucher,
+                PermissionUser = x.PermissionUser,
             }).FirstOrDefault();
 
             if (userGroup == null)
@@ -182,7 +234,7 @@ namespace Application.Implementations
 
         public IActionResult GetAllUserGroup()
         {
-            // var users = _userGroupRepository.GetActive().Select(x => new UserGroupViewModel()
+            // var users = _userGroupRepository.Select(x => new UserGroupViewModel()
             // {
             //     Id = x.Id,
             //     Name = x.Name,

@@ -1,4 +1,4 @@
-﻿namespace Application.RequestModels.UserGroup
+﻿namespace Application.RequestModels
 {
     public class SearchUserGroupModel : PaginationModel
     {

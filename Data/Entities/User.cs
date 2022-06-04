@@ -1,19 +1,14 @@
-﻿using Data.Enums;
-using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using Data.Enums;
 
 namespace Data.Entities
 {
     public class User : ISafeEntity
     {
+        [Key]
         public Guid Id { get; set; }
 
         [Required]
@@ -35,48 +30,53 @@ namespace Data.Entities
 
         public Gender? Gender { get; set; }
 
-        public DateTime? ConfirmedAt { get; set; }
-
-        [Required]
-        public bool? Confirmed { get; set; }
-
         [Required]
         public bool? IsActive { get; set; }
 
-        #region Avatar
-
-        public Guid? AvatarId { get; set; }
-        
-        public Attachment Avatar { get; set; }
-
-        #endregion
-
         #region User in group
-        
+
         public ICollection<UserInGroup> UserInGroups { get; set; }
 
         #endregion
-        
-        #region UserSetting
 
-        [Required]
-        public UserSetting UserSetting { get; set; }
-
-        #endregion
-        
         #region Token
 
         public ICollection<AuthToken> AuthTokens { get; set; }
 
         #endregion
 
-        #region Safe Entity
+        #region Avatar
+
+        public Guid? AvatarId { get; set; }
+
+        public Attachment Avatar { get; set; }
+
+        #endregion
+
+        #region User in warehouse
+
+        public Guid? InWarehouseId { get; set; }
+
+        public Warehouse InWarehouse { get; set; }
+
+        #endregion
+
+        #region Voucher created
+
+        public ICollection<BeginningVoucher> BeginningVouchers { get; set; }
+        
+        public ICollection<CheckingVoucher> CheckingVouchers { get; set; }
+
+        #endregion
+        
+
+        #region Safe entity
 
         [Required]
         public DateTime CreatedAt { get; set; }
         
         public Guid? CreatedBy { get; set; }
-        
+
         public DateTime? UpdatedAt { get; set; }
         
         public Guid? UpdatedBy { get; set; }
