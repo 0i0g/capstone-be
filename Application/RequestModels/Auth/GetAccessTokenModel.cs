@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.RequestModels.Auth
+namespace Application.RequestModels
 {
     public class GetAccessTokenModel
     {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using Utilities.Helper;
 
 namespace API
@@ -68,6 +69,7 @@ namespace API
                 {
                     option.SerializerSettings.ContractResolver = new RequiredPropertiesContractResolver();
                     option.UseCamelCasing(true);
+                    option.SerializerSettings.Converters.Add(new StringEnumConverter());
                 })
 
                 // TODO check if can remove it below, use 1 Json option style

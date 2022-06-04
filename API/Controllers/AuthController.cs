@@ -4,7 +4,6 @@ using Application.RequestModels;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Application.RequestModels.Auth;
 using Microsoft.Extensions.Configuration;
 using Utilities.Helper;
 

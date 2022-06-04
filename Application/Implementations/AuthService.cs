@@ -6,21 +6,19 @@ using Data_EF;
 using Data_EF.Repositories;
 using JWT.Algorithms;
 using JWT.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Application.RequestModels.Auth;
-using Application.ViewModels.Permission;
+using Data.Enums.Permissions;
+using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Utilities.Constants;
 using Utilities.Helper;
-using Permission = Data.Entities.Permission;
 
 namespace Application.Implementations
 {
@@ -29,16 +27,13 @@ namespace Application.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
         private readonly IAuthTokenRepository _authTokenRepository;
-        private readonly IUserSettingRepository _userSettingRepository;
         private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IUnitOfWork unitOfWork, ILogger<AuthService> logger,
-            IHttpContextAccessor httpContextAccessor)
+        public AuthService(IUnitOfWork unitOfWork, ILogger<AuthService> logger)
         {
             _unitOfWork = unitOfWork;
             _userRepository = unitOfWork.User;
             _authTokenRepository = unitOfWork.AuthToken;
-            _userSettingRepository = unitOfWork.UserSetting;
             _logger = logger;
         }
 
@@ -56,9 +51,9 @@ namespace Application.Implementations
                 .GetMany(x => x.Username == model.Username)
                 .Include(x => x.UserInGroups)
                 .ThenInclude(x => x.Group)
-                .ThenInclude(x => x.Permissions)
-                .Include(x => x.UserSetting)
-                .Include(x=>x.Avatar)
+                .Include(x => x.UserInGroups)
+                .ThenInclude(x => x.Group)
+                .ThenInclude(x => x.InWarehouse)
                 .FirstOrDefault();
 
             if (user == null)
@@ -75,11 +70,6 @@ namespace Application.Implementations
             if (user.IsActive == false)
             {
                 return ApiResponse.NotFound(MessageConstant.UserBanned);
-            }
-
-            if (user.Confirmed == false)
-            {
-                return ApiResponse.NotFound(MessageConstant.UserNotConfirmed);
             }
 
             // Generate token
@@ -115,22 +105,24 @@ namespace Application.Implementations
                     .WithAlgorithm(new HMACSHA256Algorithm())
                     .WithSecret(ConfigurationHelper.Configuration["JWT:Secret"])
                     .MustVerifySignature()
-                    .Decode<IDictionary<string, string>>(token);
+                    .Decode<IDictionary<string, object>>(token);
                 _logger.LogInformation($"Payload: {payload}");
 
                 if (payload.TryGetValue("userId", out var id) &&
-                    payload.TryGetValue("groups", out var roles) &&
-                    payload.TryGetValue("permissions", out var permissions))
+                    payload.TryGetValue("permissions", out var permissions) &&
+                    payload.TryGetValue("warehouse", out var warehouse) &&
+                    payload.TryGetValue("groups", out var groups))
                 {
                     authUser = new AuthUser
                     {
-                        Id = Guid.Parse(id),
-                        Roles = roles.Split(','),
-                        Permissions = permissions.Split(','),
+                        Id = Guid.Parse((string) id),
+                        Permissions = ((JObject) permissions).ToObject<GroupPermission>(),
+                        Warehouse = warehouse != null ? Guid.Parse((string) warehouse) : null,
+                        Groups = ((JArray) groups).ToObject<ICollection<AuthUserGroup>>(),
                     };
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 authUser = null;
             }
@@ -145,9 +137,12 @@ namespace Application.Implementations
                 .Include(x => x.User)
                 .ThenInclude(x => x.UserInGroups)
                 .ThenInclude(x => x.Group)
-                .ThenInclude(x => x.Permissions)
+                .Include(x => x.User)
+                .ThenInclude(x => x.UserInGroups)
+                .ThenInclude(x => x.Group)
+                .ThenInclude(x => x.InWarehouse)
                 .Select(x => x.User)
-                .FirstOrDefault(x => x.IsDeleted == false && x.IsActive == true && x.Confirmed == true);
+                .FirstOrDefault(x => x.IsDeleted == false && x.IsActive == true);
 
             if (user == null) return ApiResponse.Unauthorized();
             var authView = new AuthViewModel
@@ -164,39 +159,63 @@ namespace Application.Implementations
 
         private string GenerateAccessToken(User user)
         {
-            var groups = user.UserInGroups.Select(x => x.Group.Name);
-            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-            _logger.LogInformation($"UserGroup: [{string.Join(',', user.UserInGroups.Select(x => x.Group))}]");
-
-            var permissions = new List<PermissionViewModel>();
-            foreach (var group in user.UserInGroups.Select(x => x.Group))
+            var permissions = user.UserInGroups?.Select(x => new GroupPermission
             {
-                foreach (var permission in group.Permissions)
-                {
-                    var perExisted = permissions.FirstOrDefault(x => x.PermissionType == permission.PermissionType);
-                    if (perExisted == null)
-                    {
-                        permissions.Add(new PermissionViewModel
-                        {
-                            PermissionType = permission.PermissionType,
-                            Level = permission.Level
-                        });
-                    }
-                    else
-                    {
-                        permissions.Remove(perExisted);
-                        perExisted.Level |= permission.Level;
-                        permissions.Add(perExisted);
-                    }
-                }
-            }
+                PermissionBeginningInventoryVoucher = x.Group.PermissionBeginningInventoryVoucher,
+                PermissionCustomer = x.Group.PermissionCustomer,
+                PermissionDeliveryRequestVoucher = x.Group.PermissionDeliveryRequestVoucher,
+                PermissionDeliveryVoucher = x.Group.PermissionDeliveryVoucher,
+                PermissionInventoryCheckingVoucher = x.Group.PermissionInventoryCheckingVoucher,
+                PermissionInventoryFixingVoucher = x.Group.PermissionInventoryFixingVoucher,
+                PermissionProduct = x.Group.PermissionProduct,
+                PermissionReceiveRequestVoucher = x.Group.PermissionReceiveRequestVoucher,
+                PermissionReceiveVoucher = x.Group.PermissionReceiveVoucher,
+                PermissionTransferRequestVoucher = x.Group.PermissionTransferRequestVoucher,
+                PermissionTransferVoucher = x.Group.PermissionTransferVoucher,
+                PermissionUser = x.Group.PermissionUser
+            }).Aggregate(new GroupPermission
+            {
+                PermissionBeginningInventoryVoucher = PermissionBeginningInventoryVoucher.None,
+                PermissionCustomer = PermissionCustomer.None,
+                PermissionDeliveryRequestVoucher = PermissionDeliveryRequestVoucher.None,
+                PermissionDeliveryVoucher = PermissionDeliveryVoucher.None,
+                PermissionInventoryCheckingVoucher = PermissionInventoryCheckingVoucher.None,
+                PermissionInventoryFixingVoucher = PermissionInventoryFixingVoucher.None,
+                PermissionProduct = PermissionProduct.None,
+                PermissionReceiveRequestVoucher = PermissionReceiveRequestVoucher.None,
+                PermissionReceiveVoucher = PermissionReceiveVoucher.None,
+                PermissionTransferRequestVoucher = PermissionTransferRequestVoucher.None,
+                PermissionTransferVoucher = PermissionTransferVoucher.None,
+                PermissionUser = PermissionUser.None
+            }, (rs, per) => new GroupPermission
+            {
+                PermissionBeginningInventoryVoucher =
+                    rs.PermissionBeginningInventoryVoucher | per.PermissionBeginningInventoryVoucher,
+                PermissionCustomer = rs.PermissionCustomer | per.PermissionCustomer,
+                PermissionDeliveryRequestVoucher =
+                    rs.PermissionDeliveryRequestVoucher | per.PermissionDeliveryRequestVoucher,
+                PermissionDeliveryVoucher = rs.PermissionDeliveryVoucher | per.PermissionDeliveryVoucher,
+                PermissionInventoryCheckingVoucher =
+                    rs.PermissionInventoryCheckingVoucher | per.PermissionInventoryCheckingVoucher,
+                PermissionInventoryFixingVoucher =
+                    rs.PermissionInventoryFixingVoucher | per.PermissionInventoryFixingVoucher,
+                PermissionProduct = rs.PermissionProduct | per.PermissionProduct,
+                PermissionReceiveRequestVoucher =
+                    rs.PermissionReceiveRequestVoucher | per.PermissionReceiveRequestVoucher,
+                PermissionReceiveVoucher = rs.PermissionReceiveVoucher | per.PermissionReceiveVoucher,
+                PermissionTransferRequestVoucher =
+                    rs.PermissionTransferRequestVoucher | per.PermissionTransferRequestVoucher,
+                PermissionTransferVoucher = rs.PermissionTransferVoucher | per.PermissionTransferVoucher,
+                PermissionUser = rs.PermissionUser | per.PermissionUser
+            });
 
-            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-            _logger.LogInformation($"Permission: [{string.Join(',', permissions)}]");
+            var groups = user.UserInGroups?.Select(x => new AuthUserGroup
+            {
+                Name = x.Group.Name,
+                Type = x.Group.Type
+            }) ?? new List<AuthUserGroup>();
 
             const int expiryMinuteDefault = 525600; // 1 year
-            var _groups = string.Join(",", groups);
-            var _permissions = string.Join(",", permissions);
             var expiryMinuteValue = ConfigurationHelper.Configuration["JWT:ExpiryMinute"];
             int expiryMinute = int.TryParse(expiryMinuteValue, out expiryMinute) ? expiryMinute : expiryMinuteDefault;
 
@@ -205,8 +224,9 @@ namespace Application.Implementations
                 .WithSecret(ConfigurationHelper.Configuration["JWT:Secret"])
                 .AddClaim("exp", DateTimeOffset.UtcNow.AddMinutes(expiryMinute).ToUnixTimeSeconds())
                 .AddClaim("userId", user.Id.ToString())
-                .AddClaim("groups", _groups)
-                .AddClaim("permissions", _permissions)
+                .AddClaim("permissions", permissions)
+                .AddClaim("groups", groups)
+                .AddClaim("warehouse", user.InWarehouseId)
                 .Encode();
         }
 

@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Application.RequestModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Interfaces

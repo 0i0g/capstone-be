@@ -3,6 +3,7 @@ using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Data.Implements;
 
 namespace Data.Entities
 {
@@ -10,8 +11,10 @@ namespace Data.Entities
     {
         public Guid Id { get; set; }
 
-        public ICollection<string> Roles { get; set; }
+        public ICollection<AuthUserGroup> Groups { get; set; }
 
-        public ICollection<string> Permissions { get; set; }
+        public GroupPermission Permissions { get; set; }
+
+        public Guid? Warehouse { get; set; }
     }
 }

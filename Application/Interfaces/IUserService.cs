@@ -12,10 +12,10 @@ namespace Application.Interfaces
     {
         IActionResult GetProfile();
 
-        //Task<IActionResult> SelfUpdate(SelfUpdateModel model);
+        //Task<IActionResult> SelfUpdate(SelfUpdateModel model); // TODO
 
-        //Task<ApiResponse> Activate(Guid id);
+        //Task<ApiResponse> Activate(Guid id); // TODO
 
-        //Task<IActionResult> Deactivate(Guid id);
+        //Task<IActionResult> Deactivate(Guid id); // TODO
     }
 }
