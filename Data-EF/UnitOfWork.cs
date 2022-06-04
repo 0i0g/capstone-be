@@ -40,6 +40,8 @@ namespace Data_EF
         private IVoucherPrefixCodeRepository _voucherPrefixCode;
 
         private IWarehouseRepository _warehouse;
+        
+        private ITestRepository _testSetting;
 
         #endregion
 
@@ -114,6 +116,11 @@ namespace Data_EF
         public IWarehouseRepository Warehouse
         {
             get { return _warehouse ??= new WarehouseRepository(_db); }
+        }       
+
+        public ITestRepository TestSetting
+        {
+            get { return _testSetting ??= new TestRepository(_db, _httpContextAccessor); }
         }
 
         #endregion

@@ -58,7 +58,7 @@ namespace Application.Implementations
 
             if (user == null)
             {
-                return ApiResponse.NotFound(MessageConstant.UserNotFound);
+                return ApiResponse.NotFound(MessageConstant.AccountNotFound);
             }
 
             var passwordHashed = PasswordHelper.Hash(model.Password);

@@ -7,7 +7,7 @@ namespace Utilities.Constants
     public static class MessageConstant
     {
         /* Authentication */
-        public static readonly ResponseMessage UserNotFound = new() { Code = "1001", Value = "Username does not exist" };
+        public static readonly ResponseMessage AccountNotFound = new() { Code = "1001", Value = "Username does not exist" };
         public static readonly ResponseMessage IncorrectPassword = new() { Code = "1002", Value = "Password does not match with the username" };
         public static readonly ResponseMessage UserDeleted = new() { Code = "1003", Value = "Your account is deleted" };
         public static readonly ResponseMessage UserNotConfirmed = new() { Code = "1004", Value = "Your account is not activated" };
@@ -31,6 +31,10 @@ namespace Utilities.Constants
         public static readonly ResponseMessage UserGroupNameExisted = new() { Code = "4001", Value = "Group name already exists" };
         public static readonly ResponseMessage UserGroupNotFound = new() { Code = "4001", Value = "Group does not exist or has been deleted" };
         public static readonly ResponseMessage DuplicateUserGroup = new() { Code = "4001", Value = "User already belongs to this group" };
+
+        /* User */
+        public static readonly ResponseMessage ProfileNotFound = new() { Code = "1004", Value = "User does not exist or has been deleted" };
+        public static readonly ResponseMessage UserNotFound = new() { Code = "1005", Value = "User does not exist or has been deleted" };
 
     }
 

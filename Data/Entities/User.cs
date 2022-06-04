@@ -89,5 +89,11 @@ namespace Data.Entities
         public bool? IsDeleted { get; set; }
 
         #endregion
+
+        #region Test
+
+        public Test Test { get; set; }
+        
+        #endregion
     }
 }

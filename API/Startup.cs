@@ -30,7 +30,6 @@ namespace API
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(ConfigurationHelper.Configuration.GetConnectionString("Default"),
                     x => x.MigrationsAssembly("Data-EF")));
-
             services.AddDependenceInjection();
 
             services.AddSwaggerGen(c =>

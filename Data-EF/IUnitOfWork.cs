@@ -33,6 +33,8 @@ namespace Data_EF
 
         public IWarehouseRepository Warehouse { get; }
 
+        public ITestRepository TestSetting { get; }
+
         #endregion
 
         #region DB method
