@@ -22,7 +22,7 @@ namespace API.Configurations
             // Every request
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IWarehouseUserGroupService, WarehouseUserGroupService>();
+            services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<ITestService, TestService>();
 
             // Every controller and every service

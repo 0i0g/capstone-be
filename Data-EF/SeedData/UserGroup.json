@@ -1,0 +1,12 @@
+[
+  {
+    "Id": "C7B455F8-7412-4130-8521-F41FDE0BA086",
+    "Name": "Warehouse Manager",
+    "Description": "The default group for warehouse manager",
+    "Type": "Warehouse",
+    "CanUpdate": false,
+    "InWarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
+    "CreatedAt": "2022-06-09T00:06:20.7366667",
+    "IsDeleted": false
+  }
+]

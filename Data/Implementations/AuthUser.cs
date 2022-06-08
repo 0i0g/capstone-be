@@ -13,7 +13,7 @@ namespace Data.Entities
 
         public ICollection<AuthUserGroup> Groups { get; set; }
 
-        public GroupPermission Permissions { get; set; }
+        public ICollection<string> Permissions { get; set; }
 
         public Guid? Warehouse { get; set; }
     }

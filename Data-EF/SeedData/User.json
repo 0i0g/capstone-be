@@ -1,18 +1,30 @@
 [
   {
-    "Id": "CF3211BF-DEEA-4844-A4A2-59A022BBCF82",
-    "Username": "admin",
-    "Password": "21232f297a57a5a743894a0e4a801fc3",
-    "Email": "hoangnm191999@gmail.com",
-    "FirstName": "Nguyễn",
-    "LastName": "Hoàng",
+    "Id": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "Username": "test",
+    "Password": "4297f44b13955235245b2497399d7a93",
+    "Email": "igosologlboa1@gmail.com",
+    "FirstName": "Testing",
+    "LastName": "User",
     "PhoneNumber": "0123123123",
-    "Gender": "MALE",
-    "ConfirmedAt": "2022-05-19T23:44:31.1866667",
-    "Confirmed": true,
+    "Gender": "male",
     "IsActive": true,
-    "AvatarId": "639D3FA5-C7F3-4334-AFE2-1F72FD7A68FD",
-    "CreatedAt": "2022-05-19T23:44:31.1866667",
+    "InWarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
+    "CreatedAt": "2022-06-09T00:10:43.0400000",
+    "IsDeleted": false
+  },
+  {
+    "Id": "7F2E56A5-E01C-420C-BAE4-74FAB408C454",
+    "Username": "whmanager",
+    "Password": "4297f44b13955235245b2497399d7a93",
+    "Email": "igosologlboa@gmail.com",
+    "FirstName": "Default",
+    "LastName": "Warehouse Manager",
+    "PhoneNumber": "0123123123",
+    "Gender": "male",
+    "IsActive": true,
+    "InWarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
+    "CreatedAt": "2022-06-09T00:08:56.7300000",
     "IsDeleted": false
   }
 ]

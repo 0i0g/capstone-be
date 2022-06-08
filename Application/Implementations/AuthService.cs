@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Data.Enums.Permissions;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -51,12 +50,10 @@ namespace Application.Implementations
                 .GetMany(x => x.Username == model.Username)
                 .Include(x => x.UserInGroups)
                 .ThenInclude(x => x.Group)
-                .Include(x => x.UserInGroups)
-                .ThenInclude(x => x.Group)
-                .ThenInclude(x => x.InWarehouse)
+                .ThenInclude(x => x.Permissions)
                 .FirstOrDefault();
 
-            if (user == null)
+            if (user == null || user.IsDeleted == true)
             {
                 return ApiResponse.NotFound(MessageConstant.AccountNotFound);
             }
@@ -116,7 +113,7 @@ namespace Application.Implementations
                     authUser = new AuthUser
                     {
                         Id = Guid.Parse((string) id),
-                        Permissions = ((JObject) permissions).ToObject<GroupPermission>(),
+                        Permissions = ((JArray) permissions).ToObject<ICollection<string>>(),
                         Warehouse = warehouse != null ? Guid.Parse((string) warehouse) : null,
                         Groups = ((JArray) groups).ToObject<ICollection<AuthUserGroup>>(),
                     };
@@ -133,16 +130,15 @@ namespace Application.Implementations
         public async Task<IActionResult> GetAccessToken(GetAccessTokenModel model)
         {
             var user = _authTokenRepository
-                .GetMany(x => x.UserId == model.UserId && x.RefreshToken == model.RefreshToken)
+                .GetMany(x =>
+                    x.UserId == model.UserId && x.RefreshToken == model.RefreshToken && x.User.IsDeleted == false &&
+                    x.User.IsActive == true)
                 .Include(x => x.User)
                 .ThenInclude(x => x.UserInGroups)
                 .ThenInclude(x => x.Group)
-                .Include(x => x.User)
-                .ThenInclude(x => x.UserInGroups)
-                .ThenInclude(x => x.Group)
-                .ThenInclude(x => x.InWarehouse)
+                .ThenInclude(x => x.Permissions)
                 .Select(x => x.User)
-                .FirstOrDefault(x => x.IsDeleted == false && x.IsActive == true);
+                .FirstOrDefault();
 
             if (user == null) return ApiResponse.Unauthorized();
             var authView = new AuthViewModel
@@ -159,60 +155,13 @@ namespace Application.Implementations
 
         private string GenerateAccessToken(User user)
         {
-            var permissions = user.UserInGroups?.Select(x => new GroupPermission
-            {
-                PermissionBeginningInventoryVoucher = x.Group.PermissionBeginningInventoryVoucher,
-                PermissionCustomer = x.Group.PermissionCustomer,
-                PermissionDeliveryRequestVoucher = x.Group.PermissionDeliveryRequestVoucher,
-                PermissionDeliveryVoucher = x.Group.PermissionDeliveryVoucher,
-                PermissionInventoryCheckingVoucher = x.Group.PermissionInventoryCheckingVoucher,
-                PermissionInventoryFixingVoucher = x.Group.PermissionInventoryFixingVoucher,
-                PermissionProduct = x.Group.PermissionProduct,
-                PermissionReceiveRequestVoucher = x.Group.PermissionReceiveRequestVoucher,
-                PermissionReceiveVoucher = x.Group.PermissionReceiveVoucher,
-                PermissionTransferRequestVoucher = x.Group.PermissionTransferRequestVoucher,
-                PermissionTransferVoucher = x.Group.PermissionTransferVoucher,
-                PermissionUser = x.Group.PermissionUser
-            }).Aggregate(new GroupPermission
-            {
-                PermissionBeginningInventoryVoucher = PermissionBeginningInventoryVoucher.None,
-                PermissionCustomer = PermissionCustomer.None,
-                PermissionDeliveryRequestVoucher = PermissionDeliveryRequestVoucher.None,
-                PermissionDeliveryVoucher = PermissionDeliveryVoucher.None,
-                PermissionInventoryCheckingVoucher = PermissionInventoryCheckingVoucher.None,
-                PermissionInventoryFixingVoucher = PermissionInventoryFixingVoucher.None,
-                PermissionProduct = PermissionProduct.None,
-                PermissionReceiveRequestVoucher = PermissionReceiveRequestVoucher.None,
-                PermissionReceiveVoucher = PermissionReceiveVoucher.None,
-                PermissionTransferRequestVoucher = PermissionTransferRequestVoucher.None,
-                PermissionTransferVoucher = PermissionTransferVoucher.None,
-                PermissionUser = PermissionUser.None
-            }, (rs, per) => new GroupPermission
-            {
-                PermissionBeginningInventoryVoucher =
-                    rs.PermissionBeginningInventoryVoucher | per.PermissionBeginningInventoryVoucher,
-                PermissionCustomer = rs.PermissionCustomer | per.PermissionCustomer,
-                PermissionDeliveryRequestVoucher =
-                    rs.PermissionDeliveryRequestVoucher | per.PermissionDeliveryRequestVoucher,
-                PermissionDeliveryVoucher = rs.PermissionDeliveryVoucher | per.PermissionDeliveryVoucher,
-                PermissionInventoryCheckingVoucher =
-                    rs.PermissionInventoryCheckingVoucher | per.PermissionInventoryCheckingVoucher,
-                PermissionInventoryFixingVoucher =
-                    rs.PermissionInventoryFixingVoucher | per.PermissionInventoryFixingVoucher,
-                PermissionProduct = rs.PermissionProduct | per.PermissionProduct,
-                PermissionReceiveRequestVoucher =
-                    rs.PermissionReceiveRequestVoucher | per.PermissionReceiveRequestVoucher,
-                PermissionReceiveVoucher = rs.PermissionReceiveVoucher | per.PermissionReceiveVoucher,
-                PermissionTransferRequestVoucher =
-                    rs.PermissionTransferRequestVoucher | per.PermissionTransferRequestVoucher,
-                PermissionTransferVoucher = rs.PermissionTransferVoucher | per.PermissionTransferVoucher,
-                PermissionUser = rs.PermissionUser | per.PermissionUser
-            });
+            var permissions = user.UserInGroups?.Select(x => x.Group)
+                .SelectMany(x => x.Permissions, (_, permission) => permission.Type).Distinct();
 
-            var groups = user.UserInGroups?.Select(x => new AuthUserGroup
+            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
             {
-                Name = x.Group.Name,
-                Type = x.Group.Type
+                Name = x.Name,
+                Type = x.Type
             }) ?? new List<AuthUserGroup>();
 
             const int expiryMinuteDefault = 525600; // 1 year

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authentication]
     public class UserController : BaseController
     {
         private readonly IUserService _userService;
@@ -20,7 +21,6 @@ namespace API.Controllers
 
         [Route("profile")]
         [HttpGet]
-        [AuthorizeRole]
         public IActionResult GetProfile()
         {
             return _userService.GetProfile();

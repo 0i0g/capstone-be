@@ -23,6 +23,8 @@ namespace Data_EF
         
         public ICustomerRepository Customer { get; }
         
+        public IPermissionRepository Permission { get; }
+        
         public IProductRepository Product { get; }
 
         public IUserRepository User { get; }

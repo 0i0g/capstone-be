@@ -2,7 +2,7 @@
 {
     public enum EnumUserGroupType
     {
-        SYSTEM,
-        WAREHOUSE
+        System,
+        Warehouse
     }
 }

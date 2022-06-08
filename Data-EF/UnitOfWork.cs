@@ -30,6 +30,8 @@ namespace Data_EF
         private ICheckingVoucherDetailRepository _checkingVoucherDetail;
 
         private ICustomerRepository _customer;
+        
+        private IPermissionRepository _permission;
 
         private IProductRepository _product;
 
@@ -91,6 +93,11 @@ namespace Data_EF
         public ICustomerRepository Customer
         {
             get { return _customer ??= new CustomerRepository(_db); }
+        }
+        
+        public IPermissionRepository Permission
+        {
+            get { return _permission ??= new PermissionRepository(_db); }
         }
 
         public IProductRepository Product

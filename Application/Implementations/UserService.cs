@@ -34,10 +34,15 @@ namespace Application.Implementations
         {
             var user = _userRepository.GetMany(x => x.Id == CurrentUser.Id).Select(x => new ProfileViewModel
             {
+                Id = x.Id,
                 Email = x.Email,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
-                Avatar = x.Avatar != null ? x.Avatar.GetUrl() : null
+                Avatar = x.Avatar != null ? x.Avatar.GetUrl() : null,
+                Gender = x.Gender.ToString(),
+                CreatedAt = x.CreatedAt,
+                PhoneNumber = x.PhoneNumber,
+                InWarehouseId = x.InWarehouseId
             }).FirstOrDefault();
 
             if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);

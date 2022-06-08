@@ -18,7 +18,6 @@ namespace API.Controllers
         
         [Route("test")]
         [HttpPost]
-        [AuthorizeRole]
         public async Task<IActionResult> GetProfile(CreateTestModel model)
         {
             return await _testService.CreateTest(model);

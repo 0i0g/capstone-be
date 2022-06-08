@@ -162,27 +162,19 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.IsDefault).HasDefaultValue(false);
+                entity.Property(x => x.CanUpdate).HasDefaultValue(true);
                 entity.Property(x => x.Type).HasConversion<string>();
                 entity.HasIndex(x => new {x.Name, x.InWarehouseId}).IsUnique();
 
                 entity.HasOne(x => x.InWarehouse).WithMany(x => x.UserGroups).HasForeignKey(x => x.InWarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
+            });
 
-                // @formatter:off
-                entity.Property(x=>x.PermissionBeginningInventoryVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionCustomer).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionDeliveryRequestVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionDeliveryVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionInventoryCheckingVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionInventoryFixingVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionProduct).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionReceiveRequestVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionReceiveVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionTransferRequestVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionTransferVoucher).HasConversion<string>().HasDefaultValueSql("0");
-                entity.Property(x=>x.PermissionUser).HasConversion<string>().HasDefaultValueSql("0");
-                // @formatter:on
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.HasKey(x => new {x.Type, x.UserGroupId});
+                entity.HasOne(x => x.UserGroup).WithMany(x => x.Permissions).HasForeignKey(x => x.UserGroupId)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<UserInGroup>(entity =>
@@ -199,7 +191,7 @@ namespace Data_EF
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
                 entity.HasIndex(x => x.VoucherName).IsUnique();
             });
-            
+
             modelBuilder.Entity<Warehouse>(entity =>
             {
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
@@ -219,8 +211,11 @@ namespace Data_EF
 
             // window 
             // @formatter:off
-            modelBuilder.Entity<Attachment>().HasData(DataHelper.ReadSeedData<Attachment>(@"../Data-EF/SeedData/Attachment.json"));
+            modelBuilder.Entity<Permission>().HasData(DataHelper.ReadSeedData<Permission>(@"../Data-EF/SeedData/Permission.json"));
             modelBuilder.Entity<User>().HasData(DataHelper.ReadSeedData<User>(@"../Data-EF/SeedData/User.json"));
+            modelBuilder.Entity<UserGroup>().HasData(DataHelper.ReadSeedData<UserGroup>(@"../Data-EF/SeedData/UserGroup.json"));
+            modelBuilder.Entity<UserInGroup>().HasData(DataHelper.ReadSeedData<UserInGroup>(@"../Data-EF/SeedData/UserInGroup.json"));
+            modelBuilder.Entity<Warehouse>().HasData(DataHelper.ReadSeedData<Warehouse>(@"../Data-EF/SeedData/Warehouse.json"));
             // @formatter:on
 
             // linux
