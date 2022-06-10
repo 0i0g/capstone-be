@@ -57,8 +57,6 @@ namespace Data_EF
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.BeginningVouchers).HasForeignKey(x => x.WarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(x => x.Creator).WithMany(x => x.BeginningVouchers).HasForeignKey(x => x.CreatorId)
-                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<BeginningVoucherDetail>(entity =>
@@ -91,8 +89,6 @@ namespace Data_EF
                 entity.HasIndex(x => x.Code).IsUnique();
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.CheckingVouchers).HasForeignKey(x => x.WarehouseId)
-                    .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(x => x.Creator).WithMany(x => x.CheckingVouchers).HasForeignKey(x => x.CreatorId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 

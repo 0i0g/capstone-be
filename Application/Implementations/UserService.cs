@@ -49,5 +49,10 @@ namespace Application.Implementations
 
             return ApiResponse.Ok(user);
         }
+
+        public IActionResult GetPermissions()
+        {
+            return ApiResponse.Ok(CurrentUser.Permissions);
+        }
     }
 }

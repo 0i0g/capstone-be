@@ -1,8 +1,5 @@
-﻿using Data.Entities;
-using Data.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Data.Implements;
 
 namespace Data.Entities

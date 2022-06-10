@@ -11,6 +11,8 @@ namespace Application.Interfaces
     public interface IUserService
     {
         IActionResult GetProfile();
+        
+        IActionResult GetPermissions();
 
         //Task<IActionResult> SelfUpdate(SelfUpdateModel model); // TODO
 

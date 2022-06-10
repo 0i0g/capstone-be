@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.RequestModels;
 using Application.Utilities;
 using Application.ViewModels;
-using Application.ViewModels.Permission;
 using Application.ViewModels.UserGroup;
 using Data.Entities;
 using Data.Enums;
-using Data.Enums.Permissions;
 using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -100,8 +97,9 @@ namespace Application.Implementations
 
             userGroup.Name = model.Name ?? userGroup.Name;
             userGroup.Description = model.Description ?? userGroup.Description;
-            userGroup.Permissions = model.Permissions.Select(x => new Permission {Type = x}).ToList();
-
+            userGroup.Permissions =PermissionManager.GetValidWarehousePermission(model.Permissions)
+                .Select(x => new Permission {Type = x}).ToList();
+            
             _userGroupRepository.Update(userGroup);
             await _unitOfWork.SaveChanges();
 
@@ -269,7 +267,7 @@ namespace Application.Implementations
 
         public IActionResult GetAllPermission(EnumUserGroupType type)
         {
-            var pers = PermissionManager.Values;
+            var pers = PermissionManager.WarehousePermissions;
 
             return ApiResponse.Ok(pers);
         }

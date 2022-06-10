@@ -6,7 +6,7 @@ namespace Application.Utilities
 {
     public class PermissionManager
     {
-        public static IEnumerable<string> Values =>
+        public static IEnumerable<string> WarehousePermissions =>
             new List<string>
             {
                 "Permission.User.Create",
@@ -70,10 +70,22 @@ namespace Application.Utilities
                 "Permission.TransferVoucher.Delete",
             };
 
-        public static ICollection<string> GetValid(IEnumerable<string> values)
+        public static IEnumerable<string> SystemPermissions =>
+            new List<string>
+            {
+                "Permission.System.Master",
+                "Permission.System.Admin",
+                "Permission.System.BuManager"
+            };
+
+        public static ICollection<string> GetValidWarehousePermission(IEnumerable<string> values)
         {
-            Values.Append("asd");
-            return values.Intersect(Values).ToList();
+            return values.Intersect(WarehousePermissions).ToList();
+        }
+
+        public static ICollection<string> GetValidSystemPermission(IEnumerable<string> values)
+        {
+            return values.Intersect(SystemPermissions).ToList();
         }
     }
 }

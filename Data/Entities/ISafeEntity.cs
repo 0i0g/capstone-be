@@ -17,5 +17,7 @@ namespace Data.Entities
         public Guid? DeletedBy { get; set; }
 
         public bool? IsDeleted { get; set; }
+        
+        // TODO reference to User
     }
 }

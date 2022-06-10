@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -48,9 +49,9 @@ namespace Application.Implementations
             // Get user claims
             var user = _userRepository
                 .GetMany(x => x.Username == model.Username)
-                .Include(x => x.UserInGroups)
-                .ThenInclude(x => x.Group)
-                .ThenInclude(x => x.Permissions)
+                // .Include(x => x.UserInGroups)
+                // .ThenInclude(x => x.Group)
+                // .ThenInclude(x => x.Permissions)
                 .FirstOrDefault();
 
             if (user == null || user.IsDeleted == true)
@@ -105,18 +106,20 @@ namespace Application.Implementations
                     .Decode<IDictionary<string, object>>(token);
                 _logger.LogInformation($"Payload: {payload}");
 
-                if (payload.TryGetValue("userId", out var id) &&
-                    payload.TryGetValue("permissions", out var permissions) &&
-                    payload.TryGetValue("warehouse", out var warehouse) &&
-                    payload.TryGetValue("groups", out var groups))
+                if (payload.TryGetValue("userId", out var id)
+                    // && payload.TryGetValue("permissions", out var permissions) &&
+                    // payload.TryGetValue("warehouse", out var warehouse) &&
+                    // payload.TryGetValue("groups", out var groups)
+                   )
                 {
-                    authUser = new AuthUser
-                    {
-                        Id = Guid.Parse((string) id),
-                        Permissions = ((JArray) permissions).ToObject<ICollection<string>>(),
-                        Warehouse = warehouse != null ? Guid.Parse((string) warehouse) : null,
-                        Groups = ((JArray) groups).ToObject<ICollection<AuthUserGroup>>(),
-                    };
+                    // authUser = new AuthUser
+                    // {
+                    //     Id = Guid.Parse((string) id),
+                    //     Permissions = ((JArray) permissions).ToObject<ICollection<string>>(),
+                    //     Warehouse = warehouse != null ? Guid.Parse((string) warehouse) : null,
+                    //     Groups = ((JArray) groups).ToObject<ICollection<AuthUserGroup>>(),
+                    // };
+                    authUser = GetAuthUser(Guid.Parse((string) id));
                 }
             }
             catch (Exception e)
@@ -134,9 +137,9 @@ namespace Application.Implementations
                     x.UserId == model.UserId && x.RefreshToken == model.RefreshToken && x.User.IsDeleted == false &&
                     x.User.IsActive == true)
                 .Include(x => x.User)
-                .ThenInclude(x => x.UserInGroups)
-                .ThenInclude(x => x.Group)
-                .ThenInclude(x => x.Permissions)
+                // .ThenInclude(x => x.UserInGroups)
+                // .ThenInclude(x => x.Group)
+                // .ThenInclude(x => x.Permissions)
                 .Select(x => x.User)
                 .FirstOrDefault();
 
@@ -155,14 +158,14 @@ namespace Application.Implementations
 
         private string GenerateAccessToken(User user)
         {
-            var permissions = user.UserInGroups?.Select(x => x.Group)
-                .SelectMany(x => x.Permissions, (_, permission) => permission.Type).Distinct();
-
-            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
-            {
-                Name = x.Name,
-                Type = x.Type
-            }) ?? new List<AuthUserGroup>();
+            // var permissions = user.UserInGroups?.Select(x => x.Group)
+            //     .SelectMany(x => x.Permissions, (_, permission) => permission.Type).Distinct();
+            //
+            // var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
+            // {
+            //     Name = x.Name,
+            //     Type = x.Type.ToString()
+            // }) ?? new List<AuthUserGroup>();
 
             const int expiryMinuteDefault = 525600; // 1 year
             var expiryMinuteValue = ConfigurationHelper.Configuration["JWT:ExpiryMinute"];
@@ -173,9 +176,9 @@ namespace Application.Implementations
                 .WithSecret(ConfigurationHelper.Configuration["JWT:Secret"])
                 .AddClaim("exp", DateTimeOffset.UtcNow.AddMinutes(expiryMinute).ToUnixTimeSeconds())
                 .AddClaim("userId", user.Id.ToString())
-                .AddClaim("permissions", permissions)
-                .AddClaim("groups", groups)
-                .AddClaim("warehouse", user.InWarehouseId)
+                // .AddClaim("permissions", permissions)
+                // .AddClaim("groups", groups)
+                // .AddClaim("warehouse", user.InWarehouseId)
                 .Encode();
         }
 
@@ -187,6 +190,38 @@ namespace Application.Implementations
         private void SaveRefreshToken(Guid userId, string refreshToken)
         {
             _authTokenRepository.Add(new AuthToken {Id = Guid.NewGuid(), RefreshToken = refreshToken, UserId = userId});
+        }
+
+        private AuthUser GetAuthUser(Guid id)
+        {
+            var user = _userRepository
+                .GetMany(x => x.Id == id)
+                .Include(x => x.UserInGroups)
+                .ThenInclude(x => x.Group)
+                .ThenInclude(x => x.Permissions)
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var permissions = user.UserInGroups?.Select(x => x.Group)
+                .SelectMany(x => x.Permissions, (_, permission) => permission.Type).Distinct().ToList();
+
+            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
+            {
+                Name = x.Name,
+                Type = x.Type.ToString()
+            }).ToList() ?? new List<AuthUserGroup>();
+
+            return new AuthUser
+            {
+                Id = user.Id,
+                Groups = groups,
+                Permissions = permissions,
+                Warehouse = user.InWarehouseId
+            };
         }
     }
 }

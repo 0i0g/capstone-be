@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities
 {
-    public class BeginningVoucher : ISafeEntity
+    public class FixingVoucher: ISafeEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -19,7 +18,7 @@ namespace Data.Entities
         public DateTime ReportingDate { get; set; }
 
         public string Note { get; set; }
-
+        
         #region Warehouse
 
         [Required]
@@ -31,7 +30,7 @@ namespace Data.Entities
 
         #region Detail
 
-        public ICollection<BeginningVoucherDetail> Details { get; set; }
+        public ICollection<FixingVoucherDetail> Details { get; set; }
 
         #endregion
         

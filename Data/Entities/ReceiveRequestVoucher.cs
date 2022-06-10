@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Data.Enums;
 
 namespace Data.Entities
 {
-    public class BeginningVoucher : ISafeEntity
+    public class ReceiveRequestVoucher:ISafeEntity
     {
         [Key]
         public Guid Id { get; set; }
@@ -16,10 +16,24 @@ namespace Data.Entities
         public string Code { get; set; }
 
         [Required]
-        public DateTime ReportingDate { get; set; }
+        public DateTime VoucherDate { get; set; }
 
         public string Note { get; set; }
 
+        [Required]
+        public EnumStatusRequest Status { get; set; }
+        
+        [Required]
+        public bool? Locked { get; set; }
+
+        #region Customer
+
+        public Guid? CustomerId { get; set; }
+
+        public Customer Customer { get; set; }
+        
+        #endregion
+        
         #region Warehouse
 
         [Required]
@@ -28,10 +42,10 @@ namespace Data.Entities
         public Warehouse Warehouse { get; set; }
 
         #endregion
-
+        
         #region Detail
 
-        public ICollection<BeginningVoucherDetail> Details { get; set; }
+        public ICollection<ReceiveRequestVoucherDetail> Details { get; set; }
 
         #endregion
         

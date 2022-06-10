@@ -9,8 +9,5 @@ namespace Application.ViewModels
 {
     public class SafeEntityViewModel
     {
-        //public FetchUserViewModel Creator { get; set; }
-
-        //public DateTime CreatedAt { get; set; }
     }
 }

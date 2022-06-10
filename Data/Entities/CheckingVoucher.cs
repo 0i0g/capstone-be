@@ -13,28 +13,19 @@ namespace Data.Entities
         [Required]
         public int Inc { get; set; }
 
-        [Required]
         public string Code { get; set; }
 
         [Required]
         public DateTime ReportingDate { get; set; }
 
+        public string Note { get; set; }
+        
         #region Warehouse
 
         [Required]
         public Guid WarehouseId { get; set; }
 
         public Warehouse Warehouse { get; set; }
-
-        #endregion
-        
-        #region Creator
-
-        public Guid CreatorId { get; set; }
-
-        public User Creator { get; set; }
-
-        public string CreatorName { get; set; }
 
         #endregion
         
