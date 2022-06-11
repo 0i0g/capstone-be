@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Data.Entities
 {
@@ -27,15 +28,17 @@ namespace Data.Entities
 
         #endregion
 
-        #region Beginning inventory
+        #region Vouchers
 
         public ICollection<BeginningVoucher> BeginningVouchers { get; set; }
 
-        #endregion 
-        
-        #region Checking inventory
-
         public ICollection<CheckingVoucher> CheckingVouchers { get; set; }
+
+        public ICollection<DeliveryRequestVoucher> DeliveryRequestVouchers { get; set; }
+
+        public ICollection<FixingVoucher> FixingVouchers { get; set; }
+
+        public ICollection<ReceiveRequestVoucher> ReceiveRequestVouchers { get; set; }
 
         #endregion
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -26,6 +27,14 @@ namespace Data.Entities
 
         public string Description { get; set; }
 
+        #region Voucher Requests
+
+        public ICollection<DeliveryRequestVoucher> DeliveryRequestVouchers { get; set; }
+        
+        public ICollection<ReceiveRequestVoucher> ReceiveRequestVouchers { get; set; }
+        
+        #endregion
+        
         #region Safe entity
 
         [Required]

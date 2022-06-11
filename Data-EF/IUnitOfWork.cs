@@ -8,6 +8,8 @@ namespace Data_EF
         #region Repositories
 
         public IAttachmentRepository Attachment { get; }
+        
+        public IAuditLogRepository AuditLog { get; }
 
         public IAuthTokenRepository AuthToken { get; }
 

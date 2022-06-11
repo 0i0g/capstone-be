@@ -1,22 +1,59 @@
-# Voucher
+# Warehouse management
 
-### Controller
+### Voucher
 
-- [x] Beginning
-- [x] Checking
-- [x] Fixing
-- [ ] Receive
-- [ ] Transfer ~ more question
-- [ ] Delivery
+### Entity missing:
+- TransferVoucher
+
+### Service:
+- [ ] Upload
+- [x] Audit log
+- [ ] Push Notification
+
+### Controller:
+- [x] Auth
+- [ ] BeginningVoucher
+- [ ] Category ~ add remove
+- [ ] CheckingVoucher
+- [ ] Customer ~ add remove
+- [ ] DeliveryVoucher
+- [ ] FixingVoucher
+- [ ] Product
+- [ ] ReceiveVoucher
+- [ ] TransferVoucher ~ more question
+- [ ] User ~ Create, update, delete
+- [x] UserGroup
+- [ ] VoucherPrefix
+- [ ] Warehouse
 
 # TODO:
-
 - [ ] Build Controller
 - [ ] Upload file service
 - [ ] Add entity voucher (receive, delivery, transfer)
-- [ ] Config DbContext (DeliveryRequest, FixingVoucher, ReceiveRequest, TransferRequest, receive, delivery, transfer)
+- [x] Config DbContext (DeliveryRequest, FixingVoucher, ReceiveRequest, TransferRequest)
+- [ ] Config DbContext (receive, delivery, transfer)
 - [ ] Push Notification service
+- [ ] ~~Unique Code each warehouse~~
+- [ ] Locked by
+- [x] Audit log service
+- [ ] Authorize
 
-# Test:
+# Test Controller:
+- [ ] Auth
+- [ ] BeginningVoucher
+- [ ] Category
+- [ ] CheckingVoucher
+- [ ] Customer
+- [ ] DeliveryVoucher
+- [ ] FixingVoucher
+- [ ] Product
+- [ ] ReceiveVoucher
+- [ ] TransferVoucher
+- [ ] User
+- [ ] UserGroup
+- [ ] VoucherPrefix
+- [ ] Warehouse
+
+# Dashboard
 
 ...

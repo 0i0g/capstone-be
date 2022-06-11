@@ -14,10 +14,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using Data.Enums;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Utilities.Constants;
+using Utilities.Extensions;
 using Utilities.Helper;
 
 namespace Application.Implementations
@@ -27,6 +29,7 @@ namespace Application.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepository;
         private readonly IAuthTokenRepository _authTokenRepository;
+        private readonly IAuditLogRepository _auditLogRepository;
         private readonly ILogger<AuthService> _logger;
 
         public AuthService(IUnitOfWork unitOfWork, ILogger<AuthService> logger)
@@ -34,6 +37,7 @@ namespace Application.Implementations
             _unitOfWork = unitOfWork;
             _userRepository = unitOfWork.User;
             _authTokenRepository = unitOfWork.AuthToken;
+            _auditLogRepository = unitOfWork.AuditLog;
             _logger = logger;
         }
 
@@ -74,6 +78,10 @@ namespace Application.Implementations
             var accessToken = GenerateAccessToken(user);
             var refreshToken = GenerateRefreshToken();
             SaveRefreshToken(user.Id, refreshToken);
+
+            var now = DateTime.Now;
+            _auditLogRepository.Add(new AuditLog(user.Id, EnumAuditType.Login,
+                string.Format(MessageConstant.AuditLogin, user.Username, now.ToAppFormat()), now));
 
             // Save all
             await _unitOfWork.SaveChanges();

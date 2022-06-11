@@ -12,7 +12,7 @@ namespace Data.Entities
 
         [Required]
         public int Inc { get; set; }
-        
+
         [Required]
         public string Code { get; set; }
 
@@ -45,26 +45,32 @@ namespace Data.Entities
         #region Voucher Detail
 
         public ICollection<BeginningVoucherDetail> BeginningVoucherDetails { get; set; }
-        
+
         public ICollection<CheckingVoucherDetail> CheckingVoucherDetails { get; set; }
 
-        #endregion
+        public ICollection<DeliveryRequestVoucherDetail> DeliveryRequestVoucherDetails { get; set; }
+
+        public ICollection<FixingVoucherDetail> FixingVoucherDetails { get; set; }
         
+        public ICollection<ReceiveRequestVoucherDetail> ReceiveRequestVoucherDetails { get; set; }
+
+        #endregion
+
         #region Safe entity
 
         [Required]
         public DateTime CreatedAt { get; set; }
-        
+
         public Guid? CreatedBy { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
-        
+
         public Guid? UpdatedBy { get; set; }
-        
+
         public DateTime? DeletedAt { get; set; }
-        
+
         public Guid? DeletedBy { get; set; }
-        
+
         [Required]
         public bool? IsDeleted { get; set; }
 

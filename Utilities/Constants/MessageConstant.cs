@@ -7,6 +7,10 @@ namespace Utilities.Constants
     public static class MessageConstant
     {
         // @formatter:off
+        /* Audit log */
+        public static string AuditLogin => "[{0}] logged in at {1}";
+        
+        
         /* Authentication */
         public static ResponseMessage AccountNotFound => new() { Code = "1001", Value = "Username does not exist" };
         public static ResponseMessage IncorrectPassword => new() { Code = "1002", Value = "Password does not match with the username" };
