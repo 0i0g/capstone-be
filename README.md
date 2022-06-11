@@ -11,7 +11,6 @@
 - [ ] Push Notification
 
 ### Controller:
-- :heavy_check_mark: Auth
 - [x] Auth
 - [ ] BeginningVoucher
 - [ ] Category ~ add remove
