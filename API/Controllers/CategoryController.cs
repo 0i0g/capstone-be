@@ -1,11 +1,9 @@
-﻿using API.Configurations.Filter;
+﻿using System;
+using API.Configurations.Filter;
 using Application.Interfaces;
 using Application.RequestModels;
-using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Utilities.Helper;
 
 namespace API.Controllers
 {
@@ -16,6 +14,62 @@ namespace API.Controllers
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
+        }
+        
+        [PermissionRequired("Permission.Category.Create")]
+        [Route("category")]
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(CreateCategoryModel model)
+        {
+            return await _categoryService.CreateCategory(model);
+        }
+        
+        [PermissionRequired("Permission.Category.Read")]
+        [Route("category/search")]
+        [HttpPost]
+        public IActionResult SearchCategories(SearchCategoriesModel model)
+        {
+            return _categoryService.SearchCategories(model);
+        }
+
+        [PermissionRequired("Permission.Category.Read")]
+        [Route("category/fetch")]
+        [HttpPost]
+        public IActionResult FetchCategories(FetchModel model)
+        {
+            return _categoryService.FetchCategories(model);
+        }
+
+        [PermissionRequired("Permission.Category.Update")]
+        [Route("category")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(UpdateCategoryModel model)
+        {
+            return await _categoryService.UpdateCategory(model);
+        }
+
+        [PermissionRequired("Permission.Category.Delete")]
+        [Route("category")]
+        [HttpDelete]
+        public async Task<IActionResult> RemoveCategory(RemoveModel model)
+        {
+            return await _categoryService.RemoveCategory(model);
+        }
+
+        [PermissionRequired("Permission.Category.Read")]
+        [Route("category")]
+        [HttpGet]
+        public IActionResult GetCategory(Guid id)
+        {
+            return _categoryService.GetCategory(id);
+        }
+        
+        [PermissionRequired("Permission.Category.Read")]
+        [Route("category/all")]
+        [HttpGet]
+        public IActionResult GetAllCategories()
+        {
+            return _categoryService.GetAllCategories();
         }
     }
 }

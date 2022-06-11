@@ -68,6 +68,11 @@ namespace Application.Utilities
                 "Permission.TransferVoucher.Read",
                 "Permission.TransferVoucher.Update",
                 "Permission.TransferVoucher.Delete",
+                
+                "Permission.Warehouse.Create",
+                "Permission.Warehouse.Read",
+                "Permission.Warehouse.Update",
+                "Permission.Warehouse.Delete",
             };
 
         public static IEnumerable<string> SystemPermissions =>
