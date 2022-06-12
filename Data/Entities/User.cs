@@ -68,7 +68,6 @@ namespace Data.Entities
         public ICollection<CheckingVoucher> CheckingVouchers { get; set; }
 
         #endregion
-        
 
         #region Safe entity
 

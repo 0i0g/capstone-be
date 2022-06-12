@@ -16,6 +16,8 @@ namespace Data_EF
         #region Repositories
 
         private IAttachmentRepository _attachment;
+        
+        private IAuditLogRepository _auditLog;
 
         private IAuthTokenRepository _authToken;
 
@@ -58,6 +60,11 @@ namespace Data_EF
         public IAttachmentRepository Attachment
         {
             get { return _attachment ??= new AttachmentRepository(_db); }
+        }
+        
+        public IAuditLogRepository AuditLog
+        {
+            get { return _auditLog ??= new AuditLogRepository(_db); }
         }
 
         public IAuthTokenRepository AuthToken
