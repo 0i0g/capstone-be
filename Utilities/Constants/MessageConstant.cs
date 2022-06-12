@@ -31,12 +31,23 @@ namespace Utilities.Constants
         public static readonly ResponseMessage ProductNotFound = new() { Code = "4001", Value = "Product do not exist or have been deleted" };
         public static readonly ResponseMessage BeginningVoucherDetailNotFound = new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
         public static readonly ResponseMessage BeginningVoucherDetailEmpty = new() { Code = "4001", Value = "Beginning voucher detail empty" };
+        /* Category */
+        public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
+        public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };
+
+        /* Customer */
+        public static ResponseMessage CustomerNameExisted => new() { Code = "4001", Value = "Customer name already exists" };
+        public static ResponseMessage CustomerNotFound => new() { Code = "4001", Value = "Customer does not exist" };
         
         /* HTTP */
         public static ResponseMessage InternalServerError => new() { Code = "5000", Value = "InternalServerError" };
         public static ResponseMessage InvalidParams => new() { Code = "5003", Value = "Invalid params" };
         public static ResponseMessage InvalidEnumAction => new() { Code = "5003", Value = "Invalid action" };
         public static ResponseMessage OrderByInvalid => new() { Code = "3008", Value = "Order By must be one of: {0}" };
+        
+        /* Product */
+        public static ResponseMessage ProductNameExisted => new() { Code = "4001", Value = "Product name already exists" };
+        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product does not exist" };
 
         /* UserGroup */
         public static ResponseMessage UserGroupNameExisted => new() { Code = "4001", Value = "Group name already exists" };
@@ -48,9 +59,16 @@ namespace Utilities.Constants
         /* User */
         public static ResponseMessage ProfileNotFound => new() { Code = "1004", Value = "User does not exist or has been deleted" };
         public static ResponseMessage UserNotFound => new() { Code = "1005", Value = "User does not exist or has been deleted" };
-        
+        public static ResponseMessage UserUsernameExisted => new() { Code = "1005", Value = "Username existed" };
+        public static ResponseMessage UserEmailExisted => new() { Code = "1005", Value = "Email existed" };
+      
         /* VoucherPrefixCode */
         public static ResponseMessage VoucherPrefixCodeNotFound => new() { Code = "4001", Value = "Voucher prefix code does not exist or has been deleted" };
+
+        
+        /* Warehouse */
+        public static ResponseMessage WarehouseNameExisted => new() { Code = "4001", Value = "Warehouse name already exists" };
+        public static ResponseMessage WarehouseNotFound => new() { Code = "4001", Value = "Warehouse does not exist" };
         
         // @formatter:on
     }
@@ -67,6 +85,14 @@ namespace Utilities.Constants
         public static ResponseMessage WithValues(this ResponseMessage message, params object[] values)
         {
             message.Value = string.Format(message.Value, values);
+            return message;
+        }
+        
+        public static ResponseMessage Concat(this ResponseMessage message, ResponseMessage secondMessage)
+        {
+            var separate = '~';
+            message.Value = message.Value + separate + secondMessage.Value;
+            
             return message;
         }
     }
