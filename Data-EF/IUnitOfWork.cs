@@ -40,8 +40,12 @@ namespace Data_EF
         public ITestRepository TestSetting { get; }
 
         public IReceiveRequestVoucherRepository ReceiveRequestVoucher { get; }
-        
+
         public IReceiveRequestVoucherDetailRepository ReceiveRequestVoucherDetail { get; }
+
+        public IDeliveryRequestVoucherRepository DeliveryRequestVoucher { get; }
+
+        public IDeliveryRequestVoucherDetailRepository DeliveryRequestVoucherDetail { get; }
 
         #endregion
 

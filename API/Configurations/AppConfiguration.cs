@@ -26,6 +26,7 @@ namespace API.Configurations
             services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<ITestService, TestService>();
             services.AddScoped<IReceiveRequestVoucherService, ReceiveRequestVoucherService>();
+            services.AddScoped<IDeliveryRequestVoucherService, DeliveryRequestVoucherService>();
 
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();

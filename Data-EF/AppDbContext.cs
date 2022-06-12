@@ -38,7 +38,7 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
             });
-            
+
             modelBuilder.Entity<AuditLog>(entity =>
             {
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
@@ -127,7 +127,8 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd();
+                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
+                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.Property(x => x.Status).HasConversion<string>();
                 entity.Property(x => x.Locked).HasDefaultValue(false);
                 entity.HasIndex(x => x.Code).IsUnique();

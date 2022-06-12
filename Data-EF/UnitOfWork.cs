@@ -51,6 +51,10 @@ namespace Data_EF
 
         private IReceiveRequestVoucherDetailRepository _receiveRequestVoucherDetail;
 
+        private IDeliveryRequestVoucherRepository _deliveryRequestVoucher;
+
+        private IDeliveryRequestVoucherDetailRepository _deliveryRequestVoucherDetail;
+
         #endregion
 
         public UnitOfWork(AppDbContext db, IHttpContextAccessor httpContextAccessor)
@@ -149,6 +153,16 @@ namespace Data_EF
         public IReceiveRequestVoucherDetailRepository ReceiveRequestVoucherDetail
         {
             get { return _receiveRequestVoucherDetail ??= new ReceiveRequestVoucherDetailRepository(_db); }
+        }
+
+        public IDeliveryRequestVoucherRepository DeliveryRequestVoucher
+        {
+            get { return _deliveryRequestVoucher ??= new DeliveryRequestVoucherRepository(_db); }
+        }
+
+        public IDeliveryRequestVoucherDetailRepository DeliveryRequestVoucherDetail
+        {
+            get { return _deliveryRequestVoucherDetail ??= new DeliveryRequestVoucherDetailRepository(_db); }
         }
 
         #endregion
