@@ -52,6 +52,8 @@ namespace Utilities.Constants
         /* User */
         public static ResponseMessage ProfileNotFound => new() { Code = "1004", Value = "User does not exist or has been deleted" };
         public static ResponseMessage UserNotFound => new() { Code = "1005", Value = "User does not exist or has been deleted" };
+        public static ResponseMessage UserUsernameExisted => new() { Code = "1005", Value = "Username existed" };
+        public static ResponseMessage UserEmailExisted => new() { Code = "1005", Value = "Email existed" };
         
         /* Warehouse */
         public static ResponseMessage WarehouseNameExisted => new() { Code = "4001", Value = "Warehouse name already exists" };
@@ -72,6 +74,14 @@ namespace Utilities.Constants
         public static ResponseMessage WithValues(this ResponseMessage message, params object[] values)
         {
             message.Value = string.Format(message.Value, values);
+            return message;
+        }
+        
+        public static ResponseMessage Concat(this ResponseMessage message, ResponseMessage secondMessage)
+        {
+            var separate = '~';
+            message.Value = message.Value + separate + secondMessage.Value;
+            
             return message;
         }
     }

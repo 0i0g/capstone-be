@@ -69,7 +69,7 @@ namespace Application.Implementations
                     return ApiResponse.BadRequest(MessageConstant.OrderByInvalid.WithValues("Name, CreatedAt"));
             }
 
-            var data = _categoriesQueryable.Select(x => new CategoryViewModel()
+            var data = query.Select(x => new CategoryViewModel()
             {
                 Id = x.Id,
                 Name = x.Name,

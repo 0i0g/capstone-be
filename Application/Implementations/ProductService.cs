@@ -79,7 +79,7 @@ namespace Application.Implementations
                     return ApiResponse.BadRequest(MessageConstant.OrderByInvalid.WithValues("Name, CreatedAt"));
             }
 
-            var data = _productsQueryable.Select(x => new ProductViewModel()
+            var data = query.Select(x => new ProductViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -116,7 +116,7 @@ namespace Application.Implementations
         public async Task<IActionResult> UpdateProduct(UpdateProductModel model)
         {
             var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Id);
-            if (product == null) return ApiResponse.BadRequest(MessageConstant.ProductNameExisted);
+            if (product == null) return ApiResponse.BadRequest(MessageConstant.ProductNotFound);
             
             if (model.Name != null && model.Name != product.Name)
             {

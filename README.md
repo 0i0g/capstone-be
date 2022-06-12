@@ -12,19 +12,19 @@
 
 ### Controller:
 - [x] Auth
-- [ ] BeginningVoucher
-- [ ] Category ~ add remove
+- [x] BeginningVoucher
+- [x] Category ~ remove
 - [ ] CheckingVoucher
-- [ ] Customer ~ add remove
+- [x] Customer ~ remove
 - [ ] DeliveryVoucher
 - [ ] FixingVoucher
-- [ ] Product
+- [x] Product ~ remove
 - [ ] ReceiveVoucher
 - [ ] TransferVoucher ~ more question
-- [ ] User ~ Create, update, delete
+- [x] User ~ remove
 - [x] UserGroup
 - [ ] VoucherPrefix
-- [ ] Warehouse
+- [x] Warehouse ~ remove
 
 # TODO:
 - [ ] Build Controller
