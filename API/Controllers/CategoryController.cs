@@ -16,7 +16,6 @@ namespace API.Controllers
             _categoryService = categoryService;
         }
         
-        [PermissionRequired("Permission.Category.Create")]
         [Route("category")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryModel model)

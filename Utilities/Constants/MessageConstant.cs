@@ -33,6 +33,10 @@ namespace Utilities.Constants
         public static ResponseMessage InvalidParams => new() { Code = "5003", Value = "Invalid params" };
         public static ResponseMessage InvalidEnumAction => new() { Code = "5003", Value = "Invalid action" };
         public static ResponseMessage OrderByInvalid => new() { Code = "3008", Value = "Order By must be one of: {0}" };
+        
+        /* Product */
+        public static ResponseMessage ProductNameExisted => new() { Code = "4001", Value = "Product name already exists" };
+        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product does not exist" };
 
         /* UserGroup */
         public static ResponseMessage UserGroupNameExisted => new() { Code = "4001", Value = "Group name already exists" };

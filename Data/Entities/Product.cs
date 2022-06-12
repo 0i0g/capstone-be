@@ -13,7 +13,6 @@ namespace Data.Entities
         [Required]
         public int Inc { get; set; }
         
-        [Required]
         public string Code { get; set; }
 
         [Required]
