@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using API.Configurations;
 using API.Configurations.Filter;
 using API.Configurations.Middleware;
+using Application.Trigger;
 using Data_EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,8 +29,14 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options =>
+            {
                 options.UseSqlServer(ConfigurationHelper.Configuration.GetConnectionString("Default"),
-                    x => x.MigrationsAssembly("Data-EF")));
+                    x => x.MigrationsAssembly("Data-EF"));
+                options.UseTriggers(triggerOptions =>
+                {
+                    triggerOptions.AddTrigger<CustomerTrigger>();
+                });
+            });
             services.AddDependenceInjection();
 
             services.AddSwaggerGen(c =>

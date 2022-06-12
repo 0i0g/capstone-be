@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="EntityFrameworkCore.Triggered" Version="2.3.2" />
       <PackageReference Include="JWT" Version="8.9.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
