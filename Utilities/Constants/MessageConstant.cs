@@ -24,6 +24,13 @@ namespace Utilities.Constants
         /* Authorization */
         public static ResponseMessage RolePermissionForbidden => new() { Code = "2001", Value = "{0}" };
         
+        /* BeginningVoucher */
+        public static ResponseMessage BeginningVoucherNotFound => new() { Code = "4001", Value = "Beginning voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateBeginningVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in beginning voucher detail has been duplicated" };
+        public static readonly ResponseMessage ProductsInRangeNotFound = new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
+        public static readonly ResponseMessage ProductNotFound = new() { Code = "4001", Value = "Product do not exist or have been deleted" };
+        public static readonly ResponseMessage BeginningVoucherDetailNotFound = new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
+        public static readonly ResponseMessage BeginningVoucherDetailEmpty = new() { Code = "4001", Value = "Beginning voucher detail empty" };
         /* Category */
         public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
         public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };
@@ -54,6 +61,10 @@ namespace Utilities.Constants
         public static ResponseMessage UserNotFound => new() { Code = "1005", Value = "User does not exist or has been deleted" };
         public static ResponseMessage UserUsernameExisted => new() { Code = "1005", Value = "Username existed" };
         public static ResponseMessage UserEmailExisted => new() { Code = "1005", Value = "Email existed" };
+      
+        /* VoucherPrefixCode */
+        public static ResponseMessage VoucherPrefixCodeNotFound => new() { Code = "4001", Value = "Voucher prefix code does not exist or has been deleted" };
+
         
         /* Warehouse */
         public static ResponseMessage WarehouseNameExisted => new() { Code = "4001", Value = "Warehouse name already exists" };
