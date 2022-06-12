@@ -40,6 +40,20 @@ namespace Utilities.Constants
         /* User */
         public static ResponseMessage ProfileNotFound => new() { Code = "1004", Value = "User does not exist or has been deleted" };
         public static ResponseMessage UserNotFound => new() { Code = "1005", Value = "User does not exist or has been deleted" };
+        
+        /* ReceiveRequestVoucher */
+        public static ResponseMessage ReceiveRequestVoucherNotFound => new() { Code = "4001", Value = "Receive Request Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateProductReceiveRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Receive Request Voucher Detail" };
+         public static ResponseMessage ReceiveRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Receive Request Voucher Detail does not exist or has been deleted" };
+         public static ResponseMessage ForbiddenToUpdateReceiveRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update receive request voucher" };
+        
+        /* Product */
+        public static ResponseMessage ProductsNotFound => new() { Code = "4001", Value = "Product with id: {0} do not exist have been deleted" };
+        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product does not exist or has been deleted" };
+        
+        /* Customer */        
+        public static ResponseMessage CustomerNotFound => new() { Code = "4001", Value = "Customer does not exist or has been deleted" };
+
         // @formatter:on
     }
 

@@ -16,7 +16,7 @@ namespace Data_EF
         #region Repositories
 
         private IAttachmentRepository _attachment;
-        
+
         private IAuditLogRepository _auditLog;
 
         private IAuthTokenRepository _authToken;
@@ -32,7 +32,7 @@ namespace Data_EF
         private ICheckingVoucherDetailRepository _checkingVoucherDetail;
 
         private ICustomerRepository _customer;
-        
+
         private IPermissionRepository _permission;
 
         private IProductRepository _product;
@@ -44,8 +44,12 @@ namespace Data_EF
         private IVoucherPrefixCodeRepository _voucherPrefixCode;
 
         private IWarehouseRepository _warehouse;
-        
+
         private ITestRepository _testSetting;
+
+        private IReceiveRequestVoucherRepository _receiveRequestVoucher;
+
+        private IReceiveRequestVoucherDetailRepository _receiveRequestVoucherDetail;
 
         #endregion
 
@@ -61,7 +65,7 @@ namespace Data_EF
         {
             get { return _attachment ??= new AttachmentRepository(_db); }
         }
-        
+
         public IAuditLogRepository AuditLog
         {
             get { return _auditLog ??= new AuditLogRepository(_db); }
@@ -101,7 +105,7 @@ namespace Data_EF
         {
             get { return _customer ??= new CustomerRepository(_db); }
         }
-        
+
         public IPermissionRepository Permission
         {
             get { return _permission ??= new PermissionRepository(_db); }
@@ -130,11 +134,21 @@ namespace Data_EF
         public IWarehouseRepository Warehouse
         {
             get { return _warehouse ??= new WarehouseRepository(_db); }
-        }       
+        }
 
         public ITestRepository TestSetting
         {
             get { return _testSetting ??= new TestRepository(_db, _httpContextAccessor); }
+        }
+
+        public IReceiveRequestVoucherRepository ReceiveRequestVoucher
+        {
+            get { return _receiveRequestVoucher ??= new ReceiveRequestVoucherRepository(_db); }
+        }
+
+        public IReceiveRequestVoucherDetailRepository ReceiveRequestVoucherDetail
+        {
+            get { return _receiveRequestVoucherDetail ??= new ReceiveRequestVoucherDetailRepository(_db); }
         }
 
         #endregion

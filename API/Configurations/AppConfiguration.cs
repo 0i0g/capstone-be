@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities;
 
 namespace API.Configurations
 {
@@ -24,6 +25,7 @@ namespace API.Configurations
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<ITestService, TestService>();
+            services.AddScoped<IReceiveRequestVoucherService, ReceiveRequestVoucherService>();
 
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();
