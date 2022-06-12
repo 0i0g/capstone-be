@@ -13,9 +13,9 @@ using Utilities.Constants;
 
 namespace Application.Implementations
 {
-    public class BeginningVoucherService: BaseService, IBeginningVoucherService
+    public class BeginningVoucherService : BaseService, IBeginningVoucherService
     {
-        private readonly IBeginningVoucherRepository  _beginningVoucherRepository;
+        private readonly IBeginningVoucherRepository _beginningVoucherRepository;
         private readonly IQueryable<BeginningVoucher> _beginningVoucherQueryable;
         private readonly IProductRepository _productRepository;
         private readonly IQueryable<Product> _productsQueryable;
@@ -43,33 +43,34 @@ namespace Application.Implementations
                 ReportingDate = model.ReportingDate,
                 Note = model.Note,
             };
-            
+
             _beginningVoucherRepository.Add(newBeginningVoucher);
 
-            if (model.Details != null)
-            {
-                var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
-                    .Select(x => x.Id).ToList();
-                var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
-                if (failProducts.Count > 0)
-                {
-                    return ApiResponse.NotFound(
-                        MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
-                }
-                
-                newBeginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
-                {
-                    Quantity = x.Quantity,
-                    VoucherId = newBeginningVoucher.Id,
-                    ProductId = x.ProductId
-                }).ToList();
+            if (model.Details.Count == 0)
+                return ApiResponse.BadRequest(MessageConstant.BeginningVoucherDetailEmpty);
 
-                newBeginningVoucher.Details.Select(x =>
-                {
-                    x.ProductName = x.Product.Name;
-                    return x;
-                }).ToList();
+            var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
+                .Select(x => x.Id).ToList();
+            var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
+            if (failProducts.Count > 0)
+            {
+                return ApiResponse.NotFound(
+                    MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
             }
+
+            newBeginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
+            {
+                Quantity = x.Quantity,
+                VoucherId = newBeginningVoucher.Id,
+                ProductId = x.ProductId,
+            }).ToList();
+
+            // TODO use trigger
+            newBeginningVoucher.Details.Select(x =>
+            {
+                x.ProductName = x.Product.Name;
+                return x;
+            }).ToList();
 
             await _unitOfWork.SaveChanges();
 
@@ -81,6 +82,7 @@ namespace Application.Implementations
             throw new NotImplementedException();
         }
 
+        // TODO fix logic
         public async Task<IActionResult> UpdateBeginningVoucher(UpdateBeginningVoucherModel model)
         {
             var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == model.Id);
@@ -109,12 +111,13 @@ namespace Application.Implementations
                     return ApiResponse.NotFound(MessageConstant.ProductNotFound);
                 }
 
-                var failProduct = beginningVoucher.Details.FirstOrDefault(x => x.ProductId == model.Detail.ProductId && x.Id != model.Detail.Id);
+                var failProduct = beginningVoucher.Details.FirstOrDefault(x =>
+                    x.ProductId == model.Detail.ProductId && x.Id != model.Detail.Id);
                 if (failProduct != null)
                 {
                     return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
                 }
-                
+
                 beginningVoucherDetail.ProductId = model.Detail.ProductId ?? beginningVoucherDetail.ProductId;
             }
 
@@ -123,7 +126,8 @@ namespace Application.Implementations
 
             return ApiResponse.Ok();
         }
-        
+
+        // TODO fix logic
         public async Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model)
         {
             var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == model.Id);
@@ -131,13 +135,13 @@ namespace Application.Implementations
             {
                 return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
             }
-            
+
             var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Detail.ProductId);
             if (product == null)
             {
                 return ApiResponse.NotFound(MessageConstant.ProductNotFound);
             }
-            
+
             var failProduct = beginningVoucher.Details.FirstOrDefault(x => x.ProductId == model.Detail.ProductId);
             if (failProduct != null)
             {
@@ -157,7 +161,7 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public Task<IActionResult> RemoveBeginningVoucher(RemoveModel model)
+        public Task<IActionResult> RemoveBeginningVoucher(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -170,15 +174,15 @@ namespace Application.Implementations
                 Code = x.Code,
                 ReportingDate = x.ReportingDate,
                 Note = x.Note,
-                Details = x.Details.Select(y=> new BeginningVoucherDetailViewModel
+                Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
                 {
                     Id = y.Id,
                     Quantity = y.Quantity,
                     ProductName = y.ProductName
                 }).ToList()
             }).FirstOrDefault(x => x.Id == id);
-            
-            if (beginningVoucher==null) return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
+
+            if (beginningVoucher == null) return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
 
             return ApiResponse.Ok(beginningVoucher);
         }
@@ -191,7 +195,7 @@ namespace Application.Implementations
                 Code = x.Code,
                 ReportingDate = x.ReportingDate,
                 Note = x.Note,
-                Details = x.Details.Select(y=> new BeginningVoucherDetailViewModel
+                Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
                 {
                     Id = y.Id,
                     Quantity = y.Quantity,

@@ -15,7 +15,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model);
         
-        Task<IActionResult> RemoveBeginningVoucher(RemoveModel model);
+        Task<IActionResult> RemoveBeginningVoucher(Guid id);
 
         IActionResult GetBeginningVoucher(Guid id);
 
