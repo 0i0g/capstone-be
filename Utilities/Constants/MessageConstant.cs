@@ -23,7 +23,14 @@ namespace Utilities.Constants
 
         /* Authorization */
         public static ResponseMessage RolePermissionForbidden => new() { Code = "2001", Value = "{0}" };
-
+        
+        /* BeginningVoucher */
+        public static ResponseMessage BeginningVoucherNotFound => new() { Code = "4001", Value = "Beginning voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateBeginningVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in beginning voucher detail has been duplicated" };
+        public static readonly ResponseMessage ProductsInRangeNotFound = new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
+        public static readonly ResponseMessage ProductNotFound = new() { Code = "4001", Value = "Product do not exist or have been deleted" };
+        public static readonly ResponseMessage BeginningVoucherDetailNotFound = new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
+        
         /* HTTP */
         public static ResponseMessage InternalServerError => new() { Code = "5000", Value = "InternalServerError" };
         public static ResponseMessage InvalidParams => new() { Code = "5003", Value = "Invalid params" };
@@ -40,6 +47,10 @@ namespace Utilities.Constants
         /* User */
         public static ResponseMessage ProfileNotFound => new() { Code = "1004", Value = "User does not exist or has been deleted" };
         public static ResponseMessage UserNotFound => new() { Code = "1005", Value = "User does not exist or has been deleted" };
+        
+        /* VoucherPrefixCode */
+        public static ResponseMessage VoucherPrefixCodeNotFound => new() { Code = "4001", Value = "Voucher prefix code does not exist or has been deleted" };
+        
         // @formatter:on
     }
 
