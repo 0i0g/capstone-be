@@ -1,9 +1,5 @@
 ﻿using Application.RequestModels;
-using Application.ViewModels;
-using Data.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +7,18 @@ namespace Application.Interfaces
 {
     public interface IWarehouseService
     {
-      
+        Task<IActionResult> CreateWarehouse(CreateWarehouseModel model);
+
+        IActionResult SearchWarehouses(SearchWarehousesModel model);
+
+        IActionResult FetchWarehouses(FetchModel model);
+
+        Task<IActionResult> UpdateWarehouse(UpdateWarehouseModel model);
+
+        Task<IActionResult> RemoveWarehouse(RemoveModel model);
+
+        IActionResult GetWarehouse(Guid id);
+
+        IActionResult GetAllWarehouses();
     }
 }
