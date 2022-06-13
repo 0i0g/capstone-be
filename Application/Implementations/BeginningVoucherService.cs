@@ -10,6 +10,7 @@ using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Utilities.Constants;
+using Utilities.Extensions;
 
 namespace Application.Implementations
 {
@@ -66,11 +67,11 @@ namespace Application.Implementations
             }).ToList();
 
             // TODO use trigger
-            newBeginningVoucher.Details.Select(x =>
-            {
-                x.ProductName = x.Product.Name;
-                return x;
-            }).ToList();
+            // newBeginningVoucher.Details.Select(x =>
+            // {
+            //     x.ProductName = x.Product.Name;
+            //     return x;
+            // }).ToList();
 
             await _unitOfWork.SaveChanges();
 
@@ -79,7 +80,39 @@ namespace Application.Implementations
 
         public IActionResult SearchBeginningVoucher(SearchBeginningVoucherModel model)
         {
-            throw new NotImplementedException();
+            var query = _beginningVoucherQueryable.Where(x =>
+                (model.StartDate == null || x.ReportingDate >= model.StartDate) &&
+                (model.StartDate == null || x.ReportingDate <= model.EndDate)).AsNoTracking();
+
+            switch (model.OrderByName)
+            {
+                case "":
+                    query = query.OrderByDescending(x => x.CreatedAt);
+                    break;
+                case "CREATEDAT":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.CreatedAt);
+                    break;
+                default:
+                    return ApiResponse.BadRequest(MessageConstant.OrderByInvalid.WithValues("Name, CreatedAt"));
+            }
+
+            var data = query.Select(x => new BeginningVoucherViewModel
+            {
+                Id = x.Id,
+                Code = x.Code,
+                ReportingDate = x.ReportingDate,
+                Note = x.Note,
+                Details = x.Details.Select(y=> new BeginningVoucherDetailViewModel
+                {
+                    Id = y.Id,
+                    Quantity = y.Quantity,
+                    ProductName = y.ProductName,
+                }).ToList()
+            }).ToPagination(model.PageIndex, model.PageSize);
+
+            return ApiResponse.Ok(data);
         }
 
         // TODO fix logic

@@ -32,10 +32,18 @@ namespace Data_EF
         private ICheckingVoucherDetailRepository _checkingVoucherDetail;
 
         private ICustomerRepository _customer;
+
+        private IFixingVoucherRepository _fixingVoucher;
+
+        private IFixingVoucherDetailRepository _fixingVoucherDetail;
         
         private IPermissionRepository _permission;
 
         private IProductRepository _product;
+
+        private ITransferRequestVoucherRepository _transferRequestVoucher;
+
+        private ITransferRequestVoucherDetailRepository _transferRequestVoucherDetail;
 
         private IUserRepository _user;
 
@@ -101,7 +109,17 @@ namespace Data_EF
         {
             get { return _customer ??= new CustomerRepository(_db); }
         }
+
+        public IFixingVoucherRepository FixingVoucher
+        {
+            get { return _fixingVoucher ??= new FixingVoucherRepository(_db); }
+        }
         
+        public IFixingVoucherDetailRepository FixingVoucherDetail
+        {
+            get { return _fixingVoucherDetail ??= new FixingVoucherDetailRepository(_db); }
+        }
+
         public IPermissionRepository Permission
         {
             get { return _permission ??= new PermissionRepository(_db); }
@@ -110,6 +128,16 @@ namespace Data_EF
         public IProductRepository Product
         {
             get { return _product ??= new ProductRepository(_db); }
+        }
+        
+        public ITransferRequestVoucherRepository TransferRequestVoucher
+        {
+            get { return _transferRequestVoucher ??= new TransferRequestVoucherRepository(_db); }
+        }
+        
+        public ITransferRequestVoucherDetailRepository TransferRequestVoucherDetail
+        {
+            get { return _transferRequestVoucherDetail ??= new TransferRequestVoucherDetailRepository(_db); }
         }
 
         public IUserRepository User

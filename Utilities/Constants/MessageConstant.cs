@@ -28,7 +28,6 @@ namespace Utilities.Constants
         public static ResponseMessage BeginningVoucherNotFound => new() { Code = "4001", Value = "Beginning voucher does not exist or has been deleted" };
         public static ResponseMessage DuplicateBeginningVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in beginning voucher detail has been duplicated" };
         public static readonly ResponseMessage ProductsInRangeNotFound = new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
-        public static readonly ResponseMessage ProductNotFound = new() { Code = "4001", Value = "Product do not exist or have been deleted" };
         public static readonly ResponseMessage BeginningVoucherDetailNotFound = new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
         public static readonly ResponseMessage BeginningVoucherDetailEmpty = new() { Code = "4001", Value = "Beginning voucher detail empty" };
         /* Category */

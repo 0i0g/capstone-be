@@ -35,6 +35,7 @@ namespace API
                 options.UseTriggers(triggerOptions =>
                 {
                     triggerOptions.AddTrigger<CustomerTrigger>();
+                    triggerOptions.AddTrigger<BeginningVoucherDetailTrigger>();
                 });
             });
             services.AddDependenceInjection();

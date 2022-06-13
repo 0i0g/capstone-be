@@ -24,10 +24,18 @@ namespace Data_EF
         public ICheckingVoucherDetailRepository CheckingVoucherDetail { get; }
         
         public ICustomerRepository Customer { get; }
+
+        public IFixingVoucherRepository FixingVoucher { get; }
+        
+        public IFixingVoucherDetailRepository FixingVoucherDetail { get; }
         
         public IPermissionRepository Permission { get; }
         
         public IProductRepository Product { get; }
+
+        public ITransferRequestVoucherRepository TransferRequestVoucher { get; }
+        
+        public ITransferRequestVoucherDetailRepository TransferRequestVoucherDetail { get; }
 
         public IUserRepository User { get; }
 

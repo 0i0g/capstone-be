@@ -2,8 +2,10 @@
 
 namespace Application.RequestModels
 {
-    public class SearchBeginningVoucherModel
+    public class SearchBeginningVoucherModel : PaginationModel
     {
-        public DateTime Type { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
     }
 }
