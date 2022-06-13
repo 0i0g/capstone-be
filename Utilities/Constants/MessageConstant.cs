@@ -27,18 +27,17 @@ namespace Utilities.Constants
         /* BeginningVoucher */
         public static ResponseMessage BeginningVoucherNotFound => new() { Code = "4001", Value = "Beginning voucher does not exist or has been deleted" };
         public static ResponseMessage DuplicateBeginningVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in beginning voucher detail has been duplicated" };
-        public static readonly ResponseMessage ProductsInRangeNotFound = new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
-        public static readonly ResponseMessage ProductNotFound = new() { Code = "4001", Value = "Product do not exist or have been deleted" };
-        public static readonly ResponseMessage BeginningVoucherDetailNotFound = new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
-        public static readonly ResponseMessage BeginningVoucherDetailEmpty = new() { Code = "4001", Value = "Beginning voucher detail empty" };
+        public static ResponseMessage ProductsInRangeNotFound => new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
+        public static ResponseMessage BeginningVoucherDetailNotFound => new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
+        public static ResponseMessage BeginningVoucherDetailEmpty => new() { Code = "4001", Value = "Beginning voucher detail empty" };
         /* Category */
         public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
         public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };
 
         /* Customer */
         public static ResponseMessage CustomerNameExisted => new() { Code = "4001", Value = "Customer name already exists" };
-        public static ResponseMessage CustomerNotFound => new() { Code = "4001", Value = "Customer does not exist" };
-        
+        public static ResponseMessage CustomerNotFound => new() { Code = "4001", Value = "Customer does not exist or has been deleted" };
+
         /* HTTP */
         public static ResponseMessage InternalServerError => new() { Code = "5000", Value = "InternalServerError" };
         public static ResponseMessage InvalidParams => new() { Code = "5003", Value = "Invalid params" };
@@ -47,7 +46,7 @@ namespace Utilities.Constants
         
         /* Product */
         public static ResponseMessage ProductNameExisted => new() { Code = "4001", Value = "Product name already exists" };
-        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product does not exist" };
+        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product do not exist or have been deleted" };
 
         /* UserGroup */
         public static ResponseMessage UserGroupNameExisted => new() { Code = "4001", Value = "Group name already exists" };
@@ -76,11 +75,7 @@ namespace Utilities.Constants
 
         /* Product */
         public static ResponseMessage ProductsNotFound => new() { Code = "4001", Value = "Product with id: {0} do not exist have been deleted" };
-        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product does not exist or has been deleted" };
         
-        /* Customer */        
-        public static ResponseMessage CustomerNotFound => new() { Code = "4001", Value = "Customer does not exist or has been deleted" };
-
         /* VoucherPrefixCode */
         public static ResponseMessage VoucherPrefixCodeNotFound => new() { Code = "4001", Value = "Voucher prefix code does not exist or has been deleted" };
 
@@ -105,12 +100,12 @@ namespace Utilities.Constants
             message.Value = string.Format(message.Value, values);
             return message;
         }
-        
+
         public static ResponseMessage Concat(this ResponseMessage message, ResponseMessage secondMessage)
         {
             var separate = '~';
             message.Value = message.Value + separate + secondMessage.Value;
-            
+
             return message;
         }
     }
