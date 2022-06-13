@@ -62,6 +62,25 @@ namespace Utilities.Constants
         public static ResponseMessage UserUsernameExisted => new() { Code = "1005", Value = "Username existed" };
         public static ResponseMessage UserEmailExisted => new() { Code = "1005", Value = "Email existed" };
       
+        /* ReceiveRequestVoucher */
+        public static ResponseMessage ReceiveRequestVoucherNotFound => new() { Code = "4001", Value = "Receive Request Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateProductReceiveRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Receive Request Voucher Detail" };
+        public static ResponseMessage ReceiveRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Receive Request Voucher Detail does not exist or has been deleted" };
+        public static ResponseMessage ForbiddenToUpdateReceiveRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update receive request voucher" };
+         
+         /* DeliveryRequestVoucher */
+        public static ResponseMessage DeliveryRequestVoucherNotFound => new() { Code = "4001", Value = "Delivery Request Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateProductDeliveryRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Delivery Request Voucher Detail" };
+        public static ResponseMessage ForbiddenToUpdateDeliveryRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update delivery request voucher" };
+        public static ResponseMessage DeliveryRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Delivery Request Voucher Detail does not exist or has been deleted" };
+
+        /* Product */
+        public static ResponseMessage ProductsNotFound => new() { Code = "4001", Value = "Product with id: {0} do not exist have been deleted" };
+        public static ResponseMessage ProductNotFound => new() { Code = "4001", Value = "Product does not exist or has been deleted" };
+        
+        /* Customer */        
+        public static ResponseMessage CustomerNotFound => new() { Code = "4001", Value = "Customer does not exist or has been deleted" };
+
         /* VoucherPrefixCode */
         public static ResponseMessage VoucherPrefixCodeNotFound => new() { Code = "4001", Value = "Voucher prefix code does not exist or has been deleted" };
 
@@ -69,7 +88,6 @@ namespace Utilities.Constants
         /* Warehouse */
         public static ResponseMessage WarehouseNameExisted => new() { Code = "4001", Value = "Warehouse name already exists" };
         public static ResponseMessage WarehouseNotFound => new() { Code = "4001", Value = "Warehouse does not exist" };
-        
         // @formatter:on
     }
 

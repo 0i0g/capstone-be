@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Entities;
 
 namespace API.Configurations
 {
@@ -27,6 +28,8 @@ namespace API.Configurations
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<ITestService, TestService>();
+            services.AddScoped<IReceiveRequestVoucherService, ReceiveRequestVoucherService>();
+            services.AddScoped<IDeliveryRequestVoucherService, DeliveryRequestVoucherService>();
             services.AddScoped<IWarehouseService, WarehouseService>();
 
             // Every controller and every service

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Application.ViewModels.Warehouse
+namespace Application.ViewModels
 {
     public class FetchWarehouseViewModel
     {
