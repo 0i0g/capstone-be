@@ -27,10 +27,10 @@ namespace Utilities.Constants
         /* BeginningVoucher */
         public static ResponseMessage BeginningVoucherNotFound => new() { Code = "4001", Value = "Beginning voucher does not exist or has been deleted" };
         public static ResponseMessage DuplicateBeginningVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in beginning voucher detail has been duplicated" };
-        public static readonly ResponseMessage ProductsInRangeNotFound = new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
-        public static readonly ResponseMessage ProductNotFound = new() { Code = "4001", Value = "Product do not exist or have been deleted" };
-        public static readonly ResponseMessage BeginningVoucherDetailNotFound = new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
-        public static readonly ResponseMessage BeginningVoucherDetailEmpty = new() { Code = "4001", Value = "Beginning voucher detail empty" };
+        public static ResponseMessage ProductsInRangeNotFound => new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
+        public static ResponseMessage BeginningVoucherDetailNotFound => new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
+        public static ResponseMessage BeginningVoucherDetailEmpty => new() { Code = "4001", Value = "Beginning voucher detail empty" };
+        
         /* Category */
         public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
         public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };
@@ -90,7 +90,7 @@ namespace Utilities.Constants
         
         public static ResponseMessage Concat(this ResponseMessage message, ResponseMessage secondMessage)
         {
-            var separate = '~';
+            const char separate = '~';
             message.Value = message.Value + separate + secondMessage.Value;
             
             return message;

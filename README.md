@@ -12,19 +12,19 @@
 
 ### Controller:
 - [x] Auth
-- [x] BeginningVoucher
+- [x] BeginningVoucher ~ update details
 - [x] Category ~ remove
-- [ ] CheckingVoucher
 - [x] Customer ~ remove
-- [ ] DeliveryVoucher
-- [ ] FixingVoucher
 - [x] Product ~ remove
-- [ ] ReceiveVoucher
-- [ ] TransferVoucher ~ more question
 - [x] User ~ remove
 - [x] UserGroup
-- [ ] VoucherPrefix
+- [x] VoucherPrefix
 - [x] Warehouse ~ remove
+- [ ] DeliveryVoucher
+- [ ] FixingVoucher
+- [ ] ReceiveVoucher
+- [ ] TransferVoucher ~ more question
+- [ ] CheckingVoucher
 
 # TODO:
 - [ ] Build Controller
@@ -37,6 +37,7 @@
 - [ ] Locked by
 - [x] Audit log service
 - [ ] Authorize
+- [ ] Seed data
 
 # Test Controller:
 - [ ] Auth
