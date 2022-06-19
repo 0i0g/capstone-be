@@ -47,9 +47,9 @@ namespace Data.Entities
 
         #region Avatar
 
-        public Guid? AvatarId { get; set; }
+        // public Guid? AvatarId { get; set; }
 
-        public Attachment Avatar { get; set; }
+        // public Attachment Avatar { get; set; }
 
         #endregion
 
@@ -92,6 +92,15 @@ namespace Data.Entities
         #region Test
 
         public Test Test { get; set; }
+        
+        #endregion
+        
+           
+        #region Extensions
+
+        public string FullName => LastName + " " + FirstName;
+
+        public string Avatar => "";
         
         #endregion
     }

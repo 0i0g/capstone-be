@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
 using Application.ViewModels.Warehouse;
+using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Utilities.Constants;
@@ -43,7 +44,7 @@ namespace Application.Implementations
                 Email = x.Email,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
-                Avatar = x.Avatar != null ? x.Avatar.GetUrl() : null,
+                Avatar = x.Avatar,
                 Gender = x.Gender.ToString(),
                 CreatedAt = x.CreatedAt,
                 PhoneNumber = x.PhoneNumber,
@@ -194,13 +195,12 @@ namespace Application.Implementations
 
         public IActionResult GetAllUser()
         {
-            var users = _userQueryable.Include(x=>x.InWarehouse).Select(x => new UserViewModel()
+            var users = _userQueryable.Include(x => x.InWarehouse).Select(x => new UserViewModel()
             {
                 Id = x.Id,
                 Username = x.Username,
                 Email = x.Email,
                 Gender = x.Gender,
-                Password = x.Password,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
@@ -228,6 +228,30 @@ namespace Application.Implementations
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
+        }
+
+        public IActionResult GetAuthUser()
+        {
+            var user = _userQueryable.Include(x => x.UserInGroups).ThenInclude(x => x.Group)
+                .FirstOrDefault(x => x.Id == CurrentUser.Id);
+
+            if (user == null) return ApiResponse.Unauthorized();
+            
+            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
+            {
+                Name = x.Name,
+                Type = x.Type.ToString()
+            }).ToList() ?? new List<AuthUserGroup>();
+
+
+            var authUser = new AuthUserViewModel
+            {
+                Avatar = user.Avatar,
+                Name = user.FullName,
+                Groups = groups
+            };
+
+            return ApiResponse.Ok(authUser);
         }
     }
 }

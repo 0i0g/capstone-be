@@ -253,8 +253,8 @@ namespace Data_EF
 
                 entity.HasOne(x => x.InWarehouse).WithMany(x => x.Users).HasForeignKey(x => x.InWarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(x => x.Avatar).WithOne(x => x.User).HasForeignKey<User>(x => x.AvatarId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                // entity.HasOne(x => x.Avatar).WithOne(x => x.User).HasForeignKey<User>(x => x.AvatarId)
+                //     .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<UserGroup>(entity =>

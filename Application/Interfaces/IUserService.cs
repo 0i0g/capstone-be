@@ -30,5 +30,7 @@ namespace Application.Interfaces
         IActionResult GetAllUser();
 
         Task<IActionResult> SelfUpdate(SelfUpdateModel model);
+
+        IActionResult GetAuthUser();
     }
 }

@@ -53,9 +53,8 @@ namespace Application.Implementations
             // Get user claims
             var user = _userRepository
                 .GetMany(x => x.Username == model.Username)
-                // .Include(x => x.UserInGroups)
-                // .ThenInclude(x => x.Group)
-                // .ThenInclude(x => x.Permissions)
+                .Include(x => x.UserInGroups)
+                .ThenInclude(x => x.Group)
                 .FirstOrDefault();
 
             if (user == null || user.IsDeleted == true)
@@ -87,11 +86,23 @@ namespace Application.Implementations
             await _unitOfWork.SaveChanges();
 
             // Response view model
+            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
+            {
+                Name = x.Name,
+                Type = x.Type.ToString()
+            }).ToList() ?? new List<AuthUserGroup>();
+            
             var authView = new AuthViewModel
             {
                 UserId = user.Id,
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                User = new AuthUserViewModel
+                {
+                    Avatar = user.Avatar,
+                    Name = user.FullName,
+                    Groups = groups
+                }
             };
 
             return ApiResponse.Ok(authView);

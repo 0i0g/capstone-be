@@ -80,5 +80,12 @@ namespace API.Controllers
         {
             return await _userService.SelfUpdate(model);
         }
+        
+        [Route("authuser")]
+        [HttpGet]
+        public IActionResult GetAuthUser()
+        {
+            return  _userService.GetAuthUser();
+        }
     }
 }
