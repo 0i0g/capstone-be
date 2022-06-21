@@ -2,17 +2,13 @@
 using Application.RequestModels;
 using Application.ViewModels;
 using Data.Entities;
-using Data.Enums;
-using Data_EF;
 using Data_EF.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
-using Application.ViewModels.Warehouse;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -113,8 +109,6 @@ namespace Application.Implementations
             user.Gender = model.Gender ?? user.Gender;
             user.IsActive = model.IsActive ?? user.IsActive;
             user.InWarehouseId = model.InWarehouseId ?? user.InWarehouseId;
-            user.IsDeleted = model.IsDeleted ?? user.IsDeleted;
-
 
             _userRepository.Update(user);
             await _unitOfWork.SaveChanges();
@@ -172,7 +166,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouseId = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -200,12 +194,12 @@ namespace Application.Implementations
                 Id = x.Id,
                 Username = x.Username,
                 Email = x.Email,
-                Gender = x.Gender,
+                Gender = x.Gender.ToString(),
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
-                InWarehouseId = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                InWarehouse = x.InWarehouseId != null
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToList();
@@ -236,7 +230,7 @@ namespace Application.Implementations
                 .FirstOrDefault(x => x.Id == CurrentUser.Id);
 
             if (user == null) return ApiResponse.Unauthorized();
-            
+
             var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
             {
                 Name = x.Name,
@@ -252,6 +246,30 @@ namespace Application.Implementations
             };
 
             return ApiResponse.Ok(authUser);
+        }
+
+        public IActionResult GetUser()
+        {
+            var user = _userQueryable.Where(x => x.Id == CurrentUser.Id).Select(x => new UserViewModel()
+            {
+                Id = x.Id,
+                Email = x.Email,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Gender = x.Gender.ToString(),
+                PhoneNumber = x.PhoneNumber,
+                InWarehouse = x.InWarehouseId != null
+                    ? new FetchWarehouseViewModel
+                    {
+                        Id = x.InWarehouse.Id,
+                        Name = x.InWarehouse.Name
+                    }
+                    : null
+            }).FirstOrDefault();
+
+            if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);
+
+            return ApiResponse.Ok(user);
         }
     }
 }

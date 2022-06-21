@@ -20,10 +20,10 @@ namespace Application.ViewModels
 
         public string PhoneNumber { get; set; }
 
-        public Gender? Gender { get; set; }
+        public string Gender { get; set; }
 
         public bool? IsActive { get; set; }
         
-        public FetchWarehouseViewModel InWarehouseId { get; set; }
+        public FetchWarehouseViewModel InWarehouse { get; set; }
     }
 }

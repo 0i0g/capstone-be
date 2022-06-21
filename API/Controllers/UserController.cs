@@ -87,5 +87,12 @@ namespace API.Controllers
         {
             return  _userService.GetAuthUser();
         }
+        
+            
+        [HttpGet]
+        public IActionResult GetUser()
+        {
+            return  _userService.GetUser();
+        }
     }
 }

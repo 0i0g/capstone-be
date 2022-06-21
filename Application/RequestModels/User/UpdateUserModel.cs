@@ -24,7 +24,5 @@ namespace Application.RequestModels.User
         public bool? IsActive { get; set; }
 
         public Guid? InWarehouseId { get; set; }
-
-        public bool? IsDeleted { get; set; }
     }
 }
