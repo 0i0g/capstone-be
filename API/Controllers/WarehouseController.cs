@@ -20,7 +20,6 @@ namespace API.Controllers
             _warehouseService = warehouseService;
         }
 
-        [PermissionRequired("Permission.Warehouse.Create")]
         [Route("warehouse")]
         [HttpPost]
         public async Task<IActionResult> CreateWarehouse(CreateWarehouseModel model)
@@ -28,7 +27,6 @@ namespace API.Controllers
             return await _warehouseService.CreateWarehouse(model);
         }
         
-        [PermissionRequired("Permission.Warehouse.Read")]
         [Route("warehouse/search")]
         [HttpPost]
         public IActionResult SearchWarehouses(SearchWarehousesModel model)
@@ -36,7 +34,6 @@ namespace API.Controllers
             return _warehouseService.SearchWarehouses(model);
         }
 
-        [PermissionRequired("Permission.Warehouse.Read")]
         [Route("warehouse/fetch")]
         [HttpPost]
         public IActionResult FetchWarehouses(FetchModel model)
@@ -44,7 +41,6 @@ namespace API.Controllers
             return _warehouseService.FetchWarehouses(model);
         }
 
-        [PermissionRequired("Permission.Warehouse.Update")]
         [Route("warehouse")]
         [HttpPut]
         public async Task<IActionResult> UpdateWarehouse(UpdateWarehouseModel model)
@@ -52,7 +48,6 @@ namespace API.Controllers
             return await _warehouseService.UpdateWarehouse(model);
         }
 
-        [PermissionRequired("Permission.Warehouse.Delete")]
         [Route("warehouse")]
         [HttpDelete]
         public async Task<IActionResult> RemoveWarehouse(RemoveModel model)
@@ -60,7 +55,6 @@ namespace API.Controllers
             return await _warehouseService.RemoveWarehouse(model);
         }
 
-        [PermissionRequired("Permission.Warehouse.Read")]
         [Route("warehouse")]
         [HttpGet]
         public IActionResult GetWarehouse(Guid id)
@@ -68,7 +62,6 @@ namespace API.Controllers
             return _warehouseService.GetWarehouse(id);
         }
         
-        [PermissionRequired("Permission.Warehouse.Read")]
         [Route("warehouse/all")]
         [HttpGet]
         public IActionResult GetAllWarehouses()

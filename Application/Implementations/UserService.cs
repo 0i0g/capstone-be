@@ -101,7 +101,7 @@ namespace Application.Implementations
                 }
             }
 
-            user.Password = PasswordHelper.Hash(model.Password) ?? user.Password;
+            user.Password = model.Password != null ?  PasswordHelper.Hash(model.Password) : user.Password;
             user.Email = model.Email ?? user.Email;
             user.FirstName = model.FirstName ?? user.FirstName;
             user.LastName = model.LastName ?? user.LastName;
@@ -253,6 +253,7 @@ namespace Application.Implementations
             var user = _userQueryable.Where(x => x.Id == CurrentUser.Id).Select(x => new UserViewModel()
             {
                 Id = x.Id,
+                Username = x.Username,
                 Email = x.Email,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
@@ -264,7 +265,8 @@ namespace Application.Implementations
                         Id = x.InWarehouse.Id,
                         Name = x.InWarehouse.Name
                     }
-                    : null
+                    : null,
+                IsActive = x.IsActive
             }).FirstOrDefault();
 
             if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);
