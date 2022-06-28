@@ -24,6 +24,6 @@ namespace Application.ViewModels
 
         public bool? IsActive { get; set; }
         
-        public FetchWarehouseViewModel InWarehouseId { get; set; }
+        public FetchWarehouseViewModel InWarehouse { get; set; }
     }
 }

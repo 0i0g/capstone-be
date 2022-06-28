@@ -33,6 +33,6 @@ namespace Application.Interfaces
 
         IActionResult GetAuthUser();
         
-        IActionResult GetUser();
+        IActionResult GetUser(Guid id);
     }
 }

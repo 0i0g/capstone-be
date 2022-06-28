@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
 using Data.Implements;
@@ -101,7 +102,7 @@ namespace Application.Implementations
                 }
             }
 
-            user.Password = model.Password != null ?  PasswordHelper.Hash(model.Password) : user.Password;
+            user.Password = model.Password != null ? PasswordHelper.Hash(model.Password) : user.Password;
             user.Email = model.Email ?? user.Email;
             user.FirstName = model.FirstName ?? user.FirstName;
             user.LastName = model.LastName ?? user.LastName;
@@ -165,8 +166,8 @@ namespace Application.Implementations
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
-                InWarehouseId = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
+                InWarehouse = x.InWarehouseId != null
+                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -199,7 +200,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
+                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
                     : null,
                 IsActive = x.IsActive,
             }).ToList();
@@ -248,9 +249,9 @@ namespace Application.Implementations
             return ApiResponse.Ok(authUser);
         }
 
-        public IActionResult GetUser()
+        public IActionResult GetUser(Guid id)
         {
-            var user = _userQueryable.Where(x => x.Id == CurrentUser.Id).Select(x => new UserViewModel()
+            var user = _userQueryable.Where(x => x.Id == id).Select(x => new UserViewModel()
             {
                 Id = x.Id,
                 Username = x.Username,

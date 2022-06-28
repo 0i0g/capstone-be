@@ -90,9 +90,9 @@ namespace API.Controllers
         
             
         [HttpGet]
-        public IActionResult GetUser()
+        public IActionResult GetUser(Guid id)
         {
-            return  _userService.GetUser();
+            return  _userService.GetUser(id);
         }
     }
 }

@@ -32,16 +32,13 @@ namespace API
             {
                 options.UseSqlServer(ConfigurationHelper.Configuration.GetConnectionString("Default"),
                     x => x.MigrationsAssembly("Data-EF"));
-                options.UseTriggers(triggerOptions =>
-                {
-                    triggerOptions.AddTrigger<CustomerTrigger>();
-                });
+                options.UseTriggers(triggerOptions => { triggerOptions.AddTrigger<CustomerTrigger>(); });
             });
             services.AddDependenceInjection();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"});
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -94,12 +91,14 @@ namespace API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext dbContext)
         {
             Console.WriteLine(env.EnvironmentName);
             if (env.IsDevelopment())
             {
             }
+
+            var newDb = dbContext.Database.EnsureCreated();
 
             app.UseDeveloperExceptionPage();
 
