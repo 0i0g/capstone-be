@@ -303,17 +303,14 @@ namespace Data_EF
 
             #region Default value
 
-            // window 
             // @formatter:off
-            modelBuilder.Entity<Permission>().HasData(DataHelper.ReadSeedData<Permission>(@"../Data-EF/SeedData/Permission.json"));
-            modelBuilder.Entity<User>().HasData(DataHelper.ReadSeedData<User>(@"../Data-EF/SeedData/User.json"));
-            modelBuilder.Entity<UserGroup>().HasData(DataHelper.ReadSeedData<UserGroup>(@"../Data-EF/SeedData/UserGroup.json"));
-            modelBuilder.Entity<UserInGroup>().HasData(DataHelper.ReadSeedData<UserInGroup>(@"../Data-EF/SeedData/UserInGroup.json"));
-            modelBuilder.Entity<Warehouse>().HasData(DataHelper.ReadSeedData<Warehouse>(@"../Data-EF/SeedData/Warehouse.json"));
+            modelBuilder.Entity<Permission>().HasData(DataHelper.ReadSeedData<Permission>(@"SeedData/Permission.json"));
+            modelBuilder.Entity<Permission>().HasData(DataHelper.ReadSeedData<Permission>(DataHelper.MapPath("SeedData/Permission.json")));
+            modelBuilder.Entity<User>().HasData(DataHelper.ReadSeedData<User>(DataHelper.MapPath("SeedData/User.json")));
+            modelBuilder.Entity<UserGroup>().HasData(DataHelper.ReadSeedData<UserGroup>(DataHelper.MapPath("SeedData/UserGroup.json")));
+            modelBuilder.Entity<UserInGroup>().HasData(DataHelper.ReadSeedData<UserInGroup>(DataHelper.MapPath("SeedData/UserInGroup.json")));
+            modelBuilder.Entity<Warehouse>().HasData(DataHelper.ReadSeedData<Warehouse>(DataHelper.MapPath("SeedData/Warehouse.json")));
             // @formatter:on
-
-            // linux
-            // modelBuilder.Entity<User>().HasData(DataHelper.ReadSeedData<User>(@"SeedData/User.json"));
 
             #endregion
         }
