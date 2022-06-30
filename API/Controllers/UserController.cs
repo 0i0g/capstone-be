@@ -4,6 +4,7 @@ using Application.RequestModels;
 using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
 
@@ -47,12 +48,18 @@ namespace API.Controllers
             return await _userService.UpdateUser(model);
         }
 
+        // [HttpDelete]
+        // public async Task<IActionResult> RemoveUser(Guid id)
+        // {
+        //     return await _userService.RemoveUser(id);
+        // }   
+        
         [HttpDelete]
-        public async Task<IActionResult> RemoveUser(Guid id)
+        public async Task<IActionResult> RemoveMulUser(List<Guid> ids)
         {
-            return await _userService.RemoveUser(id);
+            return await _userService.RemoveMulUser(ids);
         }
-
+        
         [Route("search")]
         [HttpPost]
         public IActionResult SearchUser(SearchUserModel model)

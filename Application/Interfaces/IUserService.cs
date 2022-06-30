@@ -22,6 +22,8 @@ namespace Application.Interfaces
         Task<IActionResult> UpdateUser(UpdateUserModel model);
 
         Task<IActionResult> RemoveUser(Guid id);
+        
+        Task<IActionResult> RemoveMulUser(List<Guid> id);
 
         IActionResult SearchUser(SearchUserModel model);
 

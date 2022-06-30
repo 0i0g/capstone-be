@@ -73,7 +73,7 @@ namespace Application.Implementations
             var newUser = new User
             {
                 Username = model.Username,
-                Password = PasswordHelper.Hash(model.Password),
+                Password = PasswordHelper.Hash(GenerateHelper.RandomString(6)),
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -109,7 +109,7 @@ namespace Application.Implementations
             user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
             user.Gender = model.Gender ?? user.Gender;
             user.IsActive = model.IsActive ?? user.IsActive;
-            user.InWarehouseId = model.InWarehouseId ?? user.InWarehouseId;
+            user.InWarehouseId = model.InWarehouseId ;
 
             _userRepository.Update(user);
             await _unitOfWork.SaveChanges();
@@ -126,6 +126,21 @@ namespace Application.Implementations
             user.UserInGroups.Clear();
 
             _userRepository.Update(user);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+        
+        public async Task<IActionResult> RemoveMulUser(List<Guid> ids)
+        {
+            var users = _userQueryable.Where(x => ids.Contains(x.Id)).Include(x => x.UserInGroups).ToList();
+            users.ForEach(x =>
+            {
+                x.IsDeleted = true;
+                x.UserInGroups.Clear();
+            });
+
+            _userRepository.UpdateRange(users);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
