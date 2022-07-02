@@ -60,7 +60,8 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd();
+                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
+                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.HasIndex(x => x.Code).IsUnique();
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.BeginningVouchers).HasForeignKey(x => x.WarehouseId)
@@ -92,7 +93,8 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd();
+                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
+                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.HasIndex(x => x.Code).IsUnique();
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.CheckingVouchers).HasForeignKey(x => x.WarehouseId)
@@ -116,7 +118,8 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd();
+                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
+                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.HasIndex(x => x.Code).IsUnique();
                 entity.HasIndex(x => x.Name).IsUnique();
             });
@@ -155,7 +158,8 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd();
+                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
+                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.HasIndex(x => x.Code).IsUnique();
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.FixingVouchers)
@@ -188,7 +192,8 @@ namespace Data_EF
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(x => x.IsActive).HasDefaultValue(true);
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd();
+                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
+                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.HasIndex(x => x.Code).IsUnique();
                 entity.HasIndex(x => x.Name).IsUnique();
             });
@@ -304,7 +309,6 @@ namespace Data_EF
             #region Default value
 
             // @formatter:off
-            modelBuilder.Entity<Permission>().HasData(DataHelper.ReadSeedData<Permission>(@"SeedData/Permission.json"));
             modelBuilder.Entity<Permission>().HasData(DataHelper.ReadSeedData<Permission>(DataHelper.MapPath("SeedData/Permission.json")));
             modelBuilder.Entity<User>().HasData(DataHelper.ReadSeedData<User>(DataHelper.MapPath("SeedData/User.json")));
             modelBuilder.Entity<UserGroup>().HasData(DataHelper.ReadSeedData<UserGroup>(DataHelper.MapPath("SeedData/UserGroup.json")));

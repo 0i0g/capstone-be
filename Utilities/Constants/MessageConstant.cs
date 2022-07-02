@@ -10,7 +10,6 @@ namespace Utilities.Constants
         /* Audit log */
         public static string AuditLogin => "[{0}] logged in at {1}";
         
-        
         /* Authentication */
         public static ResponseMessage AccountNotFound => new() { Code = "1001", Value = "Username does not exist" };
         public static ResponseMessage IncorrectPassword => new() { Code = "1002", Value = "Password does not match with the username" };
@@ -30,6 +29,7 @@ namespace Utilities.Constants
         public static ResponseMessage ProductsInRangeNotFound => new() { Code = "4001", Value = "Products do not exist or have been deleted: {0}" };
         public static ResponseMessage BeginningVoucherDetailNotFound => new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
         public static ResponseMessage BeginningVoucherDetailEmpty => new() { Code = "4001", Value = "Beginning voucher detail empty" };
+        
         /* Category */
         public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
         public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };
@@ -40,6 +40,7 @@ namespace Utilities.Constants
 
         /* HTTP */
         public static ResponseMessage InternalServerError => new() { Code = "5000", Value = "InternalServerError" };
+        public static ResponseMessage Forbidden => new() { Code = "403", Value = "Forbidden" };
         public static ResponseMessage InvalidParams => new() { Code = "5003", Value = "Invalid params" };
         public static ResponseMessage InvalidEnumAction => new() { Code = "5003", Value = "Invalid action" };
         public static ResponseMessage OrderByInvalid => new() { Code = "3008", Value = "Order By must be one of: {0}" };

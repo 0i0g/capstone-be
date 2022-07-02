@@ -102,14 +102,13 @@ namespace Application.Implementations
                 }
             }
 
-            user.Password = model.Password != null ? PasswordHelper.Hash(model.Password) : user.Password;
-            user.Email = model.Email ?? user.Email;
-            user.FirstName = model.FirstName ?? user.FirstName;
-            user.LastName = model.LastName ?? user.LastName;
-            user.PhoneNumber = model.PhoneNumber ?? user.PhoneNumber;
-            user.Gender = model.Gender ?? user.Gender;
-            user.IsActive = model.IsActive ?? user.IsActive;
-            user.InWarehouseId = model.InWarehouseId ;
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+            user.IsActive = model.IsActive;
+            user.InWarehouseId = model.InWarehouseId;
 
             _userRepository.Update(user);
             await _unitOfWork.SaveChanges();
@@ -130,7 +129,7 @@ namespace Application.Implementations
 
             return ApiResponse.Ok();
         }
-        
+
         public async Task<IActionResult> RemoveMulUser(List<Guid> ids)
         {
             var users = _userQueryable.Where(x => ids.Contains(x.Id)).Include(x => x.UserInGroups).ToList();

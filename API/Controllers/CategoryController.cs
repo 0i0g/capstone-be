@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using API.Configurations.Filter;
 using Application.Interfaces;
 using Application.RequestModels;
@@ -23,7 +24,7 @@ namespace API.Controllers
             return await _categoryService.CreateCategory(model);
         }
         
-        [PermissionRequired("Permission.Category.Read")]
+        // [PermissionRequired("Permission.Category.Read")]
         [Route("category/search")]
         [HttpPost]
         public IActionResult SearchCategories(SearchCategoriesModel model)
@@ -31,7 +32,7 @@ namespace API.Controllers
             return _categoryService.SearchCategories(model);
         }
 
-        [PermissionRequired("Permission.Category.Read")]
+        // [PermissionRequired("Permission.Category.Read")]
         [Route("category/fetch")]
         [HttpPost]
         public IActionResult FetchCategories(FetchModel model)
@@ -39,7 +40,7 @@ namespace API.Controllers
             return _categoryService.FetchCategories(model);
         }
 
-        [PermissionRequired("Permission.Category.Update")]
+        // [PermissionRequired("Permission.Category.Update")]
         [Route("category")]
         [HttpPut]
         public async Task<IActionResult> UpdateCategory(UpdateCategoryModel model)
@@ -47,15 +48,14 @@ namespace API.Controllers
             return await _categoryService.UpdateCategory(model);
         }
 
-        [PermissionRequired("Permission.Category.Delete")]
         [Route("category")]
         [HttpDelete]
-        public async Task<IActionResult> RemoveCategory(RemoveModel model)
+        public async Task<IActionResult> RemoveMulCategory(List<Guid> ids)
         {
-            return await _categoryService.RemoveCategory(model);
+            return await _categoryService.RemoveMulCategory(ids);
         }
 
-        [PermissionRequired("Permission.Category.Read")]
+        // [PermissionRequired("Permission.Category.Read")]
         [Route("category")]
         [HttpGet]
         public IActionResult GetCategory(Guid id)
@@ -63,7 +63,7 @@ namespace API.Controllers
             return _categoryService.GetCategory(id);
         }
         
-        [PermissionRequired("Permission.Category.Read")]
+        // [PermissionRequired("Permission.Category.Read")]
         [Route("category/all")]
         [HttpGet]
         public IActionResult GetAllCategories()

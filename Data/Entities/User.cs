@@ -95,7 +95,6 @@ namespace Data.Entities
         
         #endregion
         
-           
         #region Extensions
 
         public string FullName => LastName + " " + FirstName;

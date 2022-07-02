@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -15,15 +16,15 @@ using Utilities.Extensions;
 
 namespace Application.Implementations
 {
-    public class ProductService:BaseService,IProductService
+    public class ProductService : BaseService, IProductService
     {
         private readonly IProductRepository _productRepository;
         private readonly IQueryable<Product> _productsQueryable;
-        
+
         public ProductService(IServiceProvider provider) : base(provider)
         {
             _productRepository = _unitOfWork.Product;
-            _productsQueryable = _productRepository.GetMany(x => x.IsDeleted != true).Include(x=>x.ProductCategories);
+            _productsQueryable = _productRepository.GetMany(x => x.IsDeleted != true).Include(x => x.ProductCategories);
         }
 
         public async Task<IActionResult> CreateProduct(CreateProductModel model)
@@ -33,7 +34,7 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.ProductNameExisted);
             }
-            
+
             var newProduct = new Product
             {
                 Name = model.Name,
@@ -49,7 +50,7 @@ namespace Application.Implementations
                 CategoryId = x,
                 ProductId = newProduct.Id
             }).ToList();
-            
+
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
@@ -117,7 +118,7 @@ namespace Application.Implementations
         {
             var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Id);
             if (product == null) return ApiResponse.BadRequest(MessageConstant.ProductNotFound);
-            
+
             if (model.Name != null && model.Name != product.Name)
             {
                 var productConflictName = _productsQueryable.FirstOrDefault(x => x.Name == model.Name);
@@ -151,6 +152,17 @@ namespace Application.Implementations
         public Task<IActionResult> RemoveProduct(RemoveModel model)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> RemoveMulProduct(List<Guid> ids)
+        {
+            var products = _productsQueryable.Where(x => ids.Contains(x.Id)).ToList();
+            products.ForEach(x =>  x.IsDeleted = true );
+            
+            _productRepository.UpdateRange(products);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
         }
 
         public IActionResult GetProduct(Guid id)

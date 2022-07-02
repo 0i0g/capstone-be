@@ -16,7 +16,7 @@ namespace API.Controllers
             _customerService = customerService;
         }
         
-        [PermissionRequired("Permission.Customer.Create")]
+        // [PermissionRequired("Permission.Customer.Create")]
         [Route("customer")]
         [HttpPost]
         public async Task<IActionResult> CreateCustomer(CreateCustomerModel model)
@@ -24,7 +24,7 @@ namespace API.Controllers
             return await _customerService.CreateCustomer(model);
         }
         
-        [PermissionRequired("Permission.Customer.Read")]
+        // [PermissionRequired("Permission.Customer.Read")]
         [Route("customer/search")]
         [HttpPost]
         public IActionResult SearchCustomers(SearchCustomersModel model)
@@ -32,7 +32,7 @@ namespace API.Controllers
             return _customerService.SearchCustomers(model);
         }
 
-        [PermissionRequired("Permission.Customer.Read")]
+        // [PermissionRequired("Permission.Customer.Read")]
         [Route("customer/fetch")]
         [HttpPost]
         public IActionResult FetchCustomers(FetchModel model)
@@ -40,7 +40,7 @@ namespace API.Controllers
             return _customerService.FetchCustomers(model);
         }
 
-        [PermissionRequired("Permission.Customer.Update")]
+        // [PermissionRequired("Permission.Customer.Update")]
         [Route("customer")]
         [HttpPut]
         public async Task<IActionResult> UpdateCustomer(UpdateCustomerModel model)
@@ -48,7 +48,7 @@ namespace API.Controllers
             return await _customerService.UpdateCustomer(model);
         }
 
-        [PermissionRequired("Permission.Customer.Delete")]
+        // [PermissionRequired("Permission.Customer.Delete")]
         [Route("customer")]
         [HttpDelete]
         public async Task<IActionResult> RemoveCustomer(RemoveModel model)
@@ -56,7 +56,7 @@ namespace API.Controllers
             return await _customerService.RemoveCustomer(model);
         }
 
-        [PermissionRequired("Permission.Customer.Read")]
+        // [PermissionRequired("Permission.Customer.Read")]
         [Route("customer")]
         [HttpGet]
         public IActionResult GetCustomer(Guid id)
@@ -64,7 +64,7 @@ namespace API.Controllers
             return _customerService.GetCustomer(id);
         }
         
-        [PermissionRequired("Permission.Customer.Read")]
+        // [PermissionRequired("Permission.Customer.Read")]
         [Route("customer/all")]
         [HttpGet]
         public IActionResult GetAllCustomers()

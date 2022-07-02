@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Data.Entities;
+using Utilities.Constants;
 
 namespace API.Configurations.Filter
 {
@@ -25,7 +26,7 @@ namespace API.Configurations.Filter
                 var pers = user!.Permissions.Select(x => x.ToLower());
                 if (!pers.Any(per => _permissions.Contains(per)))
                 {
-                    context.Result = ApiResponse.Forbidden();
+                    context.Result = ApiResponse.Forbidden(MessageConstant.Forbidden);
                 }
             }
             catch (Exception e)

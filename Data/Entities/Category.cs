@@ -20,7 +20,7 @@ namespace Data.Entities
         public ICollection<ProductCategory> ProductCategories { get; set; }
 
         #endregion
-        
+
         #region Safe entity
 
         [Required]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -14,15 +15,16 @@ using Utilities.Extensions;
 
 namespace Application.Implementations
 {
-    public class CategoryService: BaseService, ICategoryService
+    public class CategoryService : BaseService, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IQueryable<Category> _categoriesQueryable;
-        
+
         public CategoryService(IServiceProvider provider) : base(provider)
         {
             _categoryRepository = _unitOfWork.Category;
-            _categoriesQueryable = _categoryRepository.GetMany(x => x.IsDeleted != true).Include(x=>x.ProductCategories);
+            _categoriesQueryable =
+                _categoryRepository.GetMany(x => x.IsDeleted != true).Include(x => x.ProductCategories);
         }
 
         public async Task<IActionResult> CreateCategory(CreateCategoryModel model)
@@ -32,7 +34,7 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.CategoryNameExisted);
             }
-            
+
             var newCategory = new Category
             {
                 Name = model.Name,
@@ -97,7 +99,7 @@ namespace Application.Implementations
         {
             var category = _categoriesQueryable.FirstOrDefault(x => x.Id == model.Id);
             if (category == null) return ApiResponse.BadRequest(MessageConstant.CategoryNotFound);
-            
+
             if (model.Name != null && model.Name != category.Name)
             {
                 var categoryConflictName = _categoriesQueryable.FirstOrDefault(x => x.Name == model.Name);
@@ -107,8 +109,8 @@ namespace Application.Implementations
                 }
             }
 
-            category.Name = model.Name ?? category.Name;
-            category.Description = model.Description ?? category.Description;
+            category.Name = model.Name;
+            category.Description = model.Description;
 
             _categoryRepository.Update(category);
             await _unitOfWork.SaveChanges();
@@ -119,6 +121,22 @@ namespace Application.Implementations
         public Task<IActionResult> RemoveCategory(RemoveModel model)
         {
             throw new NotImplementedException();
+        }
+        
+        public async Task<IActionResult> RemoveMulCategory(List<Guid> ids)
+        {
+            var categories = _categoriesQueryable.Where(x => ids.Contains(x.Id)).Include(x => x.ProductCategories)
+                .ToList();
+            categories.ForEach(x =>
+            {
+                x.IsDeleted = true;
+                x.ProductCategories.Clear();
+            });
+            
+            _categoryRepository.UpdateRange(categories);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
         }
 
         public IActionResult GetCategory(Guid id)

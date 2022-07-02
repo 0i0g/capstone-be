@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.RequestModels;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,8 @@ namespace Application.Interfaces
         Task<IActionResult> UpdateProduct(UpdateProductModel model);
 
         Task<IActionResult> RemoveProduct(RemoveModel model);
+        
+        Task<IActionResult> RemoveMulProduct(List<Guid> ids);
 
         IActionResult GetProduct(Guid id);
 
