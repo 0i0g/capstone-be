@@ -1,7 +1,6 @@
 ﻿using API.Configurations.Filter;
 using Application.Interfaces;
 using Application.RequestModels;
-using Application.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

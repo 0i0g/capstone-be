@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.RequestModels
 {
-    public class UpdateBeginningVoucherDetailModel
+    public class BeginningDetailUpdateModel
     {
-        [Required]
+        [Required] 
         public Guid Id { get; set; }
 
         [Required]

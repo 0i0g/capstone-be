@@ -1,0 +1,38 @@
+﻿[
+  {
+    "Id": "936A6155-35FE-4F02-AAC7-7DB0E27FD6BA",
+    "Inc": 1,
+    "Code": "1",
+    "Name": "Mouse",
+    "IsActive": true,
+    "Description": "OOP",
+    "OnHandMin": 10,
+    "OnHandMax": 100,
+    "CreatedAt": "2022-07-06T23:06:35.6800000",
+    "IsDeleted": false
+  },
+  {
+    "Id": "2C160B30-ABEF-4ECC-9EC5-820963C34105",
+    "Inc": 3,
+    "Code": "3",
+    "Name": "Laptop",
+    "IsActive": true,
+    "Description": "OOP",
+    "OnHandMin": 10,
+    "OnHandMax": 100,
+    "CreatedAt": "2022-07-06T23:06:51.2900000",
+    "IsDeleted": false
+  },
+  {
+    "Id": "BE6618CB-7530-4923-839D-AF3712B03F30",
+    "Inc": 2,
+    "Code": "2",
+    "Name": "Phone",
+    "IsActive": true,
+    "Description": "OOP",
+    "OnHandMin": 10,
+    "OnHandMax": 100,
+    "CreatedAt": "2022-07-06T23:06:45.3366667",
+    "IsDeleted": false
+  }
+]

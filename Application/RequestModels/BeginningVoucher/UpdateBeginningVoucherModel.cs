@@ -11,8 +11,12 @@ namespace Application.RequestModels
         
         public DateTime? ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
-        public UpdateBeginningVoucherDetailModel Detail { get; set; }
+        public ICollection<BeginningDetailCreateModel> AddDetails { get; set; }
+        
+        public ICollection<BeginningDetailUpdateModel> UpdateDetails { get; set; }
+        
+        public ICollection<Guid> DeleteDetails { get; set; }
     }
 }

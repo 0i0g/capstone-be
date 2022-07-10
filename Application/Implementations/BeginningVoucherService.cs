@@ -10,6 +10,7 @@ using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Utilities.Constants;
+using Utilities.Extensions;
 
 namespace Application.Implementations
 {
@@ -41,7 +42,7 @@ namespace Application.Implementations
             var newBeginningVoucher = new BeginningVoucher
             {
                 ReportingDate = model.ReportingDate,
-                Note = model.Note,
+                Description = model.Description,
             };
 
             _beginningVoucherRepository.Add(newBeginningVoucher);
@@ -79,46 +80,92 @@ namespace Application.Implementations
 
         public IActionResult SearchBeginningVoucher(SearchBeginningVoucherModel model)
         {
-            throw new NotImplementedException();
+            var query = _beginningVoucherQueryable.AsNoTracking().Where(x =>
+                (model.FromDate == null || x.ReportingDate.CompareTo(model.FromDate) >= 0) &&
+                (model.ToDate == null || x.ReportingDate.CompareTo(model.FromDate) <= 0));
+
+            switch (model.OrderByName)
+            {
+                case "":
+                    query = query.OrderByDescending(x => x.ReportingDate);
+                    break;
+                case "ReportingDate":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt);
+                    break;
+                default:
+                    return ApiResponse.BadRequest(
+                        MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
+            }
+            
+            var data = query.Select(x => new BeginningVoucherViewModel
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Details = x.Details.Select(y=>new BeginningVoucherDetailViewModel
+                {
+                    Id = y.Id,
+                    Quantity = y.Quantity,
+                    Product = new FetchProductViewModel
+                    {
+                        Id = y.ProductId,
+                        Name = y.ProductName
+                    }
+                }).ToList(),
+                Warehouse = x.Warehouse != null ? new FetchWarehouseViewModel
+                {
+                    Id = x.WarehouseId,
+                    Name = x.Warehouse.Name
+                }: null,
+                Description = x.Description,
+                ReportingDate = x.ReportingDate
+            }).ToPagination(model.PageIndex, model.PageSize);
+
+            return ApiResponse.Ok(data);
         }
 
         // TODO fix logic
         public async Task<IActionResult> UpdateBeginningVoucher(UpdateBeginningVoucherModel model)
         {
-            var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == model.Id);
+            var beginningVoucher =
+                _beginningVoucherQueryable.Include(x => x.Details).FirstOrDefault(x => x.Id == model.Id);
             if (beginningVoucher == null)
             {
                 return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
             }
 
             beginningVoucher.ReportingDate = model.ReportingDate ?? beginningVoucher.ReportingDate;
-            beginningVoucher.Note = model.Note ?? beginningVoucher.Note;
+            beginningVoucher.Description = model.Description ?? beginningVoucher.Description;
 
-            var beginningVoucherDetail =
-                beginningVoucher.Details.FirstOrDefault(x => x.Id == model.Detail.Id);
-            if (beginningVoucherDetail == null)
+            // ** Add voucher details
+            if (model.AddDetails is {Count: > 0})
             {
-                return ApiResponse.NotFound(MessageConstant.BeginningVoucherDetailNotFound);
+                // unique model
+                var detailCreateModels = model.AddDetails.ToHashSet();
+
+                // add details
+                var productIds = detailCreateModels.Select(x => x.ProductId);
+                var productData = _productsQueryable.Where(x => productIds.Contains(x.Id))
+                    .Select(x => new {x.Id, x.Name}).ToList();
+                var productNameMap = productData.ToDictionary(x => x.Id, x => x.Name);
+                var details = detailCreateModels.Select(x => new BeginningVoucherDetail
+                {
+                    Quantity = x.Quantity,
+                    ProductId = x.ProductId,
+                    ProductName = productNameMap[x.ProductId]
+                });
+                beginningVoucher.Details.ToList().AddRange(details);
             }
 
-            beginningVoucherDetail.Quantity = model.Detail.Quantity ?? beginningVoucherDetail.Quantity;
-
-            if (model.Detail.ProductId != null)
+            // ** Update voucher details
+            if (model.UpdateDetails is {Count: > 0})
             {
-                var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Detail.ProductId);
-                if (product == null)
-                {
-                    return ApiResponse.NotFound(MessageConstant.ProductNotFound);
-                }
+                // unique model
+                var detailUpdateModel = model.UpdateDetails.ToHashSet();
 
-                var failProduct = beginningVoucher.Details.FirstOrDefault(x =>
-                    x.ProductId == model.Detail.ProductId && x.Id != model.Detail.Id);
-                if (failProduct != null)
-                {
-                    return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
-                }
-
-                beginningVoucherDetail.ProductId = model.Detail.ProductId ?? beginningVoucherDetail.ProductId;
+                // update details
+                // beginningVoucher.
             }
 
             _beginningVoucherRepository.Update(beginningVoucher);
@@ -173,12 +220,16 @@ namespace Application.Implementations
                 Id = x.Id,
                 Code = x.Code,
                 ReportingDate = x.ReportingDate,
-                Note = x.Note,
+                Description = x.Description,
                 Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
                 {
                     Id = y.Id,
                     Quantity = y.Quantity,
-                    ProductName = y.ProductName
+                    Product = new FetchProductViewModel()
+                    {
+                        Id = y.ProductId,
+                        Name = y.ProductName
+                    }
                 }).ToList()
             }).FirstOrDefault(x => x.Id == id);
 
@@ -194,12 +245,16 @@ namespace Application.Implementations
                 Id = x.Id,
                 Code = x.Code,
                 ReportingDate = x.ReportingDate,
-                Note = x.Note,
+                Description = x.Description,
                 Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
                 {
                     Id = y.Id,
                     Quantity = y.Quantity,
-                    ProductName = y.ProductName
+                    Product = new FetchProductViewModel()
+                    {
+                        Id = y.ProductId,
+                        Name = y.ProductName
+                    }
                 }).ToList()
             }).ToList();
 

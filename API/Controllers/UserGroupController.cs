@@ -20,7 +20,7 @@ namespace API.Controllers
         #region System
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Create")]
+        // [PermissionRequired("Permission.UserGroupSystem.Create")]
         [Route("system/group")]
         [HttpPost]
         public async Task<IActionResult> CreateUserGroupSystem(CreateUserGroupModel model)
@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Update")]
+        // [PermissionRequired("Permission.UserGroupSystem.Update")]
         [Route("system/group")]
         [HttpPut]
         public async Task<IActionResult> UpdateUserGroupSystem(UpdateUserGroupModel model)
@@ -38,7 +38,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Update")]
+        // [PermissionRequired("Permission.UserGroupSystem.Update")]
         [Route("system/group/adduser")]
         [HttpPost]
         public async Task<IActionResult> AddUserInToGroupSystem(AddUserInToGroupModel model)
@@ -47,7 +47,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Delete")]
+        // [PermissionRequired("Permission.UserGroupSystem.Delete")]
         [Route("system/group")]
         [HttpDelete]
         public async Task<IActionResult> RemoveUserGroupSystem(RemoveModel model)
@@ -56,7 +56,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Read")]
+        // [PermissionRequired("Permission.UserGroupSystem.Read")]
         [Route("system/group")]
         [HttpGet]
         public IActionResult GetUserGroupSystem(Guid id)
@@ -65,7 +65,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Read")]
+        // [PermissionRequired("Permission.UserGroupSystem.Read")]
         [Route("system/group/search")]
         [HttpPost]
         public IActionResult SearchUserGroupSystem(SearchUserGroupModel model)
@@ -74,7 +74,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Read")]
+        // [PermissionRequired("Permission.UserGroupSystem.Read")]
         [Route("system/group/fetch")]
         [HttpPost]
         public IActionResult FetchUserGroupSystem(FetchModel model)
@@ -83,7 +83,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Read")]
+        // [PermissionRequired("Permission.UserGroupSystem.Read")]
         [Route("system/group/all")]
         [HttpGet]
         public IActionResult GetAllUserGroupSystem()
@@ -92,7 +92,7 @@ namespace API.Controllers
         }
 
         [Authentication]
-        [PermissionRequired("Permission.UserGroupSystem.Read")]
+        // [PermissionRequired("Permission.UserGroupSystem.Read")]
         [Route("system/group/allpermission")]
         [HttpGet]
         public IActionResult GetAllPermissionSystem()
@@ -105,7 +105,7 @@ namespace API.Controllers
         #region Warehouse
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Create")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Create")]
         [Route("warehouse/group")]
         [HttpPost]
         public async Task<IActionResult> CreateUserGroupWarehouse(CreateUserGroupModel model)
@@ -114,7 +114,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Update")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Update")]
         [Route("warehouse/group")]
         [HttpPut]
         public async Task<IActionResult> UpdateUserGroupWarehouse(UpdateUserGroupModel model)
@@ -123,7 +123,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Update")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Update")]
         [Route("warehouse/group/adduser")]
         [HttpPost]
         public async Task<IActionResult> AddUserInToGroupWarehouse(AddUserInToGroupModel model)
@@ -132,7 +132,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Delete")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Delete")]
         [Route("warehouse/group")]
         [HttpDelete]
         public async Task<IActionResult> RemoveUserGroupWarehouse(RemoveModel model)
@@ -141,7 +141,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Read")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Read")]
         [Route("warehouse/group")]
         [HttpGet]
         public IActionResult GetUserGroupWarehouse(Guid id)
@@ -150,7 +150,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Read")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Read")]
         [Route("warehouse/group/search")]
         [HttpPost]
         public IActionResult SearchUserGroupWarehouse(SearchUserGroupModel model)
@@ -159,7 +159,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Read")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Read")]
         [Route("warehouse/group/fetch")]
         [HttpPost]
         public IActionResult FetchUserGroupWarehouse(FetchModel model)
@@ -168,7 +168,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Read")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Read")]
         [Route("warehouse/group/all")]
         [HttpGet]
         public IActionResult GetAllUserGroupWarehouse()
@@ -177,7 +177,7 @@ namespace API.Controllers
         }
 
         [Authentication(warehouseRequired: true)]
-        [PermissionRequired("Permission.UserGroupWarehouse.Read")]
+        // [PermissionRequired("Permission.UserGroupWarehouse.Read")]
         [Route("warehouse/group/allpermission")]
         [HttpGet]
         public IActionResult GetAllPermissionWarehouse()

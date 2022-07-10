@@ -45,11 +45,14 @@ namespace Application.Implementations
 
             _productRepository.Add(newProduct);
 
-            newProduct.ProductCategories = model.Categories.Select(x => new ProductCategory
+            if (model.Categories != null)
             {
-                CategoryId = x,
-                ProductId = newProduct.Id
-            }).ToList();
+                newProduct.ProductCategories = model.Categories.Select(x => new ProductCategory
+                {
+                    CategoryId = x,
+                    ProductId = newProduct.Id
+                }).ToList();
+            }
 
             await _unitOfWork.SaveChanges();
 
@@ -157,8 +160,8 @@ namespace Application.Implementations
         public async Task<IActionResult> RemoveMulProduct(List<Guid> ids)
         {
             var products = _productsQueryable.Where(x => ids.Contains(x.Id)).ToList();
-            products.ForEach(x =>  x.IsDeleted = true );
-            
+            products.ForEach(x => x.IsDeleted = true);
+
             _productRepository.UpdateRange(products);
             await _unitOfWork.SaveChanges();
 
@@ -178,10 +181,10 @@ namespace Application.Implementations
                 OnHandMax = x.OnHandMax,
                 Categories = x.ProductCategories == null
                     ? null
-                    : x.ProductCategories.Select(x => new FetchCategoryViewModel
+                    : x.ProductCategories.Select(y => new FetchCategoryViewModel
                     {
-                        Id = x.CategoryId,
-                        Name = x.Category.Name
+                        Id = y.CategoryId,
+                        Name = y.Category.Name
                     }).ToList()
             }).FirstOrDefault(x => x.Id == id);
             if (product == null) return ApiResponse.BadRequest(MessageConstant.ProductNotFound);

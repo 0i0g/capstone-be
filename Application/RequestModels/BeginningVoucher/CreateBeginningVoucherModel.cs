@@ -9,7 +9,7 @@ namespace Application.RequestModels
         [Required]
         public DateTime ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
         [Required]
         public ICollection<CreateBeginningVoucherDetailModel> Details { get; set; }

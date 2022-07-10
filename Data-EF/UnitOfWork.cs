@@ -185,7 +185,7 @@ namespace Data_EF
                     if (entry.Entity is ISafeEntity se)
                     {
                         // se.CreatedAt = now;
-                        se.CreatedBy = userId;
+                        se.CreatedById = userId;
                     }
                 }
 
@@ -204,12 +204,12 @@ namespace Data_EF
                                 if (!original && current)
                                 {
                                     se.DeletedAt = now;
-                                    se.DeletedBy = userId;
+                                    se.DeletedById = userId;
                                 }
                                 else
                                 {
                                     se.UpdatedAt = now;
-                                    se.UpdatedBy = userId;
+                                    se.UpdatedById = userId;
                                 }
                             }
                         }

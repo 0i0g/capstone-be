@@ -22,14 +22,6 @@ namespace Data_EF
         {
             base.OnModelCreating(modelBuilder);
 
-            #region Add filter safe delete
-
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-                if (typeof(ISafeEntity).IsAssignableFrom(entityType.ClrType))
-                    entityType.AddSoftDeleteQueryFilter();
-
-            #endregion
-
             #region Reference
 
             modelBuilder.Entity<Attachment>(entity =>
@@ -60,12 +52,15 @@ namespace Data_EF
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
-                entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
-                    .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.HasIndex(x => x.Code).IsUnique();
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.BeginningVouchers).HasForeignKey(x => x.WarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
+                
+                entity.HasOne(x => x.CreatedBy).WithMany(x => x.BeginningVouchers)
+                    .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.DeletedBy).WithMany(x => x.BeginningVouchersDeleted)
+                    .HasForeignKey(x => x.DeletedById).OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<BeginningVoucherDetail>(entity =>
@@ -99,6 +94,11 @@ namespace Data_EF
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.CheckingVouchers).HasForeignKey(x => x.WarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(x => x.CreatedBy).WithMany(x => x.CheckingVouchers)
+                    .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.DeletedBy).WithMany(x => x.CheckingVouchersDeleted)
+                    .HasForeignKey(x => x.DeletedById).OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<CheckingVoucherDetail>(entity =>
@@ -194,8 +194,6 @@ namespace Data_EF
                 entity.Property(x => x.IsActive).HasDefaultValue(true);
                 entity.Property(x => x.Inc).ValueGeneratedOnAdd().Metadata
                     .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-                entity.HasIndex(x => x.Code).IsUnique();
-                entity.HasIndex(x => x.Name).IsUnique();
             });
 
             modelBuilder.Entity<ProductCategory>(entity =>
@@ -217,7 +215,6 @@ namespace Data_EF
                     .SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
                 entity.Property(x => x.Status).HasConversion<string>();
                 entity.Property(x => x.Locked).HasDefaultValue(false);
-                entity.HasIndex(x => x.Code).IsUnique();
 
                 entity.HasOne(x => x.Customer).WithMany(x => x.ReceiveRequestVouchers)
                     .HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
@@ -253,13 +250,16 @@ namespace Data_EF
 
                 entity.Property(x => x.IsActive).HasDefaultValue(true);
                 entity.Property(x => x.Gender).HasConversion<string>();
-                entity.HasIndex(x => x.Username).IsUnique();
-                entity.HasIndex(x => x.Email).IsUnique();
 
                 entity.HasOne(x => x.InWarehouse).WithMany(x => x.Users).HasForeignKey(x => x.InWarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
                 // entity.HasOne(x => x.Avatar).WithOne(x => x.User).HasForeignKey<User>(x => x.AvatarId)
                 //     .OnDelete(DeleteBehavior.NoAction);
+                
+                entity.HasOne(x => x.CreatedBy).WithMany(x => x.UsersCreated)
+                    .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.DeletedBy).WithMany(x => x.UsersDeleted)
+                    .HasForeignKey(x => x.DeletedById).OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<UserGroup>(entity =>
@@ -296,8 +296,11 @@ namespace Data_EF
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
-
-                entity.HasIndex(x => x.Name).IsUnique();
+                
+                entity.HasOne(x => x.CreatedBy).WithMany(x => x.WarehousesCreated)
+                    .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.DeletedBy).WithMany(x => x.WarehousesDeleted)
+                    .HasForeignKey(x => x.DeletedById).OnDelete(DeleteBehavior.NoAction);
             });
 
             #endregion
@@ -314,6 +317,7 @@ namespace Data_EF
             modelBuilder.Entity<UserGroup>().HasData(DataHelper.ReadSeedData<UserGroup>(DataHelper.MapPath("SeedData/UserGroup.json")));
             modelBuilder.Entity<UserInGroup>().HasData(DataHelper.ReadSeedData<UserInGroup>(DataHelper.MapPath("SeedData/UserInGroup.json")));
             modelBuilder.Entity<Warehouse>().HasData(DataHelper.ReadSeedData<Warehouse>(DataHelper.MapPath("SeedData/Warehouse.json")));
+            modelBuilder.Entity<Product>().HasData(DataHelper.ReadSeedData<Product>(DataHelper.MapPath("SeedData/Product.json")));
             // @formatter:on
 
             #endregion

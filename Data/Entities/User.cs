@@ -64,8 +64,32 @@ namespace Data.Entities
         #region Voucher created
 
         public ICollection<BeginningVoucher> BeginningVouchers { get; set; }
-        
+
         public ICollection<CheckingVoucher> CheckingVouchers { get; set; }
+
+        #endregion
+
+        #region Voucher deleted
+
+        public ICollection<BeginningVoucher> BeginningVouchersDeleted { get; set; }
+
+        public ICollection<CheckingVoucher> CheckingVouchersDeleted { get; set; }
+
+        #endregion
+
+        #region Created
+
+        public ICollection<User> UsersCreated { get; set; }
+
+        public ICollection<Warehouse> WarehousesCreated { get; set; }
+
+        #endregion
+
+        #region Deleted
+
+        public ICollection<User> UsersDeleted { get; set; }
+
+        public ICollection<Warehouse> WarehousesDeleted { get; set; }
 
         #endregion
 
@@ -73,17 +97,23 @@ namespace Data.Entities
 
         [Required]
         public DateTime CreatedAt { get; set; }
-        
-        public Guid? CreatedBy { get; set; }
+
+        public Guid? CreatedById { get; set; }
+
+        public User CreatedBy { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
-        
-        public Guid? UpdatedBy { get; set; }
-        
+
+        public Guid? UpdatedById { get; set; }
+
+        public User UpdatedBy { get; set; }
+
         public DateTime? DeletedAt { get; set; }
-        
-        public Guid? DeletedBy { get; set; }
-        
+
+        public Guid? DeletedById { get; set; }
+
+        public User DeletedBy { get; set; }
+
         [Required]
         public bool? IsDeleted { get; set; }
 
@@ -92,15 +122,15 @@ namespace Data.Entities
         #region Test
 
         public Test Test { get; set; }
-        
+
         #endregion
-        
+
         #region Extensions
 
         public string FullName => LastName + " " + FirstName;
 
         public string Avatar => "";
-        
+
         #endregion
     }
 }

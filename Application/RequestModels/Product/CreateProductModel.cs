@@ -15,7 +15,6 @@ namespace Application.RequestModels
 
         public int? OnHandMax { get; set; }
 
-        [Required]
         public ICollection<Guid> Categories { get; set; }
     }
 }

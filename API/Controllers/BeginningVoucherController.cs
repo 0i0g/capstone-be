@@ -10,7 +10,7 @@ using Utilities.Helper;
 
 namespace API.Controllers
 {
-    [Route("beginningvoucher")]
+    [Route("beginning-voucher")]
     public class BeginningVoucherController : BaseController
     {
         private IBeginningVoucherService _beginningVoucherService;

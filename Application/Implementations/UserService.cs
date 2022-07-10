@@ -66,7 +66,7 @@ namespace Application.Implementations
                 var msg = user.Username == model.Username ? MessageConstant.UserUsernameExisted : null;
                 msg = user.Email == model.Email
                     ? (msg == null ? MessageConstant.UserEmailExisted : msg.Concat(MessageConstant.UserEmailExisted))
-                    : null;
+                    : msg;
                 return ApiResponse.BadRequest(msg);
             }
 

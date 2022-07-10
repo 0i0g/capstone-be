@@ -28,6 +28,7 @@ namespace API.Configurations
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<ITestService, TestService>();
+            services.AddScoped<IBeginningVoucherService, BeginningVoucherService>();
             services.AddScoped<IReceiveRequestVoucherService, ReceiveRequestVoucherService>();
             services.AddScoped<IDeliveryRequestVoucherService, DeliveryRequestVoucherService>();
             services.AddScoped<IWarehouseService, WarehouseService>();

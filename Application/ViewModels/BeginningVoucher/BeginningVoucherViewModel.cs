@@ -11,8 +11,10 @@ namespace Application.ViewModels.BeginningVoucher
 
         public DateTime ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
+        public FetchWarehouseViewModel Warehouse { get; set; }
+        
         public ICollection<BeginningVoucherDetailViewModel> Details { get; set; }
     }
 }

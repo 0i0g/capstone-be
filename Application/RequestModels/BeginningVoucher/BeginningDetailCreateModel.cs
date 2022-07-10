@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.RequestModels
 {
-    public class UpdateBeginningVoucherDetailModel
+    public class BeginningDetailCreateModel
     {
         [Required]
-        public Guid Id { get; set; }
-
+        public Guid ProductId { get; set; }
+        
         [Required]
-        [Range(0, int.MaxValue)] 
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
     }
 }

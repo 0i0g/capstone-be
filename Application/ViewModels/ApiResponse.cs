@@ -21,13 +21,13 @@ namespace Application.ViewModels
 
         #region Unauthorized
 
-        public static ObjectResult Unauthorized() => new(new ApiResponse()) { StatusCode = StatusCodes.Status401Unauthorized };
+        public static ObjectResult Unauthorized() => new(new ApiResponse(){Message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
 
         #endregion
 
         #region OK
 
-        public static ObjectResult Ok() => new(new ApiResponse()) { StatusCode = StatusCodes.Status200OK };
+        public static ObjectResult Ok() => new(new ApiResponse(){Message = "Ok" }) { StatusCode = StatusCodes.Status200OK };
 
         public static ObjectResult Ok(object data, int? total = null)
         {
@@ -41,7 +41,7 @@ namespace Application.ViewModels
 
         #region NotFound
 
-        public static ObjectResult NotFound() => new(new ApiResponse()) { StatusCode = StatusCodes.Status404NotFound };
+        public static ObjectResult NotFound() => new(new ApiResponse(){Message = "NotFound" }) { StatusCode = StatusCodes.Status404NotFound };
 
         public static ObjectResult NotFound(ResponseMessage message) =>
             new(new ApiResponse { MessageCode = message.Code, Message = message.Value })
@@ -51,7 +51,7 @@ namespace Application.ViewModels
 
         #region BadRequest
 
-        public static ObjectResult BadRequest() => new(new ApiResponse()) { StatusCode = StatusCodes.Status400BadRequest };
+        public static ObjectResult BadRequest() => new(new ApiResponse(){Message = "BadRequest" }) { StatusCode = StatusCodes.Status400BadRequest };
 
         public static ObjectResult BadRequest(ResponseMessage message) =>
             new(new ApiResponse { MessageCode = message.Code, Message = message.Value })
@@ -65,7 +65,7 @@ namespace Application.ViewModels
 
         #region Forbidden
 
-        public static ObjectResult Forbidden() => new(new ApiResponse()) { StatusCode = StatusCodes.Status403Forbidden };
+        public static ObjectResult Forbidden() => new(new ApiResponse(){Message = "Forbidden" }) { StatusCode = StatusCodes.Status403Forbidden };
 
         public static ObjectResult Forbidden(ResponseMessage message) =>
             new(new ApiResponse { MessageCode = message.Code, Message = message.Value })
@@ -75,7 +75,7 @@ namespace Application.ViewModels
 
         #region Conflict
 
-        public static ObjectResult Conflict() => new(new ApiResponse()) { StatusCode = StatusCodes.Status409Conflict };
+        public static ObjectResult Conflict() => new(new ApiResponse(){Message = "Conflict" }) { StatusCode = StatusCodes.Status409Conflict };
 
         public static ObjectResult Conflict(ResponseMessage message) =>
             new(new ApiResponse { MessageCode = message.Code, Message = message.Value })
@@ -85,7 +85,7 @@ namespace Application.ViewModels
         
         #region InternalServerError
 
-        public static ObjectResult InternalServerError() => new(new ApiResponse()) { StatusCode = StatusCodes.Status500InternalServerError };
+        public static ObjectResult InternalServerError() => new(new ApiResponse(){Message = "InternalServerError" }) { StatusCode = StatusCodes.Status500InternalServerError };
 
         public static ObjectResult InternalServerError(ResponseMessage message) =>
             new(new ApiResponse {MessageCode = message.Code, Message = message.Value})

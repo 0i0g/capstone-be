@@ -11,14 +11,12 @@ namespace Data.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public int Inc { get; set; }
-
         public string Code { get; set; }
 
         [Required]
         public DateTime ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
         #region Warehouse
 
@@ -34,21 +32,27 @@ namespace Data.Entities
         public ICollection<BeginningVoucherDetail> Details { get; set; }
 
         #endregion
-        
+
         #region Safe entity
-        
+
         [Required]
         public DateTime CreatedAt { get; set; }
 
-        public Guid? CreatedBy { get; set; }
+        public Guid? CreatedById { get; set; }
+
+        public User CreatedBy { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
-        public Guid? UpdatedBy { get; set; }
+        public Guid? UpdatedById { get; set; }
+
+        public User UpdatedBy { get; set; }
 
         public DateTime? DeletedAt { get; set; }
 
-        public Guid? DeletedBy { get; set; }
+        public Guid? DeletedById { get; set; }
+
+        public User DeletedBy { get; set; }
 
         [Required]
         public bool? IsDeleted { get; set; }
