@@ -43,9 +43,8 @@ namespace Application.Implementations
             {
                 ReportingDate = model.ReportingDate,
                 Description = model.Description,
+                WarehouseId = CurrentUser.Warehouse!.Value
             };
-
-            _beginningVoucherRepository.Add(newBeginningVoucher);
 
             if (model.Details.Count == 0)
                 return ApiResponse.BadRequest(MessageConstant.BeginningVoucherDetailEmpty);
@@ -67,11 +66,8 @@ namespace Application.Implementations
             }).ToList();
 
             // TODO use trigger
-            newBeginningVoucher.Details.Select(x =>
-            {
-                x.ProductName = x.Product.Name;
-                return x;
-            }).ToList();
+            
+            _beginningVoucherRepository.Add(newBeginningVoucher);
 
             await _unitOfWork.SaveChanges();
 

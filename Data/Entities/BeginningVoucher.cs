@@ -10,7 +10,7 @@ namespace Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
+        // [Required]
         public string Code { get; set; }
 
         [Required]

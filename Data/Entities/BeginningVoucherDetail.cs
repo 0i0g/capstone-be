@@ -28,7 +28,7 @@ namespace Data.Entities
 
         public Product Product { get; set; }
 
-        [Required]
+        // [Required]
         public string ProductName { get; set; }
 
         #endregion

@@ -56,7 +56,7 @@ namespace Data_EF
 
                 entity.HasOne(x => x.Warehouse).WithMany(x => x.BeginningVouchers).HasForeignKey(x => x.WarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
-                
+
                 entity.HasOne(x => x.CreatedBy).WithMany(x => x.BeginningVouchers)
                     .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.DeletedBy).WithMany(x => x.BeginningVouchersDeleted)
@@ -255,7 +255,7 @@ namespace Data_EF
                     .OnDelete(DeleteBehavior.NoAction);
                 // entity.HasOne(x => x.Avatar).WithOne(x => x.User).HasForeignKey<User>(x => x.AvatarId)
                 //     .OnDelete(DeleteBehavior.NoAction);
-                
+
                 entity.HasOne(x => x.CreatedBy).WithMany(x => x.UsersCreated)
                     .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.DeletedBy).WithMany(x => x.UsersDeleted)
@@ -296,7 +296,7 @@ namespace Data_EF
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
-                
+
                 entity.HasOne(x => x.CreatedBy).WithMany(x => x.WarehousesCreated)
                     .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.DeletedBy).WithMany(x => x.WarehousesDeleted)
@@ -318,6 +318,8 @@ namespace Data_EF
             modelBuilder.Entity<UserInGroup>().HasData(DataHelper.ReadSeedData<UserInGroup>(DataHelper.MapPath("SeedData/UserInGroup.json")));
             modelBuilder.Entity<Warehouse>().HasData(DataHelper.ReadSeedData<Warehouse>(DataHelper.MapPath("SeedData/Warehouse.json")));
             modelBuilder.Entity<Product>().HasData(DataHelper.ReadSeedData<Product>(DataHelper.MapPath("SeedData/Product.json")));
+            modelBuilder.Entity<BeginningVoucher>().HasData(DataHelper.ReadSeedData<BeginningVoucher>(DataHelper.MapPath("SeedData/BeginningVoucher.json")));
+            modelBuilder.Entity<BeginningVoucherDetail>().HasData(DataHelper.ReadSeedData<BeginningVoucherDetail>(DataHelper.MapPath("SeedData/BeginningVoucherDetail.json")));
             // @formatter:on
 
             #endregion
