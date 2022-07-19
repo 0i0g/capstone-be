@@ -1,5 +1,4 @@
 ﻿using System;
-using API.Configurations.Filter;
 using Application.Interfaces;
 using Application.RequestModels;
 using Microsoft.AspNetCore.Mvc;

@@ -88,6 +88,37 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
+        public async Task<IActionResult> CreateUserInWarehouse(CreateUserModel model)
+        {
+            var user = _userQueryable.FirstOrDefault(x => x.Username == model.Username || x.Email == model.Email);
+            if (user != null)
+            {
+                var msg = user.Username == model.Username ? MessageConstant.UserUsernameExisted : null;
+                msg = user.Email == model.Email
+                    ? (msg == null ? MessageConstant.UserEmailExisted : msg.Concat(MessageConstant.UserEmailExisted))
+                    : msg;
+                return ApiResponse.BadRequest(msg);
+            }
+
+            var newUser = new User
+            {
+                Username = model.Username,
+                Password = PasswordHelper.Hash(GenerateHelper.RandomString(6)),
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                InWarehouseId = CurrentUser.Warehouse
+            };
+
+            _userRepository.Add(newUser);
+
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+
         public async Task<IActionResult> UpdateUser(UpdateUserModel model)
         {
             var user = _userQueryable.FirstOrDefault(x => x.Id == model.Id);
@@ -116,6 +147,37 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
+        public async Task<IActionResult> UpdateUserInWarehouse(UpdateUserModel model)
+        {
+            var user = _userQueryable.FirstOrDefault(x => x.Id == model.Id && x.InWarehouseId == CurrentUser.Warehouse);
+            if (user == null)
+            {
+                return ApiResponse.BadRequest(MessageConstant.UserNotFound);
+            }
+            if (model.Email != null && model.Email != user.Email)
+            {
+                var userConflictEmail = _userQueryable.FirstOrDefault(x => x.Email == model.Email);
+                if (userConflictEmail != null)
+                {
+                    return ApiResponse.BadRequest(MessageConstant.UserEmailExisted);
+                }
+            }
+
+            user.Email = model.Email;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Gender = model.Gender;
+            user.IsActive = model.IsActive;
+            user.InWarehouseId = model.InWarehouseId;
+
+            _userRepository.Update(user);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+
+        }
+
         public async Task<IActionResult> RemoveUser(Guid id)
         {
             var user = _userQueryable.Where(x => x.Id == id).Include(x => x.UserInGroups).FirstOrDefault();
@@ -133,6 +195,21 @@ namespace Application.Implementations
         public async Task<IActionResult> RemoveMulUser(List<Guid> ids)
         {
             var users = _userQueryable.Where(x => ids.Contains(x.Id)).Include(x => x.UserInGroups).ToList();
+            users.ForEach(x =>
+            {
+                x.IsDeleted = true;
+                x.UserInGroups.Clear();
+            });
+
+            _userRepository.UpdateRange(users);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+
+        public async Task<IActionResult> RemoveMulUserInWarehouse(List<Guid> ids)
+        {
+            var users = _userQueryable.Where(x => ids.Contains(x.Id) && x.InWarehouseId == CurrentUser.Warehouse).Include(x => x.UserInGroups).ToList();
             users.ForEach(x =>
             {
                 x.IsDeleted = true;
@@ -181,7 +258,51 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
+                    : null,
+                IsActive = x.IsActive,
+            }).ToPagination(model.PageIndex, model.PageSize);
+
+            return ApiResponse.Ok(data);
+        }
+
+        public IActionResult SearchUserInWarehouse(SearchUserModel model)
+        {
+            var query = _userQueryable.Where(x =>
+                    string.IsNullOrWhiteSpace(model.Name) || (x.FirstName + x.LastName).Contains(model.Name) && x.InWarehouseId == CurrentUser.Warehouse)
+                .AsNoTracking();
+
+            switch (model.OrderByName)
+            {
+                case "":
+                    query = query.OrderByDescending(x => x.CreatedAt);
+                    break;
+                case "NAME":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.FirstName).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.FirstName).ThenByDescending(x => x.CreatedAt);
+                    break;
+                case "CREATEDAT":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.CreatedAt);
+                    break;
+                default:
+                    return ApiResponse.BadRequest(MessageConstant.OrderByInvalid.WithValues("Name, CreatedAt"));
+            }
+
+            var data = query.Include(x => x.InWarehouse).Select(x => new SearchUserViewModel()
+            {
+                Id = x.Id,
+                Username = x.Username,
+                Email = x.Email,
+                Gender = x.Gender,
+                Password = x.Password,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                PhoneNumber = x.PhoneNumber,
+                InWarehouse = x.InWarehouseId != null
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -193,6 +314,19 @@ namespace Application.Implementations
         {
             var user = _userQueryable.AsNoTracking().Where(x =>
                     string.IsNullOrWhiteSpace(model.Keyword) || (x.FirstName + x.LastName).Contains(model.Keyword))
+                .Take(model.Size).Select(x => new FetchUserViewModel()
+                {
+                    Id = x.Id,
+                    Name = x.FirstName + x.LastName
+                }).ToList();
+
+            return ApiResponse.Ok(user);
+        }      
+        
+        public IActionResult FetchUserInWarehouse(FetchModel model)
+        {
+            var user = _userQueryable.AsNoTracking().Where(x =>
+                    string.IsNullOrWhiteSpace(model.Keyword) || (x.FirstName + x.LastName).Contains(model.Keyword) && x.InWarehouseId == CurrentUser.Warehouse)
                 .Take(model.Size).Select(x => new FetchUserViewModel()
                 {
                     Id = x.Id,
@@ -214,7 +348,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToList();
