@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("deliveryrequestvoucher")]
+    [Route("delivery-request-voucher")]
     public class DeliveryRequestVoucherController : BaseController
     {
         private readonly IDeliveryRequestVoucherService _deliveryRequestVoucherService;
