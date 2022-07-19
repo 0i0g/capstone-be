@@ -163,40 +163,40 @@ namespace Application.Implementations
 
             return ApiResponse.Ok();
         }
-
-        // TODO fix logic
-        public async Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model)
-        {
-            var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == model.Id);
-            if (beginningVoucher == null)
-            {
-                return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
-            }
-
-            var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Detail.ProductId);
-            if (product == null)
-            {
-                return ApiResponse.NotFound(MessageConstant.ProductNotFound);
-            }
-
-            var failProduct = beginningVoucher.Details.FirstOrDefault(x => x.ProductId == model.Detail.ProductId);
-            if (failProduct != null)
-            {
-                return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
-            }
-
-            beginningVoucher.Details.Add(new BeginningVoucherDetail
-            {
-                Quantity = model.Detail.Quantity,
-                VoucherId = beginningVoucher.Id,
-                ProductId = model.Detail.ProductId,
-                ProductName = product.Name
-            });
-            _beginningVoucherRepository.Update(beginningVoucher);
-            await _unitOfWork.SaveChanges();
-
-            return ApiResponse.Ok();
-        }
+        //
+        // // TODO fix logic
+        // public async Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model)
+        // {
+        //     var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == model.Id);
+        //     if (beginningVoucher == null)
+        //     {
+        //         return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
+        //     }
+        //
+        //     var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Detail.ProductId);
+        //     if (product == null)
+        //     {
+        //         return ApiResponse.NotFound(MessageConstant.ProductNotFound);
+        //     }
+        //
+        //     var failProduct = beginningVoucher.Details.FirstOrDefault(x => x.ProductId == model.Detail.ProductId);
+        //     if (failProduct != null)
+        //     {
+        //         return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
+        //     }
+        //
+        //     beginningVoucher.Details.Add(new BeginningVoucherDetail
+        //     {
+        //         Quantity = model.Detail.Quantity,
+        //         VoucherId = beginningVoucher.Id,
+        //         ProductId = model.Detail.ProductId,
+        //         ProductName = product.Name
+        //     });
+        //     _beginningVoucherRepository.Update(beginningVoucher);
+        //     await _unitOfWork.SaveChanges();
+        //
+        //     return ApiResponse.Ok();
+        // }
 
         public Task<IActionResult> RemoveBeginningVoucher(Guid id)
         {

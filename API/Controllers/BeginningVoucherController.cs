@@ -32,12 +32,12 @@ namespace API.Controllers
             return await _beginningVoucherService.UpdateBeginningVoucher(model);
         }
 
-        [Route("details")]
-        [HttpPut]
-        public async Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model)
-        {
-            return await _beginningVoucherService.AddBeginningVoucherDetail(model);
-        }
+        // [Route("details")]
+        // [HttpPut]
+        // public async Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model)
+        // {
+        //     return await _beginningVoucherService.♥AddBeginningVoucherDetail(model);
+        // }
 
         [HttpDelete]
         public async Task<IActionResult> RemoveBeginningVoucher(Guid id)

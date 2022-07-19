@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("receiverequestvoucher")]
+    [Route("receive-voucher-request")]
     public class ReceiveRequestVoucherController : BaseController
     {
         private readonly IReceiveRequestVoucherService _receiveRequestVoucherService;

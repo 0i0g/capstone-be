@@ -13,7 +13,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> UpdateBeginningVoucher(UpdateBeginningVoucherModel model);
 
-        Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model);
+        // Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model);
         
         Task<IActionResult> RemoveBeginningVoucher(Guid id);
 

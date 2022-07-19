@@ -68,7 +68,7 @@ namespace Data_EF
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
 
                 entity.HasOne(x => x.Voucher).WithMany(x => x.Details).HasForeignKey(x => x.VoucherId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(x => x.Product).WithMany(x => x.BeginningVoucherDetails).HasForeignKey(x => x.ProductId)
                     .OnDelete(DeleteBehavior.NoAction);
             });

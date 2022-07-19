@@ -1,0 +1,17 @@
+﻿[
+  {
+    "Id": "D351BABB-3D91-4F66-9166-A265A3EBEA68",
+    "Inc": 1,
+    "Code": "0001",
+    "Name": "Default Customer",
+    "Address": "HCM",
+    "Phone": "0123123123",
+    "Email": "customer@gmail.com",
+    "Description": "Default Customer",
+    "CreatedAt": "2022-07-19T21:16:29.1833333",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "UpdatedAt": "2022-07-19T21:16:29.2074844",
+    "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "IsDeleted": false
+  }
+]
