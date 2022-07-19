@@ -66,7 +66,7 @@ namespace Application.Implementations
             }).ToList();
 
             // TODO use trigger
-            
+
             _beginningVoucherRepository.Add(newBeginningVoucher);
 
             await _unitOfWork.SaveChanges();
@@ -94,12 +94,12 @@ namespace Application.Implementations
                     return ApiResponse.BadRequest(
                         MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
             }
-            
+
             var data = query.Select(x => new BeginningVoucherViewModel
             {
                 Id = x.Id,
                 Code = x.Code,
-                Details = x.Details.Select(y=>new BeginningVoucherDetailViewModel
+                Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
                 {
                     Id = y.Id,
                     Quantity = y.Quantity,
@@ -109,11 +109,13 @@ namespace Application.Implementations
                         Name = y.ProductName
                     }
                 }).ToList(),
-                Warehouse = x.Warehouse != null ? new FetchWarehouseViewModel
-                {
-                    Id = x.WarehouseId,
-                    Name = x.Warehouse.Name
-                }: null,
+                Warehouse = x.Warehouse != null
+                    ? new FetchWarehouseViewModel
+                    {
+                        Id = x.WarehouseId,
+                        Name = x.Warehouse.Name
+                    }
+                    : null,
                 Description = x.Description,
                 ReportingDate = x.ReportingDate
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -211,23 +213,24 @@ namespace Application.Implementations
 
         public IActionResult GetBeginningVoucher(Guid id)
         {
-            var beginningVoucher = _beginningVoucherQueryable.Select(x => new BeginningVoucherViewModel
-            {
-                Id = x.Id,
-                Code = x.Code,
-                ReportingDate = x.ReportingDate,
-                Description = x.Description,
-                Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
+            var beginningVoucher = _beginningVoucherQueryable.Include(x => x.Details).ThenInclude(x => x.Product)
+                .Select(x => new BeginningVoucherViewModel
                 {
-                    Id = y.Id,
-                    Quantity = y.Quantity,
-                    Product = new FetchProductViewModel()
+                    Id = x.Id,
+                    Code = x.Code,
+                    ReportingDate = x.ReportingDate,
+                    Description = x.Description,
+                    Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
                     {
-                        Id = y.ProductId,
-                        Name = y.ProductName
-                    }
-                }).ToList()
-            }).FirstOrDefault(x => x.Id == id);
+                        Id = y.Id,
+                        Quantity = y.Quantity,
+                        Product = new FetchProductViewModel()
+                        {
+                            Id = y.ProductId,
+                            Name = y.Product.Name
+                        }
+                    }).ToList()
+                }).FirstOrDefault(x => x.Id == id);
 
             if (beginningVoucher == null) return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
 
