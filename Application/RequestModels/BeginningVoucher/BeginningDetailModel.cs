@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.RequestModels
 {
-    public class BeginningDetailCreateModel
+    public class BeginningDetailModel
     {
         [Required]
         public Guid ProductId { get; set; }

@@ -133,38 +133,30 @@ namespace Application.Implementations
                 return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
             }
 
+            var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
+            if (duplicateDetail.Count > 0)
+            {
+                return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
+            }
+            
+            var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
+                .Select(x => x.Id).ToList();
+            var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
+            if (failProducts.Count > 0)
+            {
+                return ApiResponse.NotFound(
+                    MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
+            }
+            
             beginningVoucher.ReportingDate = model.ReportingDate ?? beginningVoucher.ReportingDate;
             beginningVoucher.Description = model.Description ?? beginningVoucher.Description;
-
-            // ** Add voucher details
-            if (model.AddDetails is {Count: > 0})
+            beginningVoucher.Details.Clear();
+            beginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
             {
-                // unique model
-                var detailCreateModels = model.AddDetails.ToHashSet();
-
-                // add details
-                var productIds = detailCreateModels.Select(x => x.ProductId);
-                var productData = _productsQueryable.Where(x => productIds.Contains(x.Id))
-                    .Select(x => new {x.Id, x.Name}).ToList();
-                var productNameMap = productData.ToDictionary(x => x.Id, x => x.Name);
-                var details = detailCreateModels.Select(x => new BeginningVoucherDetail
-                {
-                    Quantity = x.Quantity,
-                    ProductId = x.ProductId,
-                    ProductName = productNameMap[x.ProductId]
-                });
-                beginningVoucher.Details.ToList().AddRange(details);
-            }
-
-            // ** Update voucher details
-            if (model.UpdateDetails is {Count: > 0})
-            {
-                // unique model
-                var detailUpdateModel = model.UpdateDetails.ToHashSet();
-
-                // update details
-                // beginningVoucher.
-            }
+                VoucherId = beginningVoucher.Id,
+                Quantity = x.Quantity,
+                ProductId = x.ProductId,
+            }).ToList();
 
             _beginningVoucherRepository.Update(beginningVoucher);
             await _unitOfWork.SaveChanges();
