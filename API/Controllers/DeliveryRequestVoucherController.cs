@@ -117,7 +117,7 @@ namespace API.Controllers
             return _deliveryRequestVoucherService.SearchDeliveryRequestVoucherByWarehouse(model);
         }
 
-        [Route("search/warehouse/all")]
+        [Route("search/all")]
         [Authentication]
         [HttpPost]
         public IActionResult SearchDeliveryRequestVoucherAllWarehouse(

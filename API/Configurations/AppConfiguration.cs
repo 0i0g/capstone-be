@@ -32,6 +32,7 @@ namespace API.Configurations
             services.AddScoped<IReceiveRequestVoucherService, ReceiveRequestVoucherService>();
             services.AddScoped<IDeliveryRequestVoucherService, DeliveryRequestVoucherService>();
             services.AddScoped<IWarehouseService, WarehouseService>();
+            services.AddScoped<ICheckingVoucherService, CheckingVoucherService>();
 
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();

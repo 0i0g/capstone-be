@@ -54,7 +54,7 @@ namespace API.Controllers
         
         [Route("fetch")]
         [HttpPost]
-        public IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model)
+        public IActionResult FetchBeginningVoucher(FetchModel model)
         {
             return _beginningVoucherService.FetchBeginningVoucher(model);
         }
@@ -73,7 +73,7 @@ namespace API.Controllers
             return _beginningVoucherService.SearchBeginningVoucherByWarehouse(model);
         }
         
-        [Route("search/warehouse/all")]
+        [Route("search/all")]
         [HttpPost]
         public IActionResult SearchBeginningVoucherAllWarehouse(SearchBeginningVoucherAllWarehouseModel model)
         {

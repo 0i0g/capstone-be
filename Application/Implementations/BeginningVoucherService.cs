@@ -345,10 +345,10 @@ namespace Application.Implementations
             return ApiResponse.Ok(beginningVoucher);
         }
 
-        public IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model)
+        public IActionResult FetchBeginningVoucher(FetchModel model)
         {
             var beginningVouchers = _beginningVoucherQueryable.AsNoTracking().Where(x =>
-                    string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code))
+                    string.IsNullOrWhiteSpace(model.Keyword) || x.Code.Contains(model.Keyword))
                 .Take(model.Size).Select(x => new FetchBeginningVoucherViewModel
                 {
                     Id = x.Id,

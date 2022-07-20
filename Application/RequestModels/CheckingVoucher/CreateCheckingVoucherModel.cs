@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.RequestModels
 {
-    public class CreateBeginningVoucherModel
+    public class CreateCheckingVoucherModel
     {
         [Required]
         public DateTime ReportingDate { get; set; }
@@ -12,6 +12,6 @@ namespace Application.RequestModels
         public string Description { get; set; }
 
         [Required]
-        public ICollection<BeginningDetailModel> Details { get; set; }
+        public ICollection<CheckingVoucherDetailModel> Details { get; set; }
     }
 }
