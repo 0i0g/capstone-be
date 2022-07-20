@@ -141,7 +141,7 @@ namespace Application.Implementations
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
-                x.Id == model.WarehouseId);
+                x.WarehouseId == model.WarehouseId);
 
             switch (model.OrderByName)
             {

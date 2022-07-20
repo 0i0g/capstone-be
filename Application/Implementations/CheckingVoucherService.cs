@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.RequestModels;
 using Application.ViewModels;
-using Application.ViewModels.BeginningVoucher;
 using Application.ViewModels.CheckingVoucher;
 using Data.Entities;
 using Data_EF.Repositories;
@@ -202,7 +201,7 @@ namespace Application.Implementations
         {
             var checkingVouchers = _checkingVoucherQueryable.AsNoTracking().Where(x =>
                     string.IsNullOrWhiteSpace(model.Keyword) || x.Code.Contains(model.Keyword))
-                .Take(model.Size).Select(x => new FetchBeginningVoucherViewModel
+                .Take(model.Size).Select(x => new FetchCheckingVoucherViewModel
                 {
                     Id = x.Id,
                     Code = x.Code
@@ -267,7 +266,7 @@ namespace Application.Implementations
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
-                x.Id == model.WarehouseId);
+                x.WarehouseId == model.WarehouseId);
 
             switch (model.OrderByName)
             {
