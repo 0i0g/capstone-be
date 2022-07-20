@@ -37,10 +37,9 @@ namespace Application.Implementations
 
         public async Task<IActionResult> CreateBeginningVoucher(CreateBeginningVoucherModel model)
         {
-            var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
-            if (duplicateDetail.Count > 0)
+            if (CurrentUser.Warehouse == null)
             {
-                return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
+                return ApiResponse.BadRequest(MessageConstant.RequiredWarehouse);
             }
 
             var newBeginningVoucher = new BeginningVoucher
@@ -50,24 +49,34 @@ namespace Application.Implementations
                 WarehouseId = CurrentUser.Warehouse!.Value
             };
 
-            if (model.Details.Count == 0)
-                return ApiResponse.BadRequest(MessageConstant.BeginningVoucherDetailEmpty);
-
-            var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
-                .Select(x => x.Id).ToList();
-            var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
-            if (failProducts.Count > 0)
+            if (model.Details != null)
             {
-                return ApiResponse.NotFound(
-                    MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
+                if (model.Details.Count == 0)
+                    return ApiResponse.BadRequest(MessageConstant.BeginningVoucherDetailEmpty);
+
+                var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
+                if (duplicateDetail.Count > 0)
+                {
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
+                }
+
+                var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
+                    .Select(x => x.Id).ToList();
+                var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
+                if (failProducts.Count > 0)
+                {
+                    return ApiResponse.NotFound(
+                        MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
+                }
+
+                newBeginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
+                {
+                    Quantity = x.Quantity,
+                    VoucherId = newBeginningVoucher.Id,
+                    ProductId = x.ProductId,
+                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)!.Name
+                }).ToList();
             }
-
-            newBeginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
-            {
-                Quantity = x.Quantity,
-                VoucherId = newBeginningVoucher.Id,
-                ProductId = x.ProductId,
-            }).ToList();
 
             _beginningVoucherRepository.Add(newBeginningVoucher);
 
@@ -203,30 +212,38 @@ namespace Application.Implementations
                 return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
             }
 
-            var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
-            if (duplicateDetail.Count > 0)
-            {
-                return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
-            }
-
-            var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
-                .Select(x => x.Id).ToList();
-            var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
-            if (failProducts.Count > 0)
-            {
-                return ApiResponse.NotFound(
-                    MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
-            }
-
             beginningVoucher.ReportingDate = model.ReportingDate ?? beginningVoucher.ReportingDate;
             beginningVoucher.Description = model.Description ?? beginningVoucher.Description;
-            beginningVoucher.Details.Clear();
-            beginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
+            
+            if (model.Details != null)
             {
-                VoucherId = beginningVoucher.Id,
-                Quantity = x.Quantity,
-                ProductId = x.ProductId,
-            }).ToList();
+                if (model.Details.Count == 0)
+                    return ApiResponse.BadRequest(MessageConstant.BeginningVoucherDetailEmpty);
+
+                var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
+                if (duplicateDetail.Count > 0)
+                {
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
+                }
+
+                var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
+                    .Select(x => x.Id).ToList();
+                var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
+                if (failProducts.Count > 0)
+                {
+                    return ApiResponse.NotFound(
+                        MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
+                }
+
+                beginningVoucher.Details.Clear();
+                beginningVoucher.Details = model.Details.Select(x => new BeginningVoucherDetail
+                {
+                    VoucherId = beginningVoucher.Id,
+                    Quantity = x.Quantity,
+                    ProductId = x.ProductId,
+                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)!.Name
+                }).ToList();
+            }
 
             _beginningVoucherRepository.Update(beginningVoucher);
             await _unitOfWork.SaveChanges();
@@ -273,7 +290,7 @@ namespace Application.Implementations
                             Product = new FetchProductViewModel()
                             {
                                 Id = y.ProductId,
-                                Name = y.Product.Name
+                                Name = y.ProductName
                             },
                         }).ToList(),
                 }).FirstOrDefault(x => x.Id == id);
