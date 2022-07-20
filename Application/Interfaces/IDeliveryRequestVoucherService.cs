@@ -13,22 +13,26 @@ namespace Application.Interfaces
 
         Task<IActionResult> RemoveDeliveryRequestVoucher(Guid id);
 
-        Task<IActionResult> AddDeliveryRequestVoucherDetail(CreateDeliveryRequestVoucherDetailModel model);
-
-        Task<IActionResult> UpdateDeliveryRequestVoucherDetail(UpdateDeliveryRequestVoucherDetailModel model);
-
-        Task<IActionResult> DeleteDeliveryRequestVoucherDetail(Guid id);
+        // Task<IActionResult> AddDeliveryRequestVoucherDetail(CreateDeliveryRequestVoucherDetailModel model);
+        //
+        // Task<IActionResult> UpdateDeliveryRequestVoucherDetail(UpdateDeliveryRequestVoucherDetailModel model);
+        //
+        // Task<IActionResult> DeleteDeliveryRequestVoucherDetail(Guid id);
 
         Task<IActionResult> Lock(Guid id);
 
         Task<IActionResult> Unlock(Guid id);
 
-        Task<IActionResult> UpdateDeliveryRequestVoucherStatus(UpdateDeliveryRequestVoucherStatusModel model);
+        // Task<IActionResult> UpdateDeliveryRequestVoucherStatus(UpdateDeliveryRequestVoucherStatusModel model);
 
         IActionResult GetDeliveryRequestVoucher(Guid id);
 
-        IActionResult SearchDeliveryRequestVoucher(SearchDeliveryRequestVoucherModel model);
-
         IActionResult FetchDeliveryRequestVoucher(FetchModel model);
+
+        IActionResult SearchDeliveryRequestVoucherInWarehouse(SearchDeliveryRequestVoucherInWarehouseModel model);
+
+        IActionResult SearchDeliveryRequestVoucherByWarehouse(SearchDeliveryRequestVoucherByWarehouseModel model);
+
+        IActionResult SearchDeliveryRequestVoucherAllWarehouse(SearchDeliveryRequestVoucherAllWarehouseModel model);
     }
 }

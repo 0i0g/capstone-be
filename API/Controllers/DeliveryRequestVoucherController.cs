@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("deliveryrequestvoucher")]
+    [Route("delivery-request-voucher")]
     public class DeliveryRequestVoucherController : BaseController
     {
         private readonly IDeliveryRequestVoucherService _deliveryRequestVoucherService;
@@ -38,29 +38,29 @@ namespace API.Controllers
             return _deliveryRequestVoucherService.RemoveDeliveryRequestVoucher(id);
         }
 
-        [Route("detail")]
-        [Authentication]
-        [HttpPost]
-        public Task<IActionResult> AddDeliveryRequestVoucherDetail(CreateDeliveryRequestVoucherDetailModel model)
-        {
-            return _deliveryRequestVoucherService.AddDeliveryRequestVoucherDetail(model);
-        }
-
-        [Route("detail")]
-        [Authentication]
-        [HttpPut]
-        public Task<IActionResult> UpdateDeliveryRequestVoucherDetail(UpdateDeliveryRequestVoucherDetailModel model)
-        {
-            return _deliveryRequestVoucherService.UpdateDeliveryRequestVoucherDetail(model);
-        }
-
-        [Route("detail")]
-        [Authentication]
-        [HttpDelete]
-        public Task<IActionResult> DeleteDeliveryRequestVoucherDetail(Guid id)
-        {
-            return _deliveryRequestVoucherService.DeleteDeliveryRequestVoucherDetail(id);
-        }
+        // [Route("detail")]
+        // [Authentication]
+        // [HttpPost]
+        // public Task<IActionResult> AddDeliveryRequestVoucherDetail(CreateDeliveryRequestVoucherDetailModel model)
+        // {
+        //     return _deliveryRequestVoucherService.AddDeliveryRequestVoucherDetail(model);
+        // }
+        //
+        // [Route("detail")]
+        // [Authentication]
+        // [HttpPut]
+        // public Task<IActionResult> UpdateDeliveryRequestVoucherDetail(UpdateDeliveryRequestVoucherDetailModel model)
+        // {
+        //     return _deliveryRequestVoucherService.UpdateDeliveryRequestVoucherDetail(model);
+        // }
+        //
+        // [Route("detail")]
+        // [Authentication]
+        // [HttpDelete]
+        // public Task<IActionResult> DeleteDeliveryRequestVoucherDetail(Guid id)
+        // {
+        //     return _deliveryRequestVoucherService.DeleteDeliveryRequestVoucherDetail(id);
+        // }
 
         [Route("lock")]
         [Authentication]
@@ -78,13 +78,13 @@ namespace API.Controllers
             return _deliveryRequestVoucherService.Unlock(id);
         }
 
-        [Route("status")]
-        [Authentication]
-        [HttpPut]
-        public Task<IActionResult> UpdateDeliveryRequestVoucherStatus(UpdateDeliveryRequestVoucherStatusModel model)
-        {
-            return _deliveryRequestVoucherService.UpdateDeliveryRequestVoucherStatus(model);
-        }
+        // [Route("status")]
+        // [Authentication]
+        // [HttpPut]
+        // public Task<IActionResult> UpdateDeliveryRequestVoucherStatus(UpdateDeliveryRequestVoucherStatusModel model)
+        // {
+        //     return _deliveryRequestVoucherService.UpdateDeliveryRequestVoucherStatus(model);
+        // }
 
         [Authentication]
         [HttpGet]
@@ -93,20 +93,37 @@ namespace API.Controllers
             return _deliveryRequestVoucherService.GetDeliveryRequestVoucher(id);
         }
 
-        [Route("search")]
-        [Authentication]
-        [HttpPost]
-        public IActionResult SearchDeliveryRequestVoucher(SearchDeliveryRequestVoucherModel model)
-        {
-            return _deliveryRequestVoucherService.SearchDeliveryRequestVoucher(model);
-        }
-
         [Route("fetch")]
         [Authentication]
         [HttpPost]
         public IActionResult FetchDeliveryRequestVoucher(FetchModel model)
         {
             return _deliveryRequestVoucherService.FetchDeliveryRequestVoucher(model);
+        }
+
+        [Route("search")]
+        [Authentication]
+        [HttpPost]
+        public IActionResult SearchDeliveryRequestVoucherInWarehouse(SearchDeliveryRequestVoucherInWarehouseModel model)
+        {
+            return _deliveryRequestVoucherService.SearchDeliveryRequestVoucherInWarehouse(model);
+        }
+
+        [Route("search/warehouse")]
+        [Authentication]
+        [HttpPost]
+        public IActionResult SearchDeliveryRequestVoucherByWarehouse(SearchDeliveryRequestVoucherByWarehouseModel model)
+        {
+            return _deliveryRequestVoucherService.SearchDeliveryRequestVoucherByWarehouse(model);
+        }
+
+        [Route("search/warehouse/all")]
+        [Authentication]
+        [HttpPost]
+        public IActionResult SearchDeliveryRequestVoucherAllWarehouse(
+            SearchDeliveryRequestVoucherAllWarehouseModel model)
+        {
+            return _deliveryRequestVoucherService.SearchDeliveryRequestVoucherAllWarehouse(model);
         }
     }
 }

@@ -11,9 +11,10 @@ using Utilities.Helper;
 namespace API.Controllers
 {
     [Route("beginning-voucher")]
+    [Authentication]
     public class BeginningVoucherController : BaseController
     {
-        private IBeginningVoucherService _beginningVoucherService;
+        private readonly IBeginningVoucherService _beginningVoucherService;
 
         public BeginningVoucherController(IBeginningVoucherService beginningVoucherService)
         {

@@ -10,9 +10,6 @@ namespace Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
-        public int Inc { get; set; }
-
         public string Code { get; set; }
 
         [Required]
@@ -52,6 +49,8 @@ namespace Data.Entities
         public ICollection<FixingVoucherDetail> FixingVoucherDetails { get; set; }
         
         public ICollection<ReceiveRequestVoucherDetail> ReceiveRequestVoucherDetails { get; set; }
+        
+        public ICollection<TransferRequestVoucherDetail> TransferRequestVoucherDetails { get; set; }
 
         #endregion
 

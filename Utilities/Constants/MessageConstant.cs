@@ -67,12 +67,14 @@ namespace Utilities.Constants
         public static ResponseMessage DuplicateProductReceiveRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Receive Request Voucher Detail" };
         public static ResponseMessage ReceiveRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Receive Request Voucher Detail does not exist or has been deleted" };
         public static ResponseMessage ForbiddenToUpdateReceiveRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update receive request voucher" };
+        public static ResponseMessage ReceiveRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Receive Request Voucher detail empty" };
          
          /* DeliveryRequestVoucher */
         public static ResponseMessage DeliveryRequestVoucherNotFound => new() { Code = "4001", Value = "Delivery Request Voucher does not exist or has been deleted" };
         public static ResponseMessage DuplicateProductDeliveryRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Delivery Request Voucher Detail" };
         public static ResponseMessage ForbiddenToUpdateDeliveryRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update delivery request voucher" };
         public static ResponseMessage DeliveryRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Delivery Request Voucher Detail does not exist or has been deleted" };
+        public static ResponseMessage DeliveryRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Delivery Request Voucher detail empty" };
 
         /* Product */
         public static ResponseMessage ProductsNotFound => new() { Code = "4001", Value = "Product with id: {0} do not exist have been deleted" };

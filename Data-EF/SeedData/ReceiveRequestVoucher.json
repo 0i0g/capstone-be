@@ -1,0 +1,30 @@
+[
+  {
+    "Id": "AF5E07E0-8CC9-44F9-88D0-A5E3ADFB926F",
+    "Code": "01",
+    "ReportingDate": "2022-07-20T07:16:44.8550000",
+    "Description": "Receive Request Voucher 01",
+    "Status": "Cancelled",
+    "Locked": false,
+    "CustomerId": "B4929C0E-7CCC-4055-BD6E-657AD0C4CA49",
+    "WarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
+    "CreatedAt": "2022-07-20T14:17:38.1600000",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "UpdatedAt": "2022-07-20T14:20:23.0793694",
+    "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "IsDeleted": false
+  },
+  {
+    "Id": "D926D43A-FD88-4DE5-985C-E03867861FC8",
+    "Code": "02",
+    "ReportingDate": "2022-07-20T07:16:44.8550000",
+    "Description": "Receive Request Voucher 02",
+    "Status": "Pending",
+    "Locked": false,
+    "CustomerId": "B4929C0E-7CCC-4055-BD6E-657AD0C4CA49",
+    "WarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
+    "CreatedAt": "2022-07-20T14:18:05.7366667",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "IsDeleted": false
+  }
+]

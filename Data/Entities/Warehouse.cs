@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Data.Entities
@@ -39,6 +40,10 @@ namespace Data.Entities
         public ICollection<FixingVoucher> FixingVouchers { get; set; }
 
         public ICollection<ReceiveRequestVoucher> ReceiveRequestVouchers { get; set; }
+        
+        public ICollection<TransferRequestVoucher> InboundTransferRequestVouchers { get; set; }
+        
+        public ICollection<TransferRequestVoucher> OutboundTransferRequestVouchers { get; set; }
 
         #endregion
 
