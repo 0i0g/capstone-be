@@ -18,6 +18,7 @@ namespace Application.Implementations
     {
         private readonly IBeginningVoucherRepository _beginningVoucherRepository;
         private readonly IQueryable<BeginningVoucher> _beginningVoucherQueryable;
+        private readonly IQueryable<BeginningVoucher> _beginningVoucherAllWarehouseQueryable;
         private readonly IProductRepository _productRepository;
         private readonly IQueryable<Product> _productsQueryable;
 
@@ -25,7 +26,10 @@ namespace Application.Implementations
         {
             _beginningVoucherRepository = _unitOfWork.BeginningVoucher;
             _beginningVoucherQueryable =
-                _beginningVoucherRepository.GetMany(x => x.IsDeleted != true).Include(x => x.Details);
+                _beginningVoucherRepository.GetMany(x => x.IsDeleted != true && x.WarehouseId == CurrentUser.Warehouse)
+                    .Include(x => x.Details);
+            _beginningVoucherAllWarehouseQueryable = _beginningVoucherRepository.GetMany(x => x.IsDeleted != true)
+                .Include(x => x.Details);
             _productRepository = _unitOfWork.Product;
             _productsQueryable =
                 _productRepository.GetMany(x => x.IsDeleted != true);
@@ -65,8 +69,6 @@ namespace Application.Implementations
                 ProductId = x.ProductId,
             }).ToList();
 
-            // TODO use trigger
-
             _beginningVoucherRepository.Add(newBeginningVoucher);
 
             await _unitOfWork.SaveChanges();
@@ -74,11 +76,11 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public IActionResult SearchBeginningVoucher(SearchBeginningVoucherModel model)
+        public IActionResult SearchBeginningVoucherInWarehouse(SearchBeginningVoucherInWarehouseModel model)
         {
             var query = _beginningVoucherQueryable.AsNoTracking().Where(x =>
-                (model.FromDate == null || x.ReportingDate.CompareTo(model.FromDate) >= 0) &&
-                (model.ToDate == null || x.ReportingDate.CompareTo(model.FromDate) <= 0));
+                (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
+                (model.ToDate == null || x.ReportingDate <= model.ToDate));
 
             switch (model.OrderByName)
             {
@@ -95,20 +97,12 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
             }
 
-            var data = query.Select(x => new BeginningVoucherViewModel
+            var data = query.Select(x => new SearchBeginningVoucherViewModel
             {
                 Id = x.Id,
                 Code = x.Code,
-                Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
-                {
-                    Id = y.Id,
-                    Quantity = y.Quantity,
-                    Product = new FetchProductViewModel
-                    {
-                        Id = y.ProductId,
-                        Name = y.ProductName
-                    }
-                }).ToList(),
+                Description = x.Description,
+                ReportingDate = x.ReportingDate,
                 Warehouse = x.Warehouse != null
                     ? new FetchWarehouseViewModel
                     {
@@ -116,14 +110,90 @@ namespace Application.Implementations
                         Name = x.Warehouse.Name
                     }
                     : null,
-                Description = x.Description,
-                ReportingDate = x.ReportingDate
             }).ToPagination(model.PageIndex, model.PageSize);
 
             return ApiResponse.Ok(data);
         }
 
-        // TODO fix logic
+        public IActionResult SearchBeginningVoucherByWarehouse(SearchBeginningVoucherByWarehouseModel model)
+        {
+            var query = _beginningVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
+                (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
+                (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
+                x.Id == model.WarehouseId);
+
+            switch (model.OrderByName)
+            {
+                case "":
+                    query = query.OrderByDescending(x => x.ReportingDate);
+                    break;
+                case "ReportingDate":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt);
+                    break;
+                default:
+                    return ApiResponse.BadRequest(
+                        MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
+            }
+
+            var data = query.Select(x => new SearchBeginningVoucherViewModel
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Description = x.Description,
+                ReportingDate = x.ReportingDate,
+                Warehouse = x.Warehouse != null
+                    ? new FetchWarehouseViewModel
+                    {
+                        Id = x.WarehouseId,
+                        Name = x.Warehouse.Name
+                    }
+                    : null,
+            }).ToPagination(model.PageIndex, model.PageSize);
+
+            return ApiResponse.Ok(data);
+        }
+
+        public IActionResult SearchBeginningVoucherAllWarehouse(SearchBeginningVoucherAllWarehouseModel model)
+        {
+            var query = _beginningVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
+                (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
+                (model.ToDate == null || x.ReportingDate <= model.ToDate));
+
+            switch (model.OrderByName)
+            {
+                case "":
+                    query = query.OrderByDescending(x => x.ReportingDate);
+                    break;
+                case "ReportingDate":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt);
+                    break;
+                default:
+                    return ApiResponse.BadRequest(
+                        MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
+            }
+
+            var data = query.Select(x => new SearchBeginningVoucherViewModel
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Description = x.Description,
+                ReportingDate = x.ReportingDate,
+                Warehouse = x.Warehouse != null
+                    ? new FetchWarehouseViewModel
+                    {
+                        Id = x.WarehouseId,
+                        Name = x.Warehouse.Name
+                    }
+                    : null,
+            }).ToPagination(model.PageIndex, model.PageSize);
+
+            return ApiResponse.Ok(data);
+        }
+
         public async Task<IActionResult> UpdateBeginningVoucher(UpdateBeginningVoucherModel model)
         {
             var beginningVoucher =
@@ -138,7 +208,7 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
             }
-            
+
             var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
                 .Select(x => x.Id).ToList();
             var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
@@ -147,7 +217,7 @@ namespace Application.Implementations
                 return ApiResponse.NotFound(
                     MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
             }
-            
+
             beginningVoucher.ReportingDate = model.ReportingDate ?? beginningVoucher.ReportingDate;
             beginningVoucher.Description = model.Description ?? beginningVoucher.Description;
             beginningVoucher.Details.Clear();
@@ -163,40 +233,6 @@ namespace Application.Implementations
 
             return ApiResponse.Ok();
         }
-        //
-        // // TODO fix logic
-        // public async Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model)
-        // {
-        //     var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == model.Id);
-        //     if (beginningVoucher == null)
-        //     {
-        //         return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
-        //     }
-        //
-        //     var product = _productsQueryable.FirstOrDefault(x => x.Id == model.Detail.ProductId);
-        //     if (product == null)
-        //     {
-        //         return ApiResponse.NotFound(MessageConstant.ProductNotFound);
-        //     }
-        //
-        //     var failProduct = beginningVoucher.Details.FirstOrDefault(x => x.ProductId == model.Detail.ProductId);
-        //     if (failProduct != null)
-        //     {
-        //         return ApiResponse.BadRequest(MessageConstant.DuplicateBeginningVoucherDetailsProduct);
-        //     }
-        //
-        //     beginningVoucher.Details.Add(new BeginningVoucherDetail
-        //     {
-        //         Quantity = model.Detail.Quantity,
-        //         VoucherId = beginningVoucher.Id,
-        //         ProductId = model.Detail.ProductId,
-        //         ProductName = product.Name
-        //     });
-        //     _beginningVoucherRepository.Update(beginningVoucher);
-        //     await _unitOfWork.SaveChanges();
-        //
-        //     return ApiResponse.Ok();
-        // }
 
         public Task<IActionResult> RemoveBeginningVoucher(Guid id)
         {
@@ -212,16 +248,34 @@ namespace Application.Implementations
                     Code = x.Code,
                     ReportingDate = x.ReportingDate,
                     Description = x.Description,
-                    Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
-                    {
-                        Id = y.Id,
-                        Quantity = y.Quantity,
-                        Product = new FetchProductViewModel()
+                    CreateAt = x.CreatedAt,
+                    CreateBy = x.CreatedBy == null
+                        ? null
+                        : new FetchUserViewModel
                         {
-                            Id = y.ProductId,
-                            Name = y.Product.Name
-                        }
-                    }).ToList()
+                            Id = x.CreatedBy.Id,
+                            Name = x.CreatedBy.FullName,
+                            Avatar = x.CreatedBy.Avatar
+                        },
+                    Warehouse = x.Warehouse == null
+                        ? null
+                        : new FetchWarehouseViewModel
+                        {
+                            Id = x.WarehouseId,
+                            Name = x.Warehouse.Name
+                        },
+                    Details = x.Details == null
+                        ? null
+                        : x.Details.Select(y => new BeginningVoucherDetailViewModel
+                        {
+                            Id = y.Id,
+                            Quantity = y.Quantity,
+                            Product = new FetchProductViewModel()
+                            {
+                                Id = y.ProductId,
+                                Name = y.Product.Name
+                            },
+                        }).ToList(),
                 }).FirstOrDefault(x => x.Id == id);
 
             if (beginningVoucher == null) return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
@@ -229,25 +283,15 @@ namespace Application.Implementations
             return ApiResponse.Ok(beginningVoucher);
         }
 
-        public IActionResult GetAllBeginningVouchers()
+        public IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model)
         {
-            var beginningVouchers = _beginningVoucherQueryable.Select(x => new BeginningVoucherViewModel
-            {
-                Id = x.Id,
-                Code = x.Code,
-                ReportingDate = x.ReportingDate,
-                Description = x.Description,
-                Details = x.Details.Select(y => new BeginningVoucherDetailViewModel
+            var beginningVouchers = _beginningVoucherQueryable.AsNoTracking().Where(x =>
+                    string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code))
+                .Take(model.Size).Select(x => new FetchBeginningVoucherViewModel
                 {
-                    Id = y.Id,
-                    Quantity = y.Quantity,
-                    Product = new FetchProductViewModel()
-                    {
-                        Id = y.ProductId,
-                        Name = y.ProductName
-                    }
-                }).ToList()
-            }).ToList();
+                    Id = x.Id,
+                    Code = x.Code
+                }).ToList();
 
             return ApiResponse.Ok(beginningVouchers);
         }

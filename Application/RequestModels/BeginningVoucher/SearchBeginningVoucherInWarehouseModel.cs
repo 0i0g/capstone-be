@@ -2,7 +2,7 @@
 
 namespace Application.RequestModels
 {
-    public class SearchBeginningVoucherModel : PaginationModel
+    public class SearchBeginningVoucherInWarehouseModel : PaginationModel
     {
         public DateTime? FromDate { get; set; }
         

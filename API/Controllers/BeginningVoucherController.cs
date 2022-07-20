@@ -44,25 +44,39 @@ namespace API.Controllers
         {
             return await _beginningVoucherService.RemoveBeginningVoucher(id);
         }
-
-        [Route("search")]
-        [HttpPost]
-        public IActionResult SearchBeginningVoucher(SearchBeginningVoucherModel model)
-        {
-            return _beginningVoucherService.SearchBeginningVoucher(model);
-        }
-
+        
         [HttpGet]
         public IActionResult GetBeginningVoucher(Guid id)
         {
             return _beginningVoucherService.GetBeginningVoucher(id);
         }
-
-        [Route("all")]
-        [HttpGet]
-        public IActionResult GetAllBeginningVouchers()
+        
+        [Route("fetch")]
+        [HttpPost]
+        public IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model)
         {
-            return _beginningVoucherService.GetAllBeginningVouchers();
+            return _beginningVoucherService.FetchBeginningVoucher(model);
+        }
+
+        [Route("search")]
+        [HttpPost]
+        public IActionResult SearchBeginningVoucherInWarehouse(SearchBeginningVoucherInWarehouseModel model)
+        {
+            return _beginningVoucherService.SearchBeginningVoucherInWarehouse(model);
+        }
+        
+        [Route("search/warehouse")]
+        [HttpPost]
+        public IActionResult SearchBeginningVoucherByWarehouse(SearchBeginningVoucherByWarehouseModel model)
+        {
+            return _beginningVoucherService.SearchBeginningVoucherByWarehouse(model);
+        }
+        
+        [Route("search/warehouse/all")]
+        [HttpPost]
+        public IActionResult SearchBeginningVoucherAllWarehouse(SearchBeginningVoucherAllWarehouseModel model)
+        {
+            return _beginningVoucherService.SearchBeginningVoucherAllWarehouse(model);
         }
     }
 }

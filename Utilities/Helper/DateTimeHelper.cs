@@ -23,5 +23,22 @@ namespace Utilities.Helper
         //{
         //    return date.Date.Equals(DateTimeHelper.VnNow.Date);
         //}
+        
+        public static bool FailDateTime(DateTime endTime, TimeSpan minConflict = default(TimeSpan))
+        {
+            return !(endTime > DateTime.UtcNow + minConflict);
+        }
+
+        public static bool ConflictDateTime(DateTime startTime, DateTime? endTime,
+            TimeSpan minConflict = default(TimeSpan))
+        {
+            return !(endTime > startTime + minConflict);
+        }
+
+        public static bool DuplicateDateTime(DateTime startTime1, DateTime endTime1, DateTime startTime2,
+            DateTime endTime2)
+        {
+            return !(endTime1 > startTime2 && startTime1 < endTime2);
+        }
     }
 }

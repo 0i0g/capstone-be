@@ -9,16 +9,18 @@ namespace Application.Interfaces
     {
         Task<IActionResult> CreateBeginningVoucher(CreateBeginningVoucherModel model);
 
-        IActionResult SearchBeginningVoucher(SearchBeginningVoucherModel model);
-
         Task<IActionResult> UpdateBeginningVoucher(UpdateBeginningVoucherModel model);
-
-        // Task<IActionResult> AddBeginningVoucherDetail(AddBeginningVoucherDetailModel model);
         
         Task<IActionResult> RemoveBeginningVoucher(Guid id);
 
         IActionResult GetBeginningVoucher(Guid id);
+        
+        IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model);
 
-        IActionResult GetAllBeginningVouchers();
+        IActionResult SearchBeginningVoucherInWarehouse(SearchBeginningVoucherInWarehouseModel model);
+        
+        IActionResult SearchBeginningVoucherByWarehouse(SearchBeginningVoucherByWarehouseModel model);
+        
+        IActionResult SearchBeginningVoucherAllWarehouse(SearchBeginningVoucherAllWarehouseModel model);
     }
 }

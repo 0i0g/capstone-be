@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 
 namespace Application.ViewModels.BeginningVoucher
 {
-    public class BeginningVoucherViewModel
+    public class SearchBeginningVoucherViewModel
     {
         public Guid Id { get; set; }
 
@@ -13,12 +12,6 @@ namespace Application.ViewModels.BeginningVoucher
 
         public string Description { get; set; }
 
-        public DateTime CreateAt { get; set; }
-
-        public FetchUserViewModel CreateBy { get; set; }
-
         public FetchWarehouseViewModel Warehouse { get; set; }
-        
-        public ICollection<BeginningVoucherDetailViewModel> Details { get; set; }
     }
 }
