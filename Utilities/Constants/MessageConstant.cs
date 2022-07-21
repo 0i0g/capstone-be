@@ -30,6 +30,25 @@ namespace Utilities.Constants
         public static ResponseMessage BeginningVoucherDetailNotFound => new() { Code = "4001", Value = "Beginning voucher detail does not exist or has been deleted" };
         public static ResponseMessage BeginningVoucherDetailEmpty => new() { Code = "4001", Value = "Beginning voucher detail empty" };
         
+        /* CheckingVoucher */
+        public static ResponseMessage CheckingVoucherNotFound => new() { Code = "4001", Value = "Checking Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateCheckingVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in Checking Voucher detail has been duplicated" };
+        public static ResponseMessage CheckingVoucherDetailNotFound => new() { Code = "4001", Value = "Checking Voucher detail does not exist or has been deleted" };
+        public static ResponseMessage CheckingVoucherDetailEmpty => new() { Code = "4001", Value = "Checking Voucher detail empty" };
+        
+        /* FixingVoucher */
+        public static ResponseMessage FixingVoucherNotFound => new() { Code = "4001", Value = "Fixing Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateFixingVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in Fixing Voucher detail has been duplicated" };
+        public static ResponseMessage FixingVoucherDetailNotFound => new() { Code = "4001", Value = "Fixing Voucher detail does not exist or has been deleted" };
+        public static ResponseMessage FixingVoucherDetailEmpty => new() { Code = "4001", Value = "Fixing Voucher detail empty" };
+        
+        /* TransferRequestVoucher */
+        public static ResponseMessage TransferRequestVoucherNotFound => new() { Code = "4001", Value = "Transfer Request Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateTransferRequestVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in Transfer Request Voucher detail has been duplicated" };
+        public static ResponseMessage ForbiddenToUpdateTransferRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update Transfer Request Voucher" };
+        public static ResponseMessage TransferRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Transfer Request Voucher detail does not exist or has been deleted" };
+        public static ResponseMessage TransferRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Transfer Request Voucher detail empty" };
+        
         /* Category */
         public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
         public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };
@@ -67,12 +86,14 @@ namespace Utilities.Constants
         public static ResponseMessage DuplicateProductReceiveRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Receive Request Voucher Detail" };
         public static ResponseMessage ReceiveRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Receive Request Voucher Detail does not exist or has been deleted" };
         public static ResponseMessage ForbiddenToUpdateReceiveRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update receive request voucher" };
+        public static ResponseMessage ReceiveRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Receive Request Voucher detail empty" };
          
          /* DeliveryRequestVoucher */
         public static ResponseMessage DeliveryRequestVoucherNotFound => new() { Code = "4001", Value = "Delivery Request Voucher does not exist or has been deleted" };
         public static ResponseMessage DuplicateProductDeliveryRequestVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Delivery Request Voucher Detail" };
         public static ResponseMessage ForbiddenToUpdateDeliveryRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update delivery request voucher" };
         public static ResponseMessage DeliveryRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Delivery Request Voucher Detail does not exist or has been deleted" };
+        public static ResponseMessage DeliveryRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Delivery Request Voucher detail empty" };
 
         /* Product */
         public static ResponseMessage ProductsNotFound => new() { Code = "4001", Value = "Product with id: {0} do not exist have been deleted" };

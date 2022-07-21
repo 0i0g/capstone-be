@@ -10,15 +10,12 @@ namespace Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
-        public int Inc { get; set; }
-
         public string Code { get; set; }
 
         [Required]
-        public DateTime VoucherDate { get; set; }
+        public DateTime ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
         [Required]
         public EnumStatusRequest Status { get; set; }
@@ -26,14 +23,6 @@ namespace Data.Entities
         [Required]
         public bool? Locked { get; set; }
 
-        #region Customer
-
-        public Guid? CustomerId { get; set; }
-
-        public Customer Customer { get; set; }
-        
-        #endregion
-        
         #region Inbound Warehouse
 
         [Required]
@@ -58,17 +47,19 @@ namespace Data.Entities
 
         #endregion
 
-        // TODO add reference people
-        
         #region Delivery Man
 
-        
+        public Guid? DeliveryManId { get; set; }
+
+        public User DeliveryMan { get; set; }
 
         #endregion
 
         #region Recipient
 
-        
+        public Guid? RecipientId { get; set; }
+
+        public User Recipient { get; set; }
 
         #endregion
         

@@ -9,15 +9,12 @@ namespace Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
-        public int Inc { get; set; }
-
         public string Code { get; set; }
 
         [Required]
         public DateTime ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
         
         #region Warehouse
 

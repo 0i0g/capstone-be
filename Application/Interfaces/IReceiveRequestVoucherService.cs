@@ -14,22 +14,26 @@ namespace Application.Interfaces
 
         Task<IActionResult> RemoveReceiveRequestVoucher(Guid id);
 
-        Task<IActionResult> AddReceiveRequestVoucherDetail(CreateReceiveRequestVoucherDetailModel model);
-
-        Task<IActionResult> UpdateReceiveRequestVoucherDetail(UpdateReceiveRequestVoucherDetailModel model);
-
-        Task<IActionResult> DeleteReceiveRequestVoucherDetail(Guid id);
+        // Task<IActionResult> AddReceiveRequestVoucherDetail(CreateReceiveRequestVoucherDetailModel model);
+        //
+        // Task<IActionResult> UpdateReceiveRequestVoucherDetail(UpdateReceiveRequestVoucherDetailModel model);
+        //
+        // Task<IActionResult> DeleteReceiveRequestVoucherDetail(Guid id);
 
         Task<IActionResult> Lock(Guid id);
 
         Task<IActionResult> Unlock(Guid id);
 
-        Task<IActionResult> UpdateReceiveRequestVoucherStatus(UpdateReceiveRequestVoucherStatusModel model);
+        // Task<IActionResult> UpdateReceiveRequestVoucherStatus(UpdateReceiveRequestVoucherStatusModel model);
 
         IActionResult GetReceiveRequestVoucher(Guid id);
 
-        IActionResult SearchReceiveRequestVoucher(SearchReceiveRequestVoucherModel model);
-
         IActionResult FetchReceiveRequestVoucher(FetchModel model);
+        
+        IActionResult SearchReceiveRequestVoucherInWarehouse(SearchReceiveRequestVoucherInWarehouseModel model);
+        
+        IActionResult SearchReceiveRequestVoucherByWarehouse(SearchReceiveRequestVoucherByWarehouseModel model);
+        
+        IActionResult SearchReceiveRequestVoucherAllWarehouse(SearchReceiveRequestVoucherAllWarehouseModel model);
     }
 }

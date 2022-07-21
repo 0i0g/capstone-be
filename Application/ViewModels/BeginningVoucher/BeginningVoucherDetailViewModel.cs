@@ -8,6 +8,8 @@ namespace Application.ViewModels.BeginningVoucher
 
         public int Quantity { get; set; }
 
+        public string ProductName { get; set; }
+
         public FetchProductViewModel Product { get; set; }
     }
 }

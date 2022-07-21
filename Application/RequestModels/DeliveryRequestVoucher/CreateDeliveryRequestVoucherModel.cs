@@ -7,9 +7,9 @@ namespace Application.RequestModels
     public class CreateDeliveryRequestVoucherModel
     {
         [Required]
-        public DateTime VoucherDate { get; set; }
+        public DateTime ReportingDate { get; set; }
         
-        public string Note { get; set; }
+        public string Description { get; set; }
 
         [Required]
         public Guid CustomerId { get; set; }

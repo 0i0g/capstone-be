@@ -1,9 +1,17 @@
 [
   {
     "Id": "5397D718-A161-4C03-8A40-5030E1059BC1",
-    "Name": "Default Warehouse",
+    "Name": "Default Warehouse 01",
     "Address": "HCM",
     "CreatedAt": "2022-06-09T00:04:28.1133333",
+    "IsDeleted": false
+  },
+  {
+    "Id": "F87710B8-8B88-44E9-B7C6-B862EDCC0EE4",
+    "Name": "Default Warehouse 02",
+    "Address": "HCM",
+    "CreatedAt": "2022-07-21T11:50:27.8966667",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
     "IsDeleted": false
   }
 ]

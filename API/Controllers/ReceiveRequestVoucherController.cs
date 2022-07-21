@@ -38,29 +38,29 @@ namespace API.Controllers
             return _receiveRequestVoucherService.RemoveReceiveRequestVoucher(id);
         }
 
-        [Route("detail")]
-        [Authentication]
-        [HttpPost]
-        public Task<IActionResult> AddReceiveRequestVoucherDetail(CreateReceiveRequestVoucherDetailModel model)
-        {
-            return _receiveRequestVoucherService.AddReceiveRequestVoucherDetail(model);
-        }
-
-        [Route("detail")]
-        [Authentication]
-        [HttpPut]
-        public Task<IActionResult> UpdateReceiveRequestVoucherDetail(UpdateReceiveRequestVoucherDetailModel model)
-        {
-            return _receiveRequestVoucherService.UpdateReceiveRequestVoucherDetail(model);
-        }
-
-        [Route("detail")]
-        [Authentication]
-        [HttpDelete]
-        public Task<IActionResult> DeleteReceiveRequestVoucherDetail(Guid id)
-        {
-            return _receiveRequestVoucherService.DeleteReceiveRequestVoucherDetail(id);
-        }
+        // [Route("detail")]
+        // [Authentication]
+        // [HttpPost]
+        // public Task<IActionResult> AddReceiveRequestVoucherDetail(CreateReceiveRequestVoucherDetailModel model)
+        // {
+        //     return _receiveRequestVoucherService.AddReceiveRequestVoucherDetail(model);
+        // }
+        //
+        // [Route("detail")]
+        // [Authentication]
+        // [HttpPut]
+        // public Task<IActionResult> UpdateReceiveRequestVoucherDetail(UpdateReceiveRequestVoucherDetailModel model)
+        // {
+        //     return _receiveRequestVoucherService.UpdateReceiveRequestVoucherDetail(model);
+        // }
+        //
+        // [Route("detail")]
+        // [Authentication]
+        // [HttpDelete]
+        // public Task<IActionResult> DeleteReceiveRequestVoucherDetail(Guid id)
+        // {
+        //     return _receiveRequestVoucherService.DeleteReceiveRequestVoucherDetail(id);
+        // }
 
         [Route("lock")]
         [Authentication]
@@ -78,13 +78,13 @@ namespace API.Controllers
             return _receiveRequestVoucherService.Unlock(id);
         }
 
-        [Route("status")]
-        [Authentication]
-        [HttpPut]
-        public Task<IActionResult> UpdateReceiveRequestVoucherStatus(UpdateReceiveRequestVoucherStatusModel model)
-        {
-            return _receiveRequestVoucherService.UpdateReceiveRequestVoucherStatus(model);
-        }
+        // [Route("status")]
+        // [Authentication]
+        // [HttpPut]
+        // public Task<IActionResult> UpdateReceiveRequestVoucherStatus(UpdateReceiveRequestVoucherStatusModel model)
+        // {
+        //     return _receiveRequestVoucherService.UpdateReceiveRequestVoucherStatus(model);
+        // }
 
         [Authentication]
         [HttpGet]
@@ -93,20 +93,36 @@ namespace API.Controllers
             return _receiveRequestVoucherService.GetReceiveRequestVoucher(id);
         }
 
-        [Route("search")]
-        [Authentication]
-        [HttpPost]
-        public IActionResult SearchReceiveRequestVoucher(SearchReceiveRequestVoucherModel model)
-        {
-            return _receiveRequestVoucherService.SearchReceiveRequestVoucher(model);
-        }
-
         [Route("fetch")]
         [Authentication]
         [HttpPost]
         public IActionResult FetchReceiveRequestVoucher(FetchModel model)
         {
             return _receiveRequestVoucherService.FetchReceiveRequestVoucher(model);
+        }
+        
+        [Route("search")]
+        [Authentication]
+        [HttpPost]
+        public IActionResult SearchReceiveRequestVoucherInWarehouse(SearchReceiveRequestVoucherInWarehouseModel model)
+        {
+            return _receiveRequestVoucherService.SearchReceiveRequestVoucherInWarehouse(model);
+        }
+        
+        [Route("search/warehouse")]
+        [Authentication]
+        [HttpPost]
+        public IActionResult SearchReceiveRequestVoucherByWarehouse(SearchReceiveRequestVoucherByWarehouseModel model)
+        {
+            return _receiveRequestVoucherService.SearchReceiveRequestVoucherByWarehouse(model);
+        }
+        
+        [Route("search/all")]
+        [Authentication]
+        [HttpPost]
+        public IActionResult SearchReceiveRequestVoucherAllWarehouse(SearchReceiveRequestVoucherAllWarehouseModel model)
+        {
+            return _receiveRequestVoucherService.SearchReceiveRequestVoucherAllWarehouse(model);
         }
     }
 }

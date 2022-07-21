@@ -1,16 +1,29 @@
 ﻿[
   {
-    "Id": "D351BABB-3D91-4F66-9166-A265A3EBEA68",
-    "Inc": 1,
-    "Code": "0001",
-    "Name": "Default Customer",
-    "Address": "HCM",
+    "Id": "B16C3833-698A-4156-B2D6-0EE490BDFDD8",
+    "Code": "0002",
+    "Name": "Customer 02",
+    "Address": "Ho Chi Minh",
     "Phone": "0123123123",
-    "Email": "customer@gmail.com",
-    "Description": "Default Customer",
-    "CreatedAt": "2022-07-19T21:16:29.1833333",
+    "Email": "customer2@gmail.com",
+    "Description": "Customer 02",
+    "CreatedAt": "2022-07-20T13:51:45.1300000",
     "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
-    "UpdatedAt": "2022-07-19T21:16:29.2074844",
+    "UpdatedAt": "2022-07-20T13:51:45.1388983",
+    "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "IsDeleted": false
+  },
+  {
+    "Id": "B4929C0E-7CCC-4055-BD6E-657AD0C4CA49",
+    "Code": "0001",
+    "Name": "Customer 01",
+    "Address": "Ho Chi Minh",
+    "Phone": "0123123123",
+    "Email": "customer1@gmail.com",
+    "Description": "Customer 01",
+    "CreatedAt": "2022-07-20T13:50:44.8800000",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "UpdatedAt": "2022-07-20T13:50:44.9469074",
     "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
     "IsDeleted": false
   }

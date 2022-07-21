@@ -74,7 +74,7 @@ namespace Application.Implementations
                     Quantity = x.Quantity,
                     VoucherId = newBeginningVoucher.Id,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)!.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -88,6 +88,7 @@ namespace Application.Implementations
         public IActionResult SearchBeginningVoucherInWarehouse(SearchBeginningVoucherInWarehouseModel model)
         {
             var query = _beginningVoucherQueryable.AsNoTracking().Where(x =>
+                (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate));
 
@@ -96,14 +97,24 @@ namespace Application.Implementations
                 case "":
                     query = query.OrderByDescending(x => x.ReportingDate);
                     break;
-                case "ReportingDate":
+                case "CODE":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.Code).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.Code).ThenByDescending(x => x.CreatedAt);
+                    break;
+                case "REPORTINGDATE":
                     query = model.IsSortAsc
                         ? query.OrderBy(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt)
                         : query.OrderByDescending(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt);
                     break;
+                case "CREATEDAT":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.CreatedAt);
+                    break;
                 default:
                     return ApiResponse.BadRequest(
-                        MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
+                        MessageConstant.OrderByInvalid.WithValues("Code, ReportingDate, CreateAt"));
             }
 
             var data = query.Select(x => new SearchBeginningVoucherViewModel
@@ -127,23 +138,34 @@ namespace Application.Implementations
         public IActionResult SearchBeginningVoucherByWarehouse(SearchBeginningVoucherByWarehouseModel model)
         {
             var query = _beginningVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
+                (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
-                x.Id == model.WarehouseId);
+                x.WarehouseId == model.WarehouseId);
 
             switch (model.OrderByName)
             {
                 case "":
                     query = query.OrderByDescending(x => x.ReportingDate);
                     break;
-                case "ReportingDate":
+                case "CODE":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.Code).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.Code).ThenByDescending(x => x.CreatedAt);
+                    break;
+                case "REPORTINGDATE":
                     query = model.IsSortAsc
                         ? query.OrderBy(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt)
                         : query.OrderByDescending(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt);
                     break;
+                case "CREATEDAT":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.CreatedAt);
+                    break;
                 default:
                     return ApiResponse.BadRequest(
-                        MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
+                        MessageConstant.OrderByInvalid.WithValues("Code, ReportingDate, CreateAt"));
             }
 
             var data = query.Select(x => new SearchBeginningVoucherViewModel
@@ -167,6 +189,7 @@ namespace Application.Implementations
         public IActionResult SearchBeginningVoucherAllWarehouse(SearchBeginningVoucherAllWarehouseModel model)
         {
             var query = _beginningVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
+                (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate));
 
@@ -175,14 +198,24 @@ namespace Application.Implementations
                 case "":
                     query = query.OrderByDescending(x => x.ReportingDate);
                     break;
-                case "ReportingDate":
+                case "CODE":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.Code).ThenByDescending(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.Code).ThenByDescending(x => x.CreatedAt);
+                    break;
+                case "REPORTINGDATE":
                     query = model.IsSortAsc
                         ? query.OrderBy(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt)
                         : query.OrderByDescending(x => x.ReportingDate).ThenByDescending(x => x.CreatedAt);
                     break;
+                case "CREATEDAT":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.CreatedAt)
+                        : query.OrderByDescending(x => x.CreatedAt);
+                    break;
                 default:
                     return ApiResponse.BadRequest(
-                        MessageConstant.OrderByInvalid.WithValues("ReportingDate"));
+                        MessageConstant.OrderByInvalid.WithValues("Code, ReportingDate, CreateAt"));
             }
 
             var data = query.Select(x => new SearchBeginningVoucherViewModel
@@ -241,7 +274,7 @@ namespace Application.Implementations
                     VoucherId = beginningVoucher.Id,
                     Quantity = x.Quantity,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)!.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -251,9 +284,20 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public Task<IActionResult> RemoveBeginningVoucher(Guid id)
+        public async Task<IActionResult> RemoveBeginningVoucher(Guid id)
         {
-            throw new NotImplementedException();
+            var beginningVoucher =
+                _beginningVoucherQueryable.Include(x => x.Details).FirstOrDefault(x => x.Id == id);
+            if (beginningVoucher == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
+            }
+
+            beginningVoucher.IsDeleted = true;
+            _beginningVoucherRepository.Update(beginningVoucher);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
         }
 
         public IActionResult GetBeginningVoucher(Guid id)
@@ -287,10 +331,11 @@ namespace Application.Implementations
                         {
                             Id = y.Id,
                             Quantity = y.Quantity,
+                            ProductName = y.ProductName,
                             Product = new FetchProductViewModel()
                             {
                                 Id = y.ProductId,
-                                Name = y.ProductName
+                                Name = y.Product.Name
                             },
                         }).ToList(),
                 }).FirstOrDefault(x => x.Id == id);
@@ -300,10 +345,10 @@ namespace Application.Implementations
             return ApiResponse.Ok(beginningVoucher);
         }
 
-        public IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model)
+        public IActionResult FetchBeginningVoucher(FetchModel model)
         {
             var beginningVouchers = _beginningVoucherQueryable.AsNoTracking().Where(x =>
-                    string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code))
+                    string.IsNullOrWhiteSpace(model.Keyword) || x.Code.Contains(model.Keyword))
                 .Take(model.Size).Select(x => new FetchBeginningVoucherViewModel
                 {
                     Id = x.Id,

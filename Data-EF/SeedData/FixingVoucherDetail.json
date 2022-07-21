@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "55F7481F-1358-4276-92CE-278C9D35928E",
+    "Quantity": 10,
+    "Type": "Decrease",
+    "VoucherId": "5B814C9B-69EE-400A-BBE9-0F3A7864F694",
+    "ProductId": "BE6618CB-7530-4923-839D-AF3712B03F30",
+    "ProductName": "Phone"
+  },
+  {
+    "Id": "0626B88A-0282-4CF8-8C50-30339FFB623E",
+    "Quantity": 20,
+    "Type": "Increase",
+    "VoucherId": "5B814C9B-69EE-400A-BBE9-0F3A7864F694",
+    "ProductId": "936A6155-35FE-4F02-AAC7-7DB0E27FD6BA",
+    "ProductName": "Mouse"
+  },
+  {
+    "Id": "3872F14F-A666-4499-AF44-C80CDFED8995",
+    "Quantity": 30,
+    "Type": "Increase",
+    "VoucherId": "5B814C9B-69EE-400A-BBE9-0F3A7864F694",
+    "ProductId": "2C160B30-ABEF-4ECC-9EC5-820963C34105",
+    "ProductName": "Laptop"
+  }
+]

@@ -1,15 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Application.RequestModels
-{
-    public class BeginningDetailUpdateModel
-    {
-        [Required] 
-        public Guid Id { get; set; }
-
-        [Required]
-        [Range(0, int.MaxValue)] 
-        public int Quantity { get; set; }
-    }
-}
+﻿// using System;
+// using System.ComponentModel.DataAnnotations;
+//
+// namespace Application.RequestModels
+// {
+//     public class BeginningDetailUpdateModel
+//     {
+//         [Required] 
+//         public Guid Id { get; set; }
+//
+//         [Required]
+//         [Range(0, int.MaxValue)] 
+//         public int Quantity { get; set; }
+//     }
+// }

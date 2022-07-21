@@ -1,0 +1,14 @@
+[
+  {
+    "Id": "114E9BC3-DC53-4608-9057-462A4AF0656C",
+    "Code": "01",
+    "ReportingDate": "2022-07-20T08:15:44.9120000",
+    "Description": "Checking Voucher 01",
+    "WarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
+    "CreatedAt": "2022-07-20T15:19:29.2266667",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "UpdatedAt": "2022-07-20T15:21:59.8393554",
+    "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "IsDeleted": false
+  }
+]

@@ -15,7 +15,7 @@ namespace Application.Interfaces
 
         IActionResult GetBeginningVoucher(Guid id);
         
-        IActionResult FetchBeginningVoucher(FetchBeginningVoucherModel model);
+        IActionResult FetchBeginningVoucher(FetchModel model);
 
         IActionResult SearchBeginningVoucherInWarehouse(SearchBeginningVoucherInWarehouseModel model);
         

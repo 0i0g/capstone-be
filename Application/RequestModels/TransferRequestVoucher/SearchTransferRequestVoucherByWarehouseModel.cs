@@ -1,20 +1,21 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Data.Enums;
 
 namespace Application.RequestModels
 {
-    public class SearchDeliveryRequestVoucherModel : PaginationModel
+    public class SearchTransferRequestVoucherByWarehouseModel : PaginationModel
     {
+        [Required]
+        public Guid WarehouseId { get; set; }
+        
         public string Code { get; set; }
 
-        public DateTime? VoucherDateFrom { get; set; }
+        public DateTime? FromDate { get; set; }
 
-        public DateTime? VoucherDateTo { get; set; }
+        public DateTime? ToDate { get; set; }
 
         [EnumDataType(typeof(EnumStatusRequest))]
         public EnumStatusRequest? Status { get; set; }
-
-        public string Customer { get; set; }
     }
 }

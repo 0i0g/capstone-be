@@ -47,6 +47,10 @@ namespace Data_EF
 
         public IDeliveryRequestVoucherDetailRepository DeliveryRequestVoucherDetail { get; }
 
+        public IFixingVoucherRepository FixingVoucher { get; }
+        
+        public ITransferRequestVoucherRepository TransferRequestVoucher { get; }
+
         #endregion
 
         #region DB method

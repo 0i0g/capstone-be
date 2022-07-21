@@ -12,9 +12,9 @@ namespace Application.ViewModels
 
         public string Code { get; set; }
 
-        public DateTime VoucherDate { get; set; }
+        public DateTime ReportingDate { get; set; }
 
-        public string Note { get; set; }
+        public string Description { get; set; }
 
         public EnumStatusRequest Status { get; set; }
         

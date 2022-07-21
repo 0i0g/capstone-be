@@ -12,6 +12,6 @@ namespace Application.RequestModels
         public string Description { get; set; }
 
         [Required]
-        public ICollection<CreateBeginningVoucherDetailModel> Details { get; set; }
+        public ICollection<BeginningDetailModel> Details { get; set; }
     }
 }
