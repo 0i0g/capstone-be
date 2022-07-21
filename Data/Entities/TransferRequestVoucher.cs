@@ -23,14 +23,6 @@ namespace Data.Entities
         [Required]
         public bool? Locked { get; set; }
 
-        #region Customer
-
-        public Guid? CustomerId { get; set; }
-
-        public Customer Customer { get; set; }
-        
-        #endregion
-        
         #region Inbound Warehouse
 
         [Required]

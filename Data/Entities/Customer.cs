@@ -29,8 +29,6 @@ namespace Data.Entities
         
         public ICollection<ReceiveRequestVoucher> ReceiveRequestVouchers { get; set; }
         
-        public ICollection<TransferRequestVoucher> TransferRequestVouchers { get; set; }
-        
         #endregion
         
         #region Safe entity

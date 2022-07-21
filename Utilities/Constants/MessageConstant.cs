@@ -42,6 +42,13 @@ namespace Utilities.Constants
         public static ResponseMessage FixingVoucherDetailNotFound => new() { Code = "4001", Value = "Fixing Voucher detail does not exist or has been deleted" };
         public static ResponseMessage FixingVoucherDetailEmpty => new() { Code = "4001", Value = "Fixing Voucher detail empty" };
         
+        /* TransferRequestVoucher */
+        public static ResponseMessage TransferRequestVoucherNotFound => new() { Code = "4001", Value = "Transfer Request Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateTransferRequestVoucherDetailsProduct => new() { Code = "4001", Value = "Product name in Transfer Request Voucher detail has been duplicated" };
+        public static ResponseMessage ForbiddenToUpdateTransferRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update Transfer Request Voucher" };
+        public static ResponseMessage TransferRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Transfer Request Voucher detail does not exist or has been deleted" };
+        public static ResponseMessage TransferRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Transfer Request Voucher detail empty" };
+        
         /* Category */
         public static ResponseMessage CategoryNameExisted => new() { Code = "4001", Value = "Category name already exists" };
         public static ResponseMessage CategoryNotFound => new() { Code = "4001", Value = "Category does not exist" };

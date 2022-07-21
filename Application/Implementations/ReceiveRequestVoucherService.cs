@@ -42,6 +42,11 @@ namespace Application.Implementations
 
         public async Task<IActionResult> CreateReceiveRequestVoucher(CreateReceiveRequestVoucherModel model)
         {
+            if (CurrentUser.Warehouse == null)
+            {
+                return ApiResponse.BadRequest(MessageConstant.RequiredWarehouse);
+            }
+            
             if (model.CustomerId != null)
             {
                 var isCustomerExisted = _customerQueryable.Any(x => x.Id == model.CustomerId);

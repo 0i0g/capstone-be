@@ -229,8 +229,6 @@ namespace Data_EF
                 entity.Property(x => x.Status).HasConversion<string>();
                 entity.Property(x => x.Locked).HasDefaultValue(false);
                 
-                entity.HasOne(x => x.Customer).WithMany(x => x.TransferRequestVouchers)
-                    .HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.InboundWarehouse).WithMany(x => x.InboundTransferRequestVouchers)
                     .HasForeignKey(x => x.InboundWarehouseId).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.OutboundWarehouse).WithMany(x => x.OutboundTransferRequestVouchers)
