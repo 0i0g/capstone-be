@@ -33,9 +33,9 @@ namespace API.Controllers
 
         [Authentication]
         [HttpDelete]
-        public Task<IActionResult> RemoveReceiveRequestVoucher(Guid id)
+        public Task<IActionResult> RemoveMulReceiveRequestVoucher(Guid id)
         {
-            return _receiveRequestVoucherService.RemoveReceiveRequestVoucher(id);
+            return _receiveRequestVoucherService.RemoveMulReceiveRequestVoucher(id);
         }
 
         // [Route("detail")]

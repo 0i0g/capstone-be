@@ -11,7 +11,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> UpdateFixingVoucher(UpdateFixingVoucherModel model);
         
-        Task<IActionResult> RemoveFixingVoucher(Guid id);
+        Task<IActionResult> RemoveMulFixingVoucher(Guid id);
 
         IActionResult GetFixingVoucher(Guid id);
         

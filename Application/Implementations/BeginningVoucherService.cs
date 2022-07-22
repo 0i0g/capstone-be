@@ -32,7 +32,7 @@ namespace Application.Implementations
                 .Include(x => x.Details);
             _productRepository = _unitOfWork.Product;
             _productsQueryable =
-                _productRepository.GetMany(x => x.IsDeleted != true);
+                _productRepository.GetMany(x => x.IsDeleted != true && x.IsActive == true);
         }
 
         public async Task<IActionResult> CreateBeginningVoucher(CreateBeginningVoucherModel model)
@@ -284,7 +284,7 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> RemoveBeginningVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulBeginningVoucher(Guid id)
         {
             var beginningVoucher =
                 _beginningVoucherQueryable.Include(x => x.Details).FirstOrDefault(x => x.Id == id);
@@ -337,7 +337,7 @@ namespace Application.Implementations
                                 Id = y.ProductId,
                                 Name = y.Product.Name
                             },
-                        }).ToList(),
+                        }).OrderBy(y => y.ProductName).ToList(),
                 }).FirstOrDefault(x => x.Id == id);
 
             if (beginningVoucher == null) return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);

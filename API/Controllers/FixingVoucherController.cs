@@ -34,9 +34,9 @@ namespace API.Controllers
         }
         
         [HttpDelete]
-        public async Task<IActionResult> RemoveFixingVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulFixingVoucher(Guid id)
         {
-            return await _fixingVoucherService.RemoveFixingVoucher(id);
+            return await _fixingVoucherService.RemoveMulFixingVoucher(id);
         }
 
         [HttpGet]

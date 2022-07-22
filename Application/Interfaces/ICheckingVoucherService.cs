@@ -11,7 +11,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> UpdateCheckingVoucher(UpdateCheckingVoucherModel model);
         
-        Task<IActionResult> RemoveCheckingVoucher(Guid id);
+        Task<IActionResult> RemoveMulCheckingVoucher(Guid id);
 
         IActionResult GetCheckingVoucher(Guid id);
         

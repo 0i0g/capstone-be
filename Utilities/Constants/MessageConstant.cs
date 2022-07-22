@@ -19,6 +19,7 @@ namespace Utilities.Constants
         public static ResponseMessage UserBanned => new() { Code = "1005", Value = "Your account is banned" };
         public static ResponseMessage RequiredWarehouse => new() { Code = "1005", Value = "You must be in warehouse to perform this action" };
         public static ResponseMessage AccountNotInAnyWarehouse => new() { Code = "1006", Value = "Your account is not in any BU" };
+        public static ResponseMessage RequiredWarehouseRequestVoucher => new() { Code = "1005", Value = "You must be in warehouse of Request Voucher to perform this action" };
 
         /* Authorization */
         public static ResponseMessage RolePermissionForbidden => new() { Code = "2001", Value = "{0}" };
@@ -94,9 +95,17 @@ namespace Utilities.Constants
         public static ResponseMessage ForbiddenToUpdateDeliveryRequestVoucher  => new() { Code = "4001", Value = "Forbidden to update delivery request voucher" };
         public static ResponseMessage DeliveryRequestVoucherDetailNotFound => new() { Code = "4001", Value = "Delivery Request Voucher Detail does not exist or has been deleted" };
         public static ResponseMessage DeliveryRequestVoucherDetailEmpty => new() { Code = "4001", Value = "Delivery Request Voucher detail empty" };
+        
+        /* DeliveryVoucher */
+        public static ResponseMessage DeliveryVoucherNotFound => new() { Code = "4001", Value = "Delivery Voucher does not exist or has been deleted" };
+        public static ResponseMessage DuplicateProductDeliveryVoucherDetail => new() { Code = "4001", Value = "Duplicate product in Delivery Voucher Detail" };
+        public static ResponseMessage ForbiddenToUpdateDeliveryVoucher  => new() { Code = "4001", Value = "Forbidden to update Delivery Voucher" };
+        public static ResponseMessage DeliveryVoucherDetailEmpty => new() { Code = "4001", Value = "Delivery Voucher detail empty" };
 
         /* Product */
         public static ResponseMessage ProductsNotFound => new() { Code = "4001", Value = "Product with id: {0} do not exist have been deleted" };
+        
+        public static ResponseMessage ProductsNotFoundInRequestDetails => new() { Code = "4001", Value = "Product with id: {0} do not exist in Request Detail" };
         
         /* VoucherPrefixCode */
         public static ResponseMessage VoucherPrefixCodeNotFound => new() { Code = "4001", Value = "Voucher prefix code does not exist or has been deleted" };

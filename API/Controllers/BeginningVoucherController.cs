@@ -41,9 +41,9 @@ namespace API.Controllers
         // }
 
         [HttpDelete]
-        public async Task<IActionResult> RemoveBeginningVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulBeginningVoucher(Guid id)
         {
-            return await _beginningVoucherService.RemoveBeginningVoucher(id);
+            return await _beginningVoucherService.RemoveMulBeginningVoucher(id);
         }
         
         [HttpGet]

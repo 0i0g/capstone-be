@@ -37,7 +37,7 @@ namespace Application.Implementations
             _warehouseRepository = _unitOfWork.Warehouse;
             _warehouseQueryable = _warehouseRepository.GetMany(x => x.IsDeleted != true);
             _userRepository = _unitOfWork.User;
-            _userQueryable = _userRepository.GetMany(x => x.IsDeleted != true);
+            _userQueryable = _userRepository.GetMany(x => x.IsDeleted != true  && x.IsActive == true);
         }
 
         public async Task<IActionResult> CreateTransferRequestVoucher(CreateTransferRequestVoucherModel model)
@@ -246,7 +246,7 @@ namespace Application.Implementations
         //     return ApiResponse.Ok();
         // }
 
-        public async Task<IActionResult> RemoveTransferRequestVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulTransferRequestVoucher(Guid id)
         {
             var transferRequestVoucher =
                 _transferRequestVoucherQueryable.Include(x => x.Details).FirstOrDefault(x => x.Id == id);
@@ -353,7 +353,7 @@ namespace Application.Implementations
                                 Id = y.ProductId,
                                 Name = y.Product.Name
                             },
-                        }).ToList(),
+                        }).OrderBy(y => y.ProductName).ToList(),
                 }).FirstOrDefault(x => x.Id == id);
 
             if (transferRequestVoucher == null)

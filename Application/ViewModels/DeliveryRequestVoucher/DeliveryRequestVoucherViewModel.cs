@@ -20,6 +20,8 @@ namespace Application.ViewModels.DeliveryRequestVoucher
 
         public DateTime? CreatedAt { get; set; }
 
+        public FetchUserViewModel CreateBy { get; set; }
+
         public FetchCustomerViewModel Customer { get; set; }
         
         public FetchWarehouseViewModel Warehouse { get; set; }

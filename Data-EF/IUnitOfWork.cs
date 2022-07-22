@@ -50,6 +50,12 @@ namespace Data_EF
         public IFixingVoucherRepository FixingVoucher { get; }
         
         public ITransferRequestVoucherRepository TransferRequestVoucher { get; }
+        
+        public IDeliveryVoucherRepository DeliveryVoucher { get; }
+
+        public IReceiveVoucherRepository ReceiveVoucher { get; }
+
+        public ITransferVoucherRepository TransferVoucher { get; }
 
         #endregion
 
