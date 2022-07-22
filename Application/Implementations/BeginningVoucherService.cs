@@ -74,7 +74,7 @@ namespace Application.Implementations
                     Quantity = x.Quantity,
                     VoucherId = newBeginningVoucher.Id,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -247,7 +247,7 @@ namespace Application.Implementations
 
             beginningVoucher.ReportingDate = model.ReportingDate ?? beginningVoucher.ReportingDate;
             beginningVoucher.Description = model.Description ?? beginningVoucher.Description;
-            
+
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
@@ -274,7 +274,7 @@ namespace Application.Implementations
                     VoucherId = beginningVoucher.Id,
                     Quantity = x.Quantity,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -286,8 +286,7 @@ namespace Application.Implementations
 
         public async Task<IActionResult> RemoveMulBeginningVoucher(Guid id)
         {
-            var beginningVoucher =
-                _beginningVoucherQueryable.Include(x => x.Details).FirstOrDefault(x => x.Id == id);
+            var beginningVoucher = _beginningVoucherQueryable.FirstOrDefault(x => x.Id == id);
             if (beginningVoucher == null)
             {
                 return ApiResponse.NotFound(MessageConstant.BeginningVoucherNotFound);
