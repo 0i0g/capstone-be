@@ -32,7 +32,7 @@ namespace Application.Implementations
                 .Include(x => x.Details);
             _productRepository = _unitOfWork.Product;
             _productsQueryable =
-                _productRepository.GetMany(x => x.IsDeleted != true);
+                _productRepository.GetMany(x => x.IsDeleted != true && x.IsActive == true);
         }
 
         public async Task<IActionResult> CreateCheckingVoucher(CreateCheckingVoucherModel model)
@@ -75,7 +75,7 @@ namespace Application.Implementations
                     RealQuantity = x.RealQuantity,
                     VoucherId = newCheckingVoucher.Id,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -97,7 +97,7 @@ namespace Application.Implementations
 
             checkingVoucher.ReportingDate = model.ReportingDate ?? checkingVoucher.ReportingDate;
             checkingVoucher.Description = model.Description ?? checkingVoucher.Description;
-            
+
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
@@ -125,7 +125,7 @@ namespace Application.Implementations
                     Quantity = x.Quantity,
                     RealQuantity = x.RealQuantity,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -135,7 +135,7 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> RemoveCheckingVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulCheckingVoucher(Guid id)
         {
             var checkingVoucher =
                 _checkingVoucherQueryable.Include(x => x.Details).FirstOrDefault(x => x.Id == id);
@@ -189,7 +189,7 @@ namespace Application.Implementations
                                 Id = y.ProductId,
                                 Name = y.Product.Name
                             },
-                        }).ToList(),
+                        }).OrderBy(y => y.ProductName).ToList(),
                 }).FirstOrDefault(x => x.Id == id);
 
             if (checkingVoucher == null) return ApiResponse.NotFound(MessageConstant.CheckingVoucherNotFound);

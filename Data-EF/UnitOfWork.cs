@@ -58,6 +58,12 @@ namespace Data_EF
         private IFixingVoucherRepository _fixingVoucher;
 
         private ITransferRequestVoucherRepository _transferRequestVoucher;
+        
+        private IDeliveryVoucherRepository _deliveryVoucher;
+
+        private IReceiveVoucherRepository _receiveVoucher;
+
+        private ITransferVoucherRepository _transferVoucher;
 
         #endregion
 
@@ -177,6 +183,21 @@ namespace Data_EF
         public ITransferRequestVoucherRepository TransferRequestVoucher
         {
             get { return _transferRequestVoucher ??= new TransferRequestVoucherRepository(_db); }
+        }
+        
+        public IDeliveryVoucherRepository DeliveryVoucher
+        {
+            get { return _deliveryVoucher ??= new DeliveryVoucherRepository(_db); }
+        }
+        
+        public IReceiveVoucherRepository ReceiveVoucher
+        {
+            get { return _receiveVoucher ??= new ReceiveVoucherRepository(_db); }
+        }
+        
+        public ITransferVoucherRepository TransferVoucher
+        {
+            get { return _transferVoucher ??= new TransferVoucherRepository(_db); }
         }
 
         #endregion

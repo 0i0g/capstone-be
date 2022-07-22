@@ -27,7 +27,11 @@ namespace Data.Entities
 
         public ICollection<DeliveryRequestVoucher> DeliveryRequestVouchers { get; set; }
         
+        public ICollection<DeliveryVoucher> DeliveryVouchers { get; set; }
+        
         public ICollection<ReceiveRequestVoucher> ReceiveRequestVouchers { get; set; }
+        
+        public ICollection<ReceiveVoucher> ReceiveVouchers { get; set; }
         
         #endregion
         

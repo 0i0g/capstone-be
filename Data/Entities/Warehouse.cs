@@ -36,14 +36,22 @@ namespace Data.Entities
         public ICollection<CheckingVoucher> CheckingVouchers { get; set; }
 
         public ICollection<DeliveryRequestVoucher> DeliveryRequestVouchers { get; set; }
+        
+        public ICollection<DeliveryVoucher> DeliveryVouchers { get; set; }
 
         public ICollection<FixingVoucher> FixingVouchers { get; set; }
 
         public ICollection<ReceiveRequestVoucher> ReceiveRequestVouchers { get; set; }
         
+        public ICollection<ReceiveVoucher> ReceiveVouchers { get; set; }
+        
         public ICollection<TransferRequestVoucher> InboundTransferRequestVouchers { get; set; }
         
         public ICollection<TransferRequestVoucher> OutboundTransferRequestVouchers { get; set; }
+        
+        public ICollection<TransferVoucher> InboundTransferVouchers { get; set; }
+        
+        public ICollection<TransferVoucher> OutboundTransferVouchers { get; set; }
 
         #endregion
 

@@ -11,7 +11,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> UpdateDeliveryRequestVoucher(UpdateDeliveryRequestVoucherModel model);
 
-        Task<IActionResult> RemoveDeliveryRequestVoucher(Guid id);
+        Task<IActionResult> RemoveMulDeliveryRequestVoucher(Guid id);
 
         // Task<IActionResult> AddDeliveryRequestVoucherDetail(CreateDeliveryRequestVoucherDetailModel model);
         //

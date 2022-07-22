@@ -34,9 +34,9 @@ namespace API.Controllers
         }
         
         [HttpDelete]
-        public async Task<IActionResult> RemoveCheckingVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulCheckingVoucher(Guid id)
         {
-            return await _checkingVoucherService.RemoveCheckingVoucher(id);
+            return await _checkingVoucherService.RemoveMulCheckingVoucher(id);
         }
 
         [HttpGet]

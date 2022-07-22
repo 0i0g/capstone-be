@@ -31,9 +31,9 @@ namespace API.Controllers
         }
         
         [HttpDelete]
-        public Task<IActionResult> RemoveTransferRequestVoucher(Guid id)
+        public Task<IActionResult> RemoveMulTransferRequestVoucher(Guid id)
         {
-            return _transferRequestVoucherService.RemoveTransferRequestVoucher(id);
+            return _transferRequestVoucherService.RemoveMulTransferRequestVoucher(id);
         }
         
         [Route("lock")]

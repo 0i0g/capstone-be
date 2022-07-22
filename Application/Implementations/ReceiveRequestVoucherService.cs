@@ -55,6 +55,9 @@ namespace Application.Implementations
 
             if (model.Details != null)
             {
+                if (model.Details.Count == 0)
+                    return ApiResponse.BadRequest(MessageConstant.ReceiveRequestVoucherDetailEmpty);
+                
                 var productsInModel = model.Details.Select(x => x.ProductId).ToList();
                 var productIdsSet = new HashSet<Guid>(productsInModel);
                 if (productIdsSet.Count != productsInModel.Count)
@@ -148,7 +151,7 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> RemoveReceiveRequestVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulReceiveRequestVoucher(Guid id)
         {
             var receiveRequestVoucher = _receiveRequestVoucherQueryable.Include(x=>x.Details).FirstOrDefault(x => x.Id == id);
             if (receiveRequestVoucher == null)
@@ -293,6 +296,14 @@ namespace Application.Implementations
                     Status = x.Status,
                     Locked = x.Locked,
                     CreatedAt = x.CreatedAt,
+                    CreateBy = x.CreatedBy == null
+                        ? null
+                        : new FetchUserViewModel
+                        {
+                            Id = x.CreatedBy.Id,
+                            Name = x.CreatedBy.FullName,
+                            Avatar = x.CreatedBy.Avatar
+                        },
                     Customer = x.Customer == null
                         ? null
                         : new FetchCustomerViewModel()
@@ -321,7 +332,7 @@ namespace Application.Implementations
                                     Id = y.Product.Id,
                                     Name = y.Product.Name
                                 }
-                        }).ToList()
+                        }).OrderBy(y => y.ProductName).ToList()
                 }).FirstOrDefault();
             if (voucher == null) return ApiResponse.BadRequest(MessageConstant.ReceiveRequestVoucherNotFound);
 

@@ -146,6 +146,32 @@ namespace Data_EF
                     .HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<DeliveryVoucher>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
+                entity.Property(x => x.IsDeleted).HasDefaultValue(false);
+
+                entity.Property(x => x.Status).HasConversion<string>();
+                entity.Property(x => x.Locked).HasDefaultValue(false);
+                entity.HasIndex(x => x.Code).IsUnique();
+
+                entity.HasOne(x => x.Customer).WithMany(x => x.DeliveryVouchers)
+                    .HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.Warehouse).WithMany(x => x.DeliveryVouchers)
+                    .HasForeignKey(x => x.WarehouseId).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<DeliveryVoucherDetail>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+
+                entity.HasOne(x => x.Voucher).WithMany(x => x.Details)
+                    .HasForeignKey(x => x.VoucherId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(x => x.Product).WithMany(x => x.DeliveryVoucherDetails)
+                    .HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.NoAction);
+            });
+
             modelBuilder.Entity<FixingVoucher>(entity =>
             {
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
@@ -220,28 +246,78 @@ namespace Data_EF
                     .HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.NoAction);
             });
 
+            modelBuilder.Entity<ReceiveVoucher>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
+                entity.Property(x => x.IsDeleted).HasDefaultValue(false);
+
+                entity.Property(x => x.Status).HasConversion<string>();
+                entity.Property(x => x.Locked).HasDefaultValue(false);
+
+                entity.HasOne(x => x.Customer).WithMany(x => x.ReceiveVouchers)
+                    .HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.Warehouse).WithMany(x => x.ReceiveVouchers)
+                    .HasForeignKey(x => x.WarehouseId).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<ReceiveVoucherDetail>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+
+                entity.HasOne(x => x.Voucher).WithMany(x => x.Details)
+                    .HasForeignKey(x => x.VoucherId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(x => x.Product).WithMany(x => x.ReceiveVoucherDetails)
+                    .HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.NoAction);
+            });
+
             modelBuilder.Entity<TransferRequestVoucher>(entity =>
             {
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
                 entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
-                
+
                 entity.Property(x => x.Status).HasConversion<string>();
                 entity.Property(x => x.Locked).HasDefaultValue(false);
-                
+
                 entity.HasOne(x => x.InboundWarehouse).WithMany(x => x.InboundTransferRequestVouchers)
                     .HasForeignKey(x => x.InboundWarehouseId).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.OutboundWarehouse).WithMany(x => x.OutboundTransferRequestVouchers)
                     .HasForeignKey(x => x.OutboundWarehouseId).OnDelete(DeleteBehavior.NoAction);
             });
-            
+
             modelBuilder.Entity<TransferRequestVoucherDetail>(entity =>
             {
                 entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
-                
+
                 entity.HasOne(x => x.Voucher).WithMany(x => x.Details)
                     .HasForeignKey(x => x.VoucherId).OnDelete(DeleteBehavior.Cascade);
                 entity.HasOne(x => x.Product).WithMany(x => x.TransferRequestVoucherDetails)
+                    .HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<TransferVoucher>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+                entity.Property(x => x.CreatedAt).HasDefaultValueSql("GETDATE()");
+                entity.Property(x => x.IsDeleted).HasDefaultValue(false);
+
+                entity.Property(x => x.Status).HasConversion<string>();
+                entity.Property(x => x.Locked).HasDefaultValue(false);
+
+                entity.HasOne(x => x.InboundWarehouse).WithMany(x => x.InboundTransferVouchers)
+                    .HasForeignKey(x => x.InboundWarehouseId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.OutboundWarehouse).WithMany(x => x.OutboundTransferVouchers)
+                    .HasForeignKey(x => x.OutboundWarehouseId).OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<TransferVoucherDetail>(entity =>
+            {
+                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+
+                entity.HasOne(x => x.Voucher).WithMany(x => x.Details)
+                    .HasForeignKey(x => x.VoucherId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(x => x.Product).WithMany(x => x.TransferVoucherDetails)
                     .HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.NoAction);
             });
 

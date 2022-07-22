@@ -12,7 +12,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> UpdateReceiveRequestVoucher(UpdateReceiveRequestVoucherModel model);
 
-        Task<IActionResult> RemoveReceiveRequestVoucher(Guid id);
+        Task<IActionResult> RemoveMulReceiveRequestVoucher(Guid id);
 
         // Task<IActionResult> AddReceiveRequestVoucherDetail(CreateReceiveRequestVoucherDetailModel model);
         //

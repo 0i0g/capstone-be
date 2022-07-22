@@ -45,12 +45,18 @@ namespace Data.Entities
         public ICollection<CheckingVoucherDetail> CheckingVoucherDetails { get; set; }
 
         public ICollection<DeliveryRequestVoucherDetail> DeliveryRequestVoucherDetails { get; set; }
+        
+        public ICollection<DeliveryVoucherDetail> DeliveryVoucherDetails { get; set; }
 
         public ICollection<FixingVoucherDetail> FixingVoucherDetails { get; set; }
         
         public ICollection<ReceiveRequestVoucherDetail> ReceiveRequestVoucherDetails { get; set; }
         
+        public ICollection<ReceiveVoucherDetail> ReceiveVoucherDetails { get; set; }
+        
         public ICollection<TransferRequestVoucherDetail> TransferRequestVoucherDetails { get; set; }
+        
+        public ICollection<TransferVoucherDetail> TransferVoucherDetails { get; set; }
 
         #endregion
 

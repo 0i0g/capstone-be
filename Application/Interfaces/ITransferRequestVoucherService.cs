@@ -11,7 +11,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> UpdateTransferRequestVoucher(UpdateTransferRequestVoucherModel model);
         
-        Task<IActionResult> RemoveTransferRequestVoucher(Guid id);
+        Task<IActionResult> RemoveMulTransferRequestVoucher(Guid id);
 
         Task<IActionResult> Lock(Guid id);
 

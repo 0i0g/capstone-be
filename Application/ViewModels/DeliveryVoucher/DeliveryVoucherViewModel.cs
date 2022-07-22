@@ -1,12 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Data.Entities;
+using Application.ViewModels.DeliveryRequestVoucher;
 using Data.Enums;
 
-namespace Application.ViewModels
+namespace Application.ViewModels.DeliveryVoucher
 {
-    public class ReceiveRequestVoucherViewModel
+    public class DeliveryVoucherViewModel
     {
         public Guid Id { get; set; }
 
@@ -16,7 +15,7 @@ namespace Application.ViewModels
 
         public string Description { get; set; }
 
-        public EnumStatusRequest Status { get; set; }
+        public EnumStatusVoucher Status { get; set; }
         
         public bool? Locked { get; set; }
 
@@ -24,10 +23,12 @@ namespace Application.ViewModels
 
         public FetchUserViewModel CreateBy { get; set; }
 
+        public FetchDeliveryRequestVoucherViewModel Request { get; set; }
+
         public FetchCustomerViewModel Customer { get; set; }
         
         public FetchWarehouseViewModel Warehouse { get; set; }
         
-        public ICollection<ReceiveRequestVoucherDetailViewModel> Details { get; set; }
+        public ICollection<DeliveryVoucherDetailViewModel> Details { get; set; }
     }
 }
