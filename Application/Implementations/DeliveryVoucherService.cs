@@ -82,7 +82,7 @@ namespace Application.Implementations
                     var request = _deliveryRequestVoucherQueryable.Include(x=>x.Details).FirstOrDefault(x => x.Id == model.RequestId);
                     if (request == null)
                     {
-                        return ApiResponse.NotFound(MessageConstant.DeliveryVoucherNotFound);
+                        return ApiResponse.NotFound(MessageConstant.DeliveryRequestVoucherNotFound);
                     }
 
                     if (CurrentUser.Warehouse != request.WarehouseId)
