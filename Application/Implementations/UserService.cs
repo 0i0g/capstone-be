@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
+using Application.ViewModels.UserGroup;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -153,6 +154,7 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.UserNotFound);
             }
+
             if (model.Email != null && model.Email != user.Email)
             {
                 var userConflictEmail = _userQueryable.FirstOrDefault(x => x.Email == model.Email);
@@ -174,7 +176,6 @@ namespace Application.Implementations
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
-
         }
 
         public async Task<IActionResult> RemoveUser(Guid id)
@@ -208,7 +209,8 @@ namespace Application.Implementations
 
         public async Task<IActionResult> RemoveMulUserInWarehouse(List<Guid> ids)
         {
-            var users = _userQueryable.Where(x => ids.Contains(x.Id) && x.InWarehouseId == CurrentUser.Warehouse).Include(x => x.UserInGroups).ToList();
+            var users = _userQueryable.Where(x => ids.Contains(x.Id) && x.InWarehouseId == CurrentUser.Warehouse)
+                .Include(x => x.UserInGroups).ToList();
             users.ForEach(x =>
             {
                 x.IsDeleted = true;
@@ -257,7 +259,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
+                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -268,7 +270,8 @@ namespace Application.Implementations
         public IActionResult SearchUserInWarehouse(SearchUserModel model)
         {
             var query = _userQueryable.Where(x =>
-                    string.IsNullOrWhiteSpace(model.Name) || (x.FirstName + x.LastName).Contains(model.Name) && x.InWarehouseId == CurrentUser.Warehouse)
+                    string.IsNullOrWhiteSpace(model.Name) || (x.FirstName + x.LastName).Contains(model.Name) &&
+                    x.InWarehouseId == CurrentUser.Warehouse)
                 .AsNoTracking();
 
             switch (model.OrderByName)
@@ -301,7 +304,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
+                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -320,12 +323,13 @@ namespace Application.Implementations
                 }).ToList();
 
             return ApiResponse.Ok(user);
-        }      
-        
+        }
+
         public IActionResult FetchUserInWarehouse(FetchModel model)
         {
             var user = _userQueryable.AsNoTracking().Where(x =>
-                    string.IsNullOrWhiteSpace(model.Keyword) || (x.FirstName + x.LastName).Contains(model.Keyword) && x.InWarehouseId == CurrentUser.Warehouse)
+                    string.IsNullOrWhiteSpace(model.Keyword) || (x.FirstName + x.LastName).Contains(model.Keyword) &&
+                    x.InWarehouseId == CurrentUser.Warehouse)
                 .Take(model.Size).Select(x => new FetchUserViewModel()
                 {
                     Id = x.Id,
@@ -347,7 +351,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
+                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
                     : null,
                 IsActive = x.IsActive,
             }).ToList();
@@ -398,24 +402,32 @@ namespace Application.Implementations
 
         public IActionResult GetUser(Guid id)
         {
-            var user = _userQueryable.Where(x => x.Id == id).Select(x => new UserViewModel()
-            {
-                Id = x.Id,
-                Username = x.Username,
-                Email = x.Email,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Gender = x.Gender.ToString(),
-                PhoneNumber = x.PhoneNumber,
-                InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel
-                    {
-                        Id = x.InWarehouse.Id,
-                        Name = x.InWarehouse.Name
-                    }
-                    : null,
-                IsActive = x.IsActive
-            }).FirstOrDefault();
+            var user = _userQueryable.Where(x => x.Id == id).Include(x => x.UserInGroups).ThenInclude(x => x.Group)
+                .Select(x => new UserViewModel()
+                {
+                    Id = x.Id,
+                    Username = x.Username,
+                    Email = x.Email,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Gender = x.Gender.ToString(),
+                    PhoneNumber = x.PhoneNumber,
+                    InWarehouse = x.InWarehouseId != null
+                        ? new FetchWarehouseViewModel
+                        {
+                            Id = x.InWarehouse.Id,
+                            Name = x.InWarehouse.Name
+                        }
+                        : null,
+                    IsActive = x.IsActive,
+                    UserGroup = x.UserInGroups.FirstOrDefault().Group != null
+                        ? new FetchUserGroupViewModel()
+                        {
+                            Id = x.UserInGroups.FirstOrDefault().Group.Id,
+                            Name = x.UserInGroups.FirstOrDefault().Group.Name
+                        }
+                        : null
+                }).FirstOrDefault();
 
             if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);
 

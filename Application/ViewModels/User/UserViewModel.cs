@@ -1,4 +1,6 @@
 ﻿using System;
+using Application.RequestModels;
+using Application.ViewModels.UserGroup;
 using Application.ViewModels.Warehouse;
 using Data.Enums;
 
@@ -23,6 +25,8 @@ namespace Application.ViewModels
         public string Gender { get; set; }
 
         public bool? IsActive { get; set; }
+
+        public FetchUserGroupViewModel UserGroup { get; set; }
         
         public FetchWarehouseViewModel InWarehouse { get; set; }
     }
