@@ -383,20 +383,16 @@ namespace Application.Implementations
 
             if (user == null) return ApiResponse.Unauthorized();
 
-            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
-            {
-                Name = x.Name,
-                Type = x.Type.ToString()
-            }).ToList() ?? new List<AuthUserGroup>();
-
-
-            var authUser = new AuthUserViewModel
+            var authUser = new AuthUserViewModel()
             {
                 Avatar = user.Avatar,
                 Name = user.FullName,
-                Groups = groups
+                Group = user.UserInGroups.Select(x => x.Group).Select(x => x.Name).FirstOrDefault(),
+                Permissions = user.UserInGroups.FirstOrDefault() != null
+                    ? user.UserInGroups.First().Group.Permissions.Select(x => x.Type).ToList()
+                    : new List<string>()
             };
-
+            
             return ApiResponse.Ok(authUser);
         }
 

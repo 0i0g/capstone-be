@@ -1,30 +1,20 @@
 # Warehouse management
 
-### Voucher
-
-### Entity missing:
-- TransferVoucher
-
 ### Service:
 - [ ] Upload
 - [x] Audit log
 - [ ] Push Notification
 
-### Controller:
-- [x] Auth
-- [x] BeginningVoucher
-- [x] Category ~ remove
+### Vouchers:
+- [ ] BeginningVoucher
 - [ ] CheckingVoucher
-- [x] Customer ~ remove
-- [ ] DeliveryVoucher
 - [ ] FixingVoucher
-- [x] Product ~ remove
 - [ ] ReceiveVoucher
-- [ ] TransferVoucher ~ more question
-- [x] User ~ remove
-- [x] UserGroup
-- [ ] VoucherPrefix
-- [x] Warehouse ~ remove
+- [ ] DeliveryVoucherRequest
+- [ ] DeliveryVoucher
+- [ ] TransferVoucherRequest
+- [ ] TransferVoucher
+
 
 # TODO:
 - [ ] Build Controller
@@ -37,22 +27,6 @@
 - [ ] Locked by
 - [x] Audit log service
 - [ ] Authorize
-
-# Test Controller:
-- [ ] Auth
-- [ ] BeginningVoucher
-- [ ] Category
-- [ ] CheckingVoucher
-- [ ] Customer
-- [ ] DeliveryVoucher
-- [ ] FixingVoucher
-- [ ] Product
-- [ ] ReceiveVoucher
-- [ ] TransferVoucher
-- [ ] User
-- [ ] UserGroup
-- [ ] VoucherPrefix
-- [ ] Warehouse
 
 # Dashboard
 

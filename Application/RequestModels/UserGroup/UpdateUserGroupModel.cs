@@ -12,7 +12,7 @@ namespace Application.RequestModels
         public string Name { get; set; }
 
         public string Description { get; set; }
-        
-        public ICollection<string> Permissions { get; set; }
+
+        public ICollection<string> Permissions { get; set; } = new List<string>();
     }
 }

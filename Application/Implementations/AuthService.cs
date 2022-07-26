@@ -86,11 +86,7 @@ namespace Application.Implementations
             await _unitOfWork.SaveChanges();
 
             // Response view model
-            var groups = user.UserInGroups?.Select(x => x.Group).Select(x => new AuthUserGroup()
-            {
-                Name = x.Name,
-                Type = x.Type.ToString()
-            }).ToList() ?? new List<AuthUserGroup>();
+         
             
             var authView = new AuthViewModel
             {
@@ -101,7 +97,10 @@ namespace Application.Implementations
                 {
                     Avatar = user.Avatar,
                     Name = user.FullName,
-                    Groups = groups
+                    Group = user.UserInGroups.Select(x => x.Group).Select(x => x.Name).FirstOrDefault(),
+                    Permissions = user.UserInGroups.FirstOrDefault() != null
+                        ? user.UserInGroups.First().Group.Permissions.Select(x => x.Type).ToList()
+                        : new List<string>()
                 }
             };
 

@@ -24,6 +24,8 @@ namespace Application.ViewModels
 
         public string Name { get; set; }
 
-        public ICollection<AuthUserGroup> Groups { get; set; }
+        public string Group { get; set; }
+        
+        public ICollection<string> Permissions { get; set; }
     }
 }
