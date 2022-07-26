@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "B2A13BC1-4147-414E-A2DD-114BA43F8D47",
+    "Quantity": 15,
+    "RealQuantity": 13,
+    "VoucherId": "747EEB45-B937-44EC-9D91-239D2A448976",
+    "ProductId": "2C160B30-ABEF-4ECC-9EC5-820963C34105",
+    "ProductName": "Laptop"
+  },
+  {
+    "Id": "79665E58-8C6E-45B9-98B8-DF3AD34369FB",
+    "Quantity": 20,
+    "RealQuantity": 18,
+    "VoucherId": "747EEB45-B937-44EC-9D91-239D2A448976",
+    "ProductId": "936A6155-35FE-4F02-AAC7-7DB0E27FD6BA",
+    "ProductName": "Mouse"
+  }
+]

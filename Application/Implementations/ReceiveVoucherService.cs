@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.RequestModels;
 using Application.ViewModels;
-using Application.ViewModels.DeliveryRequestVoucher;
-using Application.ViewModels.DeliveryVoucher;
+using Application.ViewModels.ReceiveVoucher;
 using Data.Entities;
 using Data.Enums;
 using Data_EF.Repositories;
@@ -17,41 +16,44 @@ using Utilities.Extensions;
 
 namespace Application.Implementations
 {
-    public class DeliveryVoucherService : BaseService, IDeliveryVoucherService
+    public class ReceiveVoucherService : BaseService, IReceiveVoucherService
     {
-        private readonly IDeliveryVoucherRepository _deliveryVoucherRepository;
+        private readonly IReceiveVoucherRepository _receiveVoucherRepository;
 
-        private readonly IQueryable<DeliveryVoucher> _deliveryVoucherQueryable;
-        private readonly IQueryable<DeliveryVoucher> _deliveryVoucherAllWarehouseQueryable;
-        private readonly IQueryable<DeliveryRequestVoucher> _deliveryRequestVoucherQueryable;
+        private readonly IQueryable<ReceiveVoucher> _receiveVoucherQueryable;
+        private readonly IQueryable<ReceiveVoucher> _receiveVoucherAllWarehouseQueryable;
+        private readonly IQueryable<ReceiveRequestVoucher> _receiveRequestVoucherQueryable;
         private readonly IQueryable<Customer> _customerQueryable;
         private readonly IQueryable<Product> _productQueryable;
 
-        public DeliveryVoucherService(IServiceProvider provider) : base(provider)
+        public ReceiveVoucherService(IServiceProvider provider) : base(provider)
         {
-            _deliveryVoucherRepository = _unitOfWork.DeliveryVoucher;
-            _deliveryVoucherQueryable =
-                _deliveryVoucherRepository.GetMany(x => x.IsDeleted == false && x.WarehouseId == CurrentUser.Warehouse);
-            _deliveryVoucherAllWarehouseQueryable = _deliveryVoucherRepository.GetMany(x => x.IsDeleted == false);
-            _deliveryRequestVoucherQueryable =
-                _unitOfWork.DeliveryRequestVoucher.GetMany(x =>
+            _receiveVoucherRepository = _unitOfWork.ReceiveVoucher;
+            _receiveVoucherQueryable =
+                _receiveVoucherRepository.GetMany(x => x.IsDeleted == false && x.WarehouseId == CurrentUser.Warehouse);
+            _receiveVoucherAllWarehouseQueryable = _receiveVoucherRepository.GetMany(x => x.IsDeleted == false);
+            _receiveRequestVoucherQueryable =
+                _unitOfWork.ReceiveRequestVoucher.GetMany(x =>
                     x.IsDeleted == false && x.WarehouseId == CurrentUser.Warehouse &&
                     x.Status == EnumStatusRequest.Confirmed);
             _customerQueryable = _unitOfWork.Customer.GetMany(x => x.IsDeleted == false);
             _productQueryable = _unitOfWork.Product.GetMany(x => x.IsDeleted == false && x.IsActive == true);
         }
 
-        public async Task<IActionResult> CreateDeliveryVoucher(CreateDeliveryVoucherModel model)
+        public async Task<IActionResult> CreateReceiveVoucher(CreateReceiveVoucherModel model)
         {
             if (CurrentUser.Warehouse == null)
             {
                 return ApiResponse.BadRequest(MessageConstant.RequiredWarehouse);
             }
 
-            var isCustomerExisted = _customerQueryable.Any(x => x.Id == model.CustomerId);
-            if (!isCustomerExisted) return ApiResponse.NotFound(MessageConstant.CustomerNotFound);
+            if (model.CustomerId != null)
+            {
+                var isCustomerExisted = _customerQueryable.Any(x => x.Id == model.CustomerId);
+                if (!isCustomerExisted) return ApiResponse.NotFound(MessageConstant.CustomerNotFound);
+            }
 
-            var deliveryVoucher = new DeliveryVoucher()
+            var receiveVoucher = new ReceiveVoucher()
             {
                 ReportingDate = model.ReportingDate,
                 Description = model.Description,
@@ -64,12 +66,12 @@ namespace Application.Implementations
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
-                    return ApiResponse.BadRequest(MessageConstant.DeliveryVoucherDetailEmpty);
+                    return ApiResponse.BadRequest(MessageConstant.ReceiveVoucherDetailEmpty);
 
                 var productsInModel = model.Details.Select(x => x.ProductId).ToList();
                 var productIdsSet = new HashSet<Guid>(productsInModel);
                 if (productIdsSet.Count != productsInModel.Count)
-                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductDeliveryVoucherDetail);
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductReceiveVoucherDetail);
 
                 var productsExist = _productQueryable.Where(x => productsInModel.Contains(x.Id)).Select(x => x.Id);
                 var productsNotExist = productsInModel.Except(productsExist).ToList();
@@ -80,11 +82,11 @@ namespace Application.Implementations
 
                 if (model.RequestId != null)
                 {
-                    var request = _deliveryRequestVoucherQueryable.Include(x => x.Details)
+                    var request = _receiveRequestVoucherQueryable.Include(x => x.Details)
                         .FirstOrDefault(x => x.Id == model.RequestId);
                     if (request == null)
                     {
-                        return ApiResponse.NotFound(MessageConstant.DeliveryRequestVoucherNotFound);
+                        return ApiResponse.NotFound(MessageConstant.ReceiveRequestVoucherNotFound);
                     }
 
                     if (CurrentUser.Warehouse != request.WarehouseId)
@@ -97,40 +99,40 @@ namespace Application.Implementations
                     var conflictProductIds = modelProductIds.Except(requestProductIds).ToList();
                     if (conflictProductIds is { Count: > 0 })
                     {
-                        return ApiResponse.NotFound(
+                        return ApiResponse.BadRequest(
                             MessageConstant.ProductsNotFoundInRequestDetails.WithValues(string.Join(", ",
                                 conflictProductIds)));
                     }
 
-                    deliveryVoucher.RequestId = model.RequestId;
+                    receiveVoucher.RequestId = model.RequestId;
                 }
 
-                deliveryVoucher.Details = model.Details.Select(x => new DeliveryVoucherDetail
+                receiveVoucher.Details = model.Details.Select(x => new ReceiveVoucherDetail
                 {
                     Quantity = x.Quantity,
-                    VoucherId = deliveryVoucher.Id,
+                    VoucherId = receiveVoucher.Id,
                     ProductId = x.ProductId,
                     ProductName = _productQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
-            _deliveryVoucherRepository.Add(deliveryVoucher);
+            _receiveVoucherRepository.Add(receiveVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> UpdateDeliveryVoucher(UpdateDeliveryVoucherModel model)
+        public async Task<IActionResult> UpdateReceiveVoucher(UpdateReceiveVoucherModel model)
         {
-            var deliveryVoucher = _deliveryVoucherQueryable
+            var receiveVoucher = _receiveVoucherQueryable
                 .Include(x => x.Details)
                 .Include(x => x.Request).ThenInclude(x => x.Details)
                 .FirstOrDefault(x => x.Id == model.Id);
-            if (deliveryVoucher == null)
-                return ApiResponse.NotFound(MessageConstant.DeliveryVoucherNotFound);
+            if (receiveVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.ReceiveVoucherNotFound);
 
-            if (deliveryVoucher.Locked == true)
-                return ApiResponse.BadRequest(MessageConstant.ForbiddenToUpdateDeliveryVoucher);
+            if (receiveVoucher.Locked == true)
+                return ApiResponse.BadRequest(MessageConstant.ForbiddenToUpdateReceiveVoucher);
 
             if (model.CustomerId != null)
             {
@@ -138,20 +140,20 @@ namespace Application.Implementations
                 if (!isCustomerExisted) return ApiResponse.NotFound(MessageConstant.CustomerNotFound);
             }
 
-            deliveryVoucher.ReportingDate = model.ReportingDate ?? deliveryVoucher.ReportingDate;
-            deliveryVoucher.Description = model.Description ?? deliveryVoucher.Description;
-            deliveryVoucher.CustomerId = model.CustomerId ?? deliveryVoucher.CustomerId;
-            deliveryVoucher.Status = model.Status ?? deliveryVoucher.Status;
+            receiveVoucher.ReportingDate = model.ReportingDate ?? receiveVoucher.ReportingDate;
+            receiveVoucher.Description = model.Description ?? receiveVoucher.Description;
+            receiveVoucher.CustomerId = model.CustomerId ?? receiveVoucher.CustomerId;
+            receiveVoucher.Status = model.Status ?? receiveVoucher.Status;
 
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
-                    return ApiResponse.BadRequest(MessageConstant.DeliveryVoucherDetailEmpty);
+                    return ApiResponse.BadRequest(MessageConstant.ReceiveVoucherDetailEmpty);
 
                 var productsInModel = model.Details.Select(x => x.ProductId).ToList();
                 var productIdsSet = new HashSet<Guid>(productsInModel);
                 if (productIdsSet.Count != productsInModel.Count)
-                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductDeliveryVoucherDetail);
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductReceiveVoucherDetail);
 
                 var productsExist = _productQueryable.Where(x => productsInModel.Contains(x.Id)).Select(x => x.Id);
                 var productsNotExist = productsInModel.Except(productsExist).ToList();
@@ -160,49 +162,49 @@ namespace Application.Implementations
                     return ApiResponse.NotFound(
                         MessageConstant.ProductsNotFound.WithValues(string.Join(", ", productsNotExist)));
 
-                if (deliveryVoucher.Request != null)
+                if (receiveVoucher.Request != null)
                 {
-                    if (CurrentUser.Warehouse != deliveryVoucher.Request.WarehouseId)
+                    if (CurrentUser.Warehouse != receiveVoucher.Request.WarehouseId)
                     {
                         return ApiResponse.NotFound(MessageConstant.RequiredWarehouseRequestVoucher);
                     }
 
                     var modelProductIds = model.Details.Select(x => x.ProductId).ToList();
-                    var requestProductIds = deliveryVoucher.Request.Details.Select(x => x.ProductId).ToList();
+                    var requestProductIds = receiveVoucher.Request.Details.Select(x => x.ProductId).ToList();
                     var conflictProductIds = modelProductIds.Except(requestProductIds).ToList();
                     if (conflictProductIds is { Count: > 0 })
                     {
-                        return ApiResponse.NotFound(
+                        return ApiResponse.BadRequest(
                             MessageConstant.ProductsNotFoundInRequestDetails.WithValues(string.Join(", ",
                                 conflictProductIds)));
                     }
                 }
 
-                deliveryVoucher.Details.Clear();
-                deliveryVoucher.Details = model.Details.Select(x => new DeliveryVoucherDetail
+                receiveVoucher.Details.Clear();
+                receiveVoucher.Details = model.Details.Select(x => new ReceiveVoucherDetail
                 {
                     Quantity = x.Quantity,
-                    VoucherId = deliveryVoucher.Id,
+                    VoucherId = receiveVoucher.Id,
                     ProductId = x.ProductId,
                     ProductName = _productQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
-            _deliveryVoucherRepository.Update(deliveryVoucher);
+            _receiveVoucherRepository.Update(receiveVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> RemoveMulDeliveryVoucher(Guid id)
+        public async Task<IActionResult> RemoveMulReceiveVoucher(Guid id)
         {
-            var deliveryVoucher = _deliveryVoucherQueryable.Include(x => x.Details)
+            var receiveVoucher = _receiveVoucherQueryable.Include(x => x.Details)
                 .FirstOrDefault(x => x.Id == id);
-            if (deliveryVoucher == null)
-                return ApiResponse.NotFound(MessageConstant.DeliveryVoucherNotFound);
+            if (receiveVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.ReceiveVoucherNotFound);
 
-            deliveryVoucher.IsDeleted = true;
-            _deliveryVoucherRepository.Update(deliveryVoucher);
+            receiveVoucher.IsDeleted = true;
+            _receiveVoucherRepository.Update(receiveVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
@@ -210,13 +212,12 @@ namespace Application.Implementations
 
         public async Task<IActionResult> Lock(Guid id)
         {
-            var voucher = _deliveryVoucherQueryable.FirstOrDefault(x => x.Id == id);
-            if (voucher == null)
-                return ApiResponse.NotFound(MessageConstant.DeliveryVoucherNotFound);
+            var receiveVoucher = _receiveVoucherQueryable.FirstOrDefault(x => x.Id == id);
+            if (receiveVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.ReceiveVoucherNotFound);
 
-            voucher.Locked = true;
-
-            _deliveryVoucherRepository.Update(voucher);
+            receiveVoucher.Locked = true;
+            _receiveVoucherRepository.Update(receiveVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
@@ -224,22 +225,21 @@ namespace Application.Implementations
 
         public async Task<IActionResult> Unlock(Guid id)
         {
-            var voucher = _deliveryVoucherQueryable.FirstOrDefault(x => x.Id == id);
-            if (voucher == null)
-                return ApiResponse.NotFound(MessageConstant.DeliveryVoucherNotFound);
+            var receiveVoucher = _receiveVoucherQueryable.FirstOrDefault(x => x.Id == id);
+            if (receiveVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.ReceiveVoucherNotFound);
 
-            voucher.Locked = false;
-
-            _deliveryVoucherRepository.Update(voucher);
+            receiveVoucher.Locked = false;
+            _receiveVoucherRepository.Update(receiveVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
         }
 
-        public IActionResult GetDeliveryVoucher(Guid id)
+        public IActionResult GetReceiveVoucher(Guid id)
         {
-            var deliveryVoucher = _deliveryVoucherQueryable.Where(x => x.Id == id).Select(x =>
-                new DeliveryVoucherViewModel()
+            var receiveVoucher = _receiveVoucherQueryable.Where(x => x.Id == id).Select(x =>
+                new ReceiveVoucherViewModel()
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -258,7 +258,7 @@ namespace Application.Implementations
                         },
                     Request = x.Request == null
                         ? null
-                        : new FetchDeliveryRequestVoucherViewModel
+                        : new FetchReceiveRequestVoucherViewModel()
                         {
                             Id = x.Request.Id,
                             Code = x.Request.Code
@@ -279,7 +279,7 @@ namespace Application.Implementations
                         },
                     Details = x.Details == null
                         ? null
-                        : x.Details.Select(y => new DeliveryVoucherDetailViewModel()
+                        : x.Details.Select(y => new ReceiveVoucherDetailViewModel()
                         {
                             Id = y.Id,
                             RequestQuantity = x.Request == null
@@ -297,29 +297,29 @@ namespace Application.Implementations
                         }).OrderBy(y => y.ProductName).ToList()
                 }).FirstOrDefault();
 
-            if (deliveryVoucher == null) return ApiResponse.NotFound(MessageConstant.DeliveryVoucherNotFound);
+            if (receiveVoucher == null) return ApiResponse.NotFound(MessageConstant.ReceiveVoucherNotFound);
 
-            return ApiResponse.Ok(deliveryVoucher);
+            return ApiResponse.Ok(receiveVoucher);
         }
 
-        public IActionResult FetchDeliveryVoucher(FetchModel model)
+        public IActionResult FetchReceiveVoucher(FetchModel model)
         {
-            var vouchers = _deliveryVoucherQueryable.AsNoTracking()
+            var receiveVouchers = _receiveVoucherQueryable.AsNoTracking()
                 .Where(x => string.IsNullOrWhiteSpace(model.Keyword) || x.Code.Contains(model.Keyword))
                 .Take(model.Size)
                 .Select(x =>
-                    new FetchDeliveryVoucherViewModel()
+                    new FetchReceiveVoucherViewModel()
                     {
                         Id = x.Id,
                         Code = x.Code
                     }).ToList();
 
-            return ApiResponse.Ok(vouchers);
+            return ApiResponse.Ok(receiveVouchers);
         }
 
-        public IActionResult SearchDeliveryVoucherInWarehouse(SearchDeliveryVoucherInWarehouseModel model)
+        public IActionResult SearchReceiveVoucherInWarehouse(SearchReceiveVoucherInWarehouseModel model)
         {
-            var query = _deliveryVoucherQueryable.AsNoTracking().Where(x =>
+            var query = _receiveVoucherQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -357,7 +357,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchDeliveryVoucherViewModel()
+            var data = query.Select(x => new SearchReceiveVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -382,7 +382,7 @@ namespace Application.Implementations
                     },
                 Request = x.Request == null
                     ? null
-                    : new FetchDeliveryRequestVoucherViewModel
+                    : new FetchReceiveRequestVoucherViewModel()
                     {
                         Id = x.Request.Id,
                         Code = x.Request.Code
@@ -392,15 +392,15 @@ namespace Application.Implementations
             return ApiResponse.Ok(data);
         }
 
-        public IActionResult SearchDeliveryVoucherByWarehouse(SearchDeliveryVoucherByWarehouseModel model)
+        public IActionResult SearchReceiveVoucherByWarehouse(SearchReceiveVoucherByWarehouseModel model)
         {
-            var query = _deliveryVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
+            var query = _receiveVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
                 (model.Status == null || x.Status == model.Status) &&
                 (string.IsNullOrWhiteSpace(model.Customer) || x.Customer.Name.Contains(model.Customer)) &&
-                (x.WarehouseId == model.WarehouseId)
+                (model.WarehouseId == x.WarehouseId)
             );
 
             switch (model.OrderByName)
@@ -433,7 +433,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchDeliveryVoucherViewModel()
+            var data = query.Select(x => new SearchReceiveVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -458,7 +458,7 @@ namespace Application.Implementations
                     },
                 Request = x.Request == null
                     ? null
-                    : new FetchDeliveryRequestVoucherViewModel
+                    : new FetchReceiveRequestVoucherViewModel()
                     {
                         Id = x.Request.Id,
                         Code = x.Request.Code
@@ -468,9 +468,9 @@ namespace Application.Implementations
             return ApiResponse.Ok(data);
         }
 
-        public IActionResult SearchDeliveryVoucherAllWarehouse(SearchDeliveryVoucherAllWarehouseModel model)
+        public IActionResult SearchReceiveVoucherAllWarehouse(SearchReceiveVoucherAllWarehouseModel model)
         {
-            var query = _deliveryVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
+            var query = _receiveVoucherAllWarehouseQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -508,7 +508,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchDeliveryVoucherViewModel()
+            var data = query.Select(x => new SearchReceiveVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -533,7 +533,7 @@ namespace Application.Implementations
                     },
                 Request = x.Request == null
                     ? null
-                    : new FetchDeliveryRequestVoucherViewModel
+                    : new FetchReceiveRequestVoucherViewModel()
                     {
                         Id = x.Request.Id,
                         Code = x.Request.Code

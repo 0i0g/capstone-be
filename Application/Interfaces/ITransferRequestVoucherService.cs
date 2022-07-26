@@ -10,7 +10,7 @@ namespace Application.Interfaces
         Task<IActionResult> CreateTransferRequestVoucher(CreateTransferRequestVoucherModel model);
 
         Task<IActionResult> UpdateTransferRequestVoucher(UpdateTransferRequestVoucherModel model);
-        
+
         Task<IActionResult> RemoveMulTransferRequestVoucher(Guid id);
 
         Task<IActionResult> Lock(Guid id);
@@ -19,16 +19,22 @@ namespace Application.Interfaces
 
         IActionResult GetTransferRequestVoucher(Guid id);
 
-        IActionResult FetchTransferRequestVoucherOutbound(FetchModel model);
-        
         IActionResult FetchTransferRequestVoucherInbound(FetchModel model);
-        
-        IActionResult SearchTransferRequestVoucherInWarehouse(SearchTransferRequestVoucherInWarehouseModel model);
-        
-        IActionResult SearchTransferRequestVoucherByInboundWarehouse(SearchTransferRequestVoucherByWarehouseModel model);
-        
-        IActionResult SearchTransferRequestVoucherByOutboundWarehouse(SearchTransferRequestVoucherByWarehouseModel model);
-        
+
+        IActionResult FetchTransferRequestVoucherOutbound(FetchModel model);
+
+        IActionResult
+            SearchTransferRequestVoucherInInboundWarehouse(SearchTransferRequestVoucherInWarehouseModel model);
+
+        IActionResult SearchTransferRequestVoucherInOutboundWarehouse(
+            SearchTransferRequestVoucherInWarehouseModel model);
+
+        IActionResult
+            SearchTransferRequestVoucherByInboundWarehouse(SearchTransferRequestVoucherByWarehouseModel model);
+
+        IActionResult SearchTransferRequestVoucherByOutboundWarehouse(
+            SearchTransferRequestVoucherByWarehouseModel model);
+
         IActionResult SearchTransferRequestVoucherAllWarehouse(SearchTransferRequestVoucherAllWarehouseModel model);
     }
 }

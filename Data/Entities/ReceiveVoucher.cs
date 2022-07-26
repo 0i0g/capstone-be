@@ -5,7 +5,7 @@ using Data.Enums;
 
 namespace Data.Entities
 {
-    public class ReceiveVoucher
+    public class ReceiveVoucher : ISafeEntity
     {
         [Key]
         public Guid Id { get; set; }

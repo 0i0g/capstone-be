@@ -20,7 +20,7 @@
     "ReportingDate": "2022-07-20T07:11:59.4380000",
     "Description": "Delivery Request Voucher 02",
     "Status": "Confirmed",
-    "Locked": false,
+    "Locked": true,
     "CustomerId": "B16C3833-698A-4156-B2D6-0EE490BDFDD8",
     "WarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
     "CreatedAt": "2022-07-20T14:12:58.9566667",

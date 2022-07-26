@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.RequestModels;
 using Application.ViewModels;
-using Application.ViewModels.TransferRequestVoucher;
+using Application.ViewModels.TransferVoucher;
 using Data.Entities;
 using Data.Enums;
 using Data_EF.Repositories;
@@ -15,28 +16,33 @@ using Utilities.Extensions;
 
 namespace Application.Implementations
 {
-    public class TransferRequestVoucherService : BaseService, ITransferRequestVoucherService
+    public class TransferVoucherService : BaseService, ITransferVoucherService
     {
-        private readonly ITransferRequestVoucherRepository _transferRequestVoucherRepository;
-        private readonly IQueryable<TransferRequestVoucher> _transferRequestVoucherQueryable;
+        private readonly ITransferVoucherRepository _transferVoucherRepository;
+        private readonly IQueryable<TransferVoucher> _transferVoucherQueryable;
 
+        private readonly IQueryable<TransferRequestVoucher> _transferRequestVoucherQueryable;
         private readonly IQueryable<Product> _productQueryable;
         private readonly IQueryable<Warehouse> _warehouseQueryable;
         private readonly IQueryable<User> _userQueryable;
 
-        public TransferRequestVoucherService(IServiceProvider provider) : base(provider)
+        public TransferVoucherService(IServiceProvider provider) : base(provider)
         {
-            _transferRequestVoucherRepository = _unitOfWork.TransferRequestVoucher;
-            _transferRequestVoucherQueryable =
-                _transferRequestVoucherRepository.GetMany(x => x.IsDeleted != true).Include(x => x.Details);
+            _transferVoucherRepository = _unitOfWork.TransferVoucher;
+            _transferVoucherQueryable =
+                _transferVoucherRepository.GetMany(x => x.IsDeleted != true).Include(x => x.Details);
 
+            _transferRequestVoucherQueryable =
+                _unitOfWork.TransferRequestVoucher
+                    .GetMany(x => x.IsDeleted != true && x.Status == EnumStatusRequest.Confirmed)
+                    .Include(x => x.Details);
             _productQueryable =
                 _unitOfWork.Product.GetMany(x => x.IsDeleted != true);
             _warehouseQueryable = _unitOfWork.Warehouse.GetMany(x => x.IsDeleted != true);
             _userQueryable = _unitOfWork.User.GetMany(x => x.IsDeleted != true && x.IsActive == true);
         }
 
-        public async Task<IActionResult> CreateTransferRequestVoucher(CreateTransferRequestVoucherModel model)
+        public async Task<IActionResult> CreateTransferVoucher(CreateTransferVoucherModel model)
         {
             if (CurrentUser.Warehouse == null)
             {
@@ -64,11 +70,11 @@ namespace Application.Implementations
                 }
             }
 
-            var newTransferRequestVoucher = new TransferRequestVoucher
+            var transferVoucher = new TransferVoucher()
             {
                 ReportingDate = model.ReportingDate,
                 Description = model.Description,
-                Status = EnumStatusRequest.Pending,
+                Status = EnumStatusVoucher.Pending,
                 Locked = false,
                 InboundWarehouseId = model.InboundWarehouseId,
                 OutboundWarehouseId = CurrentUser.Warehouse!.Value,
@@ -79,53 +85,74 @@ namespace Application.Implementations
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
-                    return ApiResponse.BadRequest(MessageConstant.TransferRequestVoucherDetailEmpty);
+                    return ApiResponse.BadRequest(MessageConstant.TransferVoucherDetailEmpty);
 
-                var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
-                if (duplicateDetail.Count > 0)
-                {
-                    return ApiResponse.BadRequest(MessageConstant.DuplicateTransferRequestVoucherDetailsProduct);
-                }
+                var productsInModel = model.Details.Select(x => x.ProductId).ToList();
+                var productIdsSet = new HashSet<Guid>(productsInModel);
+                if (productIdsSet.Count != productsInModel.Count)
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductTransferVoucherDetail);
 
-                var products = _productQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
-                    .Select(x => x.Id).ToList();
-                var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
-                if (failProducts.Count > 0)
-                {
+                var productsExist = _productQueryable.Where(x => productsInModel.Contains(x.Id)).Select(x => x.Id);
+                var productsNotExist = productsInModel.Except(productsExist).ToList();
+
+                if (productsNotExist is { Count: > 0 })
                     return ApiResponse.NotFound(
-                        MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
+                        MessageConstant.ProductsNotFound.WithValues(string.Join(", ", productsNotExist)));
+
+                if (model.RequestId != null)
+                {
+                    var request = _transferRequestVoucherQueryable.Include(x => x.Details)
+                        .FirstOrDefault(x => x.Id == model.RequestId);
+                    if (request == null)
+                    {
+                        return ApiResponse.NotFound(MessageConstant.TransferRequestVoucherNotFound);
+                    }
+
+                    if (CurrentUser.Warehouse != request.OutboundWarehouseId)
+                    {
+                        return ApiResponse.NotFound(MessageConstant.RequiredWarehouseRequestVoucher);
+                    }
+
+                    var modelProductIds = model.Details.Select(x => x.ProductId).ToList();
+                    var requestProductIds = request.Details.Select(x => x.ProductId).ToList();
+                    var conflictProductIds = modelProductIds.Except(requestProductIds).ToList();
+                    if (conflictProductIds is { Count: > 0 })
+                    {
+                        return ApiResponse.BadRequest(
+                            MessageConstant.ProductsNotFoundInRequestDetails.WithValues(string.Join(", ",
+                                conflictProductIds)));
+                    }
+
+                    transferVoucher.RequestId = model.RequestId;
                 }
 
-                newTransferRequestVoucher.Details = model.Details.Select(x => new TransferRequestVoucherDetail
+                transferVoucher.Details = model.Details.Select(x => new TransferVoucherDetail
                 {
                     Quantity = x.Quantity,
-                    VoucherId = newTransferRequestVoucher.Id,
+                    VoucherId = transferVoucher.Id,
                     ProductId = x.ProductId,
                     ProductName = _productQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
-            _transferRequestVoucherRepository.Add(newTransferRequestVoucher);
-
+            _transferVoucherRepository.Add(transferVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> UpdateTransferRequestVoucher(UpdateTransferRequestVoucherModel model)
+        public async Task<IActionResult> UpdateTransferVoucher(UpdateTransferVoucherModel model)
         {
-            var transferRequestVoucher =
-                _transferRequestVoucherQueryable.Include(x => x.Details).FirstOrDefault(x =>
+            var transferVoucher = _transferVoucherQueryable
+                .Include(x => x.Details)
+                .Include(x => x.Request).ThenInclude(x => x.Details)
+                .FirstOrDefault(x =>
                     x.Id == model.Id && CurrentUser.Warehouse == x.OutboundWarehouseId);
-            if (transferRequestVoucher == null)
-            {
-                return ApiResponse.NotFound(MessageConstant.TransferRequestVoucherNotFound);
-            }
+            if (transferVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.TransferVoucherNotFound);
 
-            if (transferRequestVoucher.Locked == true)
-            {
-                return ApiResponse.NotFound(MessageConstant.ForbiddenToUpdateTransferRequestVoucher);
-            }
+            if (transferVoucher.Locked == true)
+                return ApiResponse.BadRequest(MessageConstant.ForbiddenToUpdateTransferVoucher);
 
             if (model.InboundWarehouseId != null)
             {
@@ -151,23 +178,23 @@ namespace Application.Implementations
                 }
             }
 
-            transferRequestVoucher.ReportingDate = model.ReportingDate ?? transferRequestVoucher.ReportingDate;
-            transferRequestVoucher.Description = model.Description ?? transferRequestVoucher.Description;
-            transferRequestVoucher.Status = model.Status ?? transferRequestVoucher.Status;
-            transferRequestVoucher.InboundWarehouseId =
-                model.InboundWarehouseId ?? transferRequestVoucher.InboundWarehouseId;
-            transferRequestVoucher.DeliveryManId = model.DeliveryManId ?? transferRequestVoucher.DeliveryManId;
-            transferRequestVoucher.RecipientId = model.RecipientId ?? transferRequestVoucher.RecipientId;
+            transferVoucher.ReportingDate = model.ReportingDate ?? transferVoucher.ReportingDate;
+            transferVoucher.Description = model.Description ?? transferVoucher.Description;
+            transferVoucher.Status = model.Status ?? transferVoucher.Status;
+            transferVoucher.InboundWarehouseId =
+                model.InboundWarehouseId ?? transferVoucher.InboundWarehouseId;
+            transferVoucher.DeliveryManId = model.DeliveryManId ?? transferVoucher.DeliveryManId;
+            transferVoucher.RecipientId = model.RecipientId ?? transferVoucher.RecipientId;
 
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
-                    return ApiResponse.BadRequest(MessageConstant.TransferRequestVoucherDetailEmpty);
+                    return ApiResponse.BadRequest(MessageConstant.TransferVoucherDetailEmpty);
 
                 var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
                 if (duplicateDetail.Count > 0)
                 {
-                    return ApiResponse.BadRequest(MessageConstant.DuplicateTransferRequestVoucherDetailsProduct);
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductTransferVoucherDetail);
                 }
 
                 var products = _productQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
@@ -179,81 +206,117 @@ namespace Application.Implementations
                         MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
                 }
 
-                transferRequestVoucher.Details.Clear();
-                transferRequestVoucher.Details = model.Details.Select(x => new TransferRequestVoucherDetail
+                if (transferVoucher.Request != null)
+                {
+                    if (CurrentUser.Warehouse != transferVoucher.Request.OutboundWarehouseId)
+                    {
+                        return ApiResponse.NotFound(MessageConstant.RequiredWarehouseRequestVoucher);
+                    }
+
+                    var modelProductIds = model.Details.Select(x => x.ProductId).ToList();
+                    var requestProductIds = transferVoucher.Request.Details.Select(x => x.ProductId).ToList();
+                    var conflictProductIds = modelProductIds.Except(requestProductIds).ToList();
+                    if (conflictProductIds is { Count: > 0 })
+                    {
+                        return ApiResponse.BadRequest(
+                            MessageConstant.ProductsNotFoundInRequestDetails.WithValues(string.Join(", ",
+                                conflictProductIds)));
+                    }
+                }
+
+                transferVoucher.Details.Clear();
+                transferVoucher.Details = model.Details.Select(x => new TransferVoucherDetail
                 {
                     Quantity = x.Quantity,
-                    VoucherId = transferRequestVoucher.Id,
+                    VoucherId = transferVoucher.Id,
                     ProductId = x.ProductId,
                     ProductName = _productQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
-            _transferRequestVoucherRepository.Update(transferRequestVoucher);
+            _transferVoucherRepository.Update(transferVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
         }
 
-        // public async Task<IActionResult> ReceiveTransferRequestVoucher(ReceiveTransferRequestVoucherModel model)
-        // {
-        //     var transferRequestVoucher =
-        //         _transferRequestVoucherQueryable.Include(x => x.Details).FirstOrDefault(x =>
-        //             x.Id == model.Id && CurrentUser.Warehouse == x.InboundWarehouseId);
-        //     if (transferRequestVoucher == null)
-        //     {
-        //         return ApiResponse.NotFound(MessageConstant.TransferRequestVoucherNotFound);
-        //     }
-        //     
-        //     if (model.Details != null)
-        //     {
-        //         if (model.Details.Count == 0)
-        //             return ApiResponse.BadRequest(MessageConstant.TransferRequestVoucherDetailEmpty);
-        //
-        //         var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
-        //         if (duplicateDetail.Count > 0)
-        //         {
-        //             return ApiResponse.BadRequest(MessageConstant.DuplicateTransferRequestVoucherDetailsProduct);
-        //         }
-        //
-        //         var products = _productsQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
-        //             .Select(x => x.Id).ToList();
-        //         var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
-        //         if (failProducts.Count > 0)
-        //         {
-        //             return ApiResponse.NotFound(
-        //                 MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
-        //         }
-        //
-        //         foreach (var modelDetail in model.Details)
-        //         {
-        //             var detail =
-        //                 transferRequestVoucher.Details.FirstOrDefault(x => x.ProductId == modelDetail.ProductId);
-        //             if (detail != null)
-        //             {
-        //                 detail.RealQuantity = modelDetail.RealQuantity;
-        //             }
-        //         }
-        //     }
-        //     
-        //     _transferRequestVoucherRepository.Update(transferRequestVoucher);
-        //     await _unitOfWork.SaveChanges();
-        //
-        //     return ApiResponse.Ok();
-        // }
-
-        public async Task<IActionResult> RemoveMulTransferRequestVoucher(Guid id)
+        public async Task<IActionResult> ReceiveTransferVoucher(ReceiveTransferVoucherModel model)
         {
-            var transferRequestVoucher =
-                _transferRequestVoucherQueryable.Include(x => x.Details).FirstOrDefault(x =>
-                    x.Id == id && CurrentUser.Warehouse == x.OutboundWarehouseId);
-            if (transferRequestVoucher == null)
+            var transferVoucher = _transferVoucherQueryable
+                .Include(x => x.Details)
+                .Include(x => x.Request).ThenInclude(x => x.Details)
+                .FirstOrDefault(x =>
+                    x.Id == model.Id && x.Status == EnumStatusVoucher.Delivered);
+
+            if (transferVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.TransferVoucherNotFound);
+
+            if (CurrentUser.Warehouse != transferVoucher.InboundWarehouseId)
             {
-                return ApiResponse.NotFound(MessageConstant.TransferRequestVoucherNotFound);
+                return ApiResponse.NotFound(MessageConstant.RequiredWarehouseVoucher);
             }
 
-            transferRequestVoucher.IsDeleted = true;
-            _transferRequestVoucherRepository.Update(transferRequestVoucher);
+            if (transferVoucher.Locked == true)
+                return ApiResponse.BadRequest(MessageConstant.ForbiddenToUpdateTransferVoucher);
+
+            if (model.Details != null)
+            {
+                if (model.Details.Count == 0)
+                    return ApiResponse.BadRequest(MessageConstant.TransferVoucherDetailEmpty);
+
+                var duplicateDetail = model.Details.GroupBy(x => x.ProductId).Where(y => y.Count() > 1).ToList();
+                if (duplicateDetail.Count > 0)
+                {
+                    return ApiResponse.BadRequest(MessageConstant.DuplicateProductTransferVoucherDetail);
+                }
+
+                var products = _productQueryable.Where(x => model.Details.Select(y => y.ProductId).Contains(x.Id))
+                    .Select(x => x.Id).ToList();
+                var failProducts = model.Details.Select(x => x.ProductId).Except(products).ToList();
+                if (failProducts.Count > 0)
+                {
+                    return ApiResponse.NotFound(
+                        MessageConstant.ProductsInRangeNotFound.WithValues(string.Join(", ", failProducts)));
+                }
+
+                var modelProductIds = model.Details.Select(x => x.ProductId).ToList();
+                var voucherProductIds = transferVoucher.Details.Select(x => x.ProductId).ToList();
+                var conflictProductIds = modelProductIds.Except(voucherProductIds).ToList();
+                if (conflictProductIds is { Count: > 0 })
+                {
+                    return ApiResponse.BadRequest(
+                        MessageConstant.ProductsNotFoundInVoucherDetails.WithValues(string.Join(", ",
+                            conflictProductIds)));
+                }
+
+                foreach (var modelDetail in model.Details)
+                {
+                    var detail = transferVoucher.Details.FirstOrDefault(x => x.ProductId == modelDetail.ProductId);
+                    if (detail != null)
+                    {
+                        detail.RealQuantity = modelDetail.RealQuantity;
+                    }
+                }
+            }
+
+            _transferVoucherRepository.Update(transferVoucher);
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+
+        public async Task<IActionResult> RemoveMulTransferVoucher(Guid id)
+        {
+            var transferVoucher =
+                _transferVoucherQueryable.Include(x => x.Details).FirstOrDefault(x =>
+                    x.Id == id && CurrentUser.Warehouse == x.OutboundWarehouseId);
+            if (transferVoucher == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.TransferVoucherNotFound);
+            }
+
+            transferVoucher.IsDeleted = true;
+            _transferVoucherRepository.Update(transferVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
@@ -261,15 +324,15 @@ namespace Application.Implementations
 
         public async Task<IActionResult> Lock(Guid id)
         {
-            var transferRequestVoucher =
-                _transferRequestVoucherQueryable.FirstOrDefault(x =>
+            var transferVoucher =
+                _transferVoucherQueryable.FirstOrDefault(x =>
                     x.Id == id && CurrentUser.Warehouse == x.OutboundWarehouseId);
-            if (transferRequestVoucher == null)
-                return ApiResponse.BadRequest(MessageConstant.TransferRequestVoucherNotFound);
+            if (transferVoucher == null)
+                return ApiResponse.BadRequest(MessageConstant.TransferVoucherNotFound);
 
-            transferRequestVoucher.Locked = true;
+            transferVoucher.Locked = true;
 
-            _transferRequestVoucherRepository.Update(transferRequestVoucher);
+            _transferVoucherRepository.Update(transferVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
@@ -277,25 +340,25 @@ namespace Application.Implementations
 
         public async Task<IActionResult> Unlock(Guid id)
         {
-            var transferRequestVoucher =
-                _transferRequestVoucherQueryable.FirstOrDefault(x =>
+            var transferVoucher =
+                _transferVoucherQueryable.FirstOrDefault(x =>
                     x.Id == id && CurrentUser.Warehouse == x.OutboundWarehouseId);
-            if (transferRequestVoucher == null)
-                return ApiResponse.BadRequest(MessageConstant.TransferRequestVoucherNotFound);
+            if (transferVoucher == null)
+                return ApiResponse.BadRequest(MessageConstant.TransferVoucherNotFound);
 
-            transferRequestVoucher.Locked = false;
+            transferVoucher.Locked = false;
 
-            _transferRequestVoucherRepository.Update(transferRequestVoucher);
+            _transferVoucherRepository.Update(transferVoucher);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
         }
 
-        public IActionResult GetTransferRequestVoucher(Guid id)
+        public IActionResult GetTransferVoucher(Guid id)
         {
-            var transferRequestVoucher = _transferRequestVoucherQueryable
+            var transferVoucher = _transferVoucherQueryable
                 .Where(x => x.Id == id && CurrentUser.Warehouse == x.OutboundWarehouseId)
-                .Select(x => new TransferRequestVoucherViewModel
+                .Select(x => new TransferVoucherViewModel
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -344,10 +407,14 @@ namespace Application.Implementations
                         },
                     Details = x.Details == null
                         ? null
-                        : x.Details.Select(y => new TransferRequestVoucherDetailViewModel
+                        : x.Details.Select(y => new TransferVoucherDetailViewModel
                         {
                             Id = y.Id,
-                            Quantity = y.Quantity,
+                            RequestQuantity = x.Request == null
+                                ? null
+                                : x.Request.Details.FirstOrDefault(z => z.ProductId == y.ProductId).Quantity,
+                            VoucherQuantity = y.Quantity,
+                            RealQuantity = y.RealQuantity,
                             ProductName = y.ProductName,
                             Product = new FetchProductViewModel()
                             {
@@ -357,44 +424,43 @@ namespace Application.Implementations
                         }).OrderBy(y => y.ProductName).ToList(),
                 }).FirstOrDefault();
 
-            if (transferRequestVoucher == null)
-                return ApiResponse.NotFound(MessageConstant.TransferRequestVoucherNotFound);
+            if (transferVoucher == null)
+                return ApiResponse.NotFound(MessageConstant.TransferVoucherNotFound);
 
-            return ApiResponse.Ok(transferRequestVoucher);
+            return ApiResponse.Ok(transferVoucher);
         }
 
-        public IActionResult FetchTransferRequestVoucherOutbound(FetchModel model)
+        public IActionResult FetchTransferVoucherOutbound(FetchModel model)
         {
-            var transferRequestVouchers = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var transferVouchers = _transferVoucherQueryable.AsNoTracking().Where(x =>
                     (string.IsNullOrWhiteSpace(model.Keyword) || x.Code.Contains(model.Keyword)) &&
                     x.OutboundWarehouseId == CurrentUser.Warehouse)
-                .Take(model.Size).Select(x => new FetchTransferRequestVoucherViewModel
+                .Take(model.Size).Select(x => new FetchTransferVoucherViewModel
                 {
                     Id = x.Id,
                     Code = x.Code
                 }).ToList();
 
-            return ApiResponse.Ok(transferRequestVouchers);
+            return ApiResponse.Ok(transferVouchers);
         }
 
-        public IActionResult FetchTransferRequestVoucherInbound(FetchModel model)
+        public IActionResult FetchTransferVoucherInbound(FetchModel model)
         {
-            var transferRequestVouchers = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var transferVouchers = _transferVoucherQueryable.AsNoTracking().Where(x =>
                     (string.IsNullOrWhiteSpace(model.Keyword) || x.Code.Contains(model.Keyword)) &&
                     x.InboundWarehouseId == CurrentUser.Warehouse)
-                .Take(model.Size).Select(x => new FetchTransferRequestVoucherViewModel
+                .Take(model.Size).Select(x => new FetchTransferVoucherViewModel
                 {
                     Id = x.Id,
                     Code = x.Code
                 }).ToList();
 
-            return ApiResponse.Ok(transferRequestVouchers);
+            return ApiResponse.Ok(transferVouchers);
         }
 
-        public IActionResult SearchTransferRequestVoucherInInboundWarehouse(
-            SearchTransferRequestVoucherInWarehouseModel model)
+        public IActionResult SearchTransferVoucherInInboundWarehouse(SearchTransferVoucherInWarehouseModel model)
         {
-            var query = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var query = _transferVoucherQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -432,7 +498,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchTransferRequestVoucherViewModel()
+            var data = query.Select(x => new SearchTransferVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -460,10 +526,9 @@ namespace Application.Implementations
             return ApiResponse.Ok(data);
         }
 
-        public IActionResult SearchTransferRequestVoucherInOutboundWarehouse(
-            SearchTransferRequestVoucherInWarehouseModel model)
+        public IActionResult SearchTransferVoucherInOutboundWarehouse(SearchTransferVoucherInWarehouseModel model)
         {
-            var query = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var query = _transferVoucherQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -501,7 +566,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchTransferRequestVoucherViewModel()
+            var data = query.Select(x => new SearchTransferVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -529,10 +594,9 @@ namespace Application.Implementations
             return ApiResponse.Ok(data);
         }
 
-        public IActionResult SearchTransferRequestVoucherByInboundWarehouse(
-            SearchTransferRequestVoucherByWarehouseModel model)
+        public IActionResult SearchTransferVoucherByInboundWarehouse(SearchTransferVoucherByWarehouseModel model)
         {
-            var query = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var query = _transferVoucherQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -570,7 +634,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchTransferRequestVoucherViewModel()
+            var data = query.Select(x => new SearchTransferVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -598,10 +662,9 @@ namespace Application.Implementations
             return ApiResponse.Ok(data);
         }
 
-        public IActionResult SearchTransferRequestVoucherByOutboundWarehouse(
-            SearchTransferRequestVoucherByWarehouseModel model)
+        public IActionResult SearchTransferVoucherByOutboundWarehouse(SearchTransferVoucherByWarehouseModel model)
         {
-            var query = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var query = _transferVoucherQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -639,7 +702,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchTransferRequestVoucherViewModel()
+            var data = query.Select(x => new SearchTransferVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
@@ -667,10 +730,9 @@ namespace Application.Implementations
             return ApiResponse.Ok(data);
         }
 
-        public IActionResult SearchTransferRequestVoucherAllWarehouse(
-            SearchTransferRequestVoucherAllWarehouseModel model)
+        public IActionResult SearchTransferVoucherAllWarehouse(SearchTransferVoucherAllWarehouseModel model)
         {
-            var query = _transferRequestVoucherQueryable.AsNoTracking().Where(x =>
+            var query = _transferVoucherQueryable.AsNoTracking().Where(x =>
                 (string.IsNullOrWhiteSpace(model.Code) || x.Code.Contains(model.Code)) &&
                 (model.FromDate == null || x.ReportingDate >= model.FromDate) &&
                 (model.ToDate == null || x.ReportingDate <= model.ToDate) &&
@@ -707,7 +769,7 @@ namespace Application.Implementations
                         MessageConstant.OrderByInvalid.WithValues("Code, CreatedAt, ReportingDate, Status"));
             }
 
-            var data = query.Select(x => new SearchTransferRequestVoucherViewModel()
+            var data = query.Select(x => new SearchTransferVoucherViewModel()
             {
                 Id = x.Id,
                 Code = x.Code,
