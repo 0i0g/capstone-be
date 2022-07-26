@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.RequestModels;
 using Application.ViewModels;
+using Application.ViewModels.TransferRequestVoucher;
 using Application.ViewModels.TransferVoucher;
 using Data.Entities;
 using Data.Enums;
@@ -375,6 +376,13 @@ namespace Application.Implementations
                             Name = x.CreatedBy.FullName,
                             Avatar = x.CreatedBy.Avatar
                         },
+                    Request = x.Request == null
+                        ? null
+                        : new FetchTransferRequestVoucherViewModel
+                        {
+                            Id = x.Request.Id,
+                            Code = x.Request.Code
+                        },
                     InboundWarehouse = x.InboundWarehouse == null
                         ? null
                         : new FetchWarehouseViewModel
@@ -507,6 +515,13 @@ namespace Application.Implementations
                 Status = x.Status,
                 Locked = x.Locked,
                 CreatedAt = x.CreatedAt,
+                Request = x.Request == null
+                    ? null
+                    : new FetchTransferRequestVoucherViewModel
+                    {
+                        Id = x.Request.Id,
+                        Code = x.Request.Code
+                    },
                 InboundWarehouse = x.InboundWarehouse == null
                     ? null
                     : new FetchWarehouseViewModel()
@@ -575,6 +590,13 @@ namespace Application.Implementations
                 Status = x.Status,
                 Locked = x.Locked,
                 CreatedAt = x.CreatedAt,
+                Request = x.Request == null
+                    ? null
+                    : new FetchTransferRequestVoucherViewModel
+                    {
+                        Id = x.Request.Id,
+                        Code = x.Request.Code
+                    },
                 InboundWarehouse = x.InboundWarehouse == null
                     ? null
                     : new FetchWarehouseViewModel()
@@ -643,6 +665,13 @@ namespace Application.Implementations
                 Status = x.Status,
                 Locked = x.Locked,
                 CreatedAt = x.CreatedAt,
+                Request = x.Request == null
+                    ? null
+                    : new FetchTransferRequestVoucherViewModel
+                    {
+                        Id = x.Request.Id,
+                        Code = x.Request.Code
+                    },
                 InboundWarehouse = x.InboundWarehouse == null
                     ? null
                     : new FetchWarehouseViewModel()
@@ -711,6 +740,13 @@ namespace Application.Implementations
                 Status = x.Status,
                 Locked = x.Locked,
                 CreatedAt = x.CreatedAt,
+                Request = x.Request == null
+                    ? null
+                    : new FetchTransferRequestVoucherViewModel
+                    {
+                        Id = x.Request.Id,
+                        Code = x.Request.Code
+                    },
                 InboundWarehouse = x.InboundWarehouse == null
                     ? null
                     : new FetchWarehouseViewModel()
@@ -778,6 +814,13 @@ namespace Application.Implementations
                 Status = x.Status,
                 Locked = x.Locked,
                 CreatedAt = x.CreatedAt,
+                Request = x.Request == null
+                    ? null
+                    : new FetchTransferRequestVoucherViewModel
+                    {
+                        Id = x.Request.Id,
+                        Code = x.Request.Code
+                    },
                 InboundWarehouse = x.InboundWarehouse == null
                     ? null
                     : new FetchWarehouseViewModel()
