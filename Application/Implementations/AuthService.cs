@@ -92,16 +92,7 @@ namespace Application.Implementations
             {
                 UserId = user.Id,
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                User = new AuthUserViewModel
-                {
-                    Avatar = user.Avatar,
-                    Name = user.FullName,
-                    Group = user.UserInGroups.Select(x => x.Group).Select(x => x.Name).FirstOrDefault(),
-                    Permissions = user.UserInGroups.FirstOrDefault() != null
-                        ? user.UserInGroups.First().Group.Permissions.Select(x => x.Type).ToList()
-                        : new List<string>()
-                }
+                RefreshToken = refreshToken
             };
 
             return ApiResponse.Ok(authView);
