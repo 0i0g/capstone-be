@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Data.Enums;
 
 namespace Application.RequestModels
 {
-    public class UpdateReceiveRequestVoucherModel
+    public class UpdateReceiveVoucherModel
     {
-        [Required] 
+        [Required]
         public Guid Id { get; set; }
 
         public DateTime? ReportingDate { get; set; }
@@ -16,11 +16,9 @@ namespace Application.RequestModels
 
         public Guid? CustomerId { get; set; }
 
-        public bool IsCustomerIdNull { get; set; } = false;
+        [EnumDataType(typeof(EnumStatusVoucher))]
+        public EnumStatusVoucher? Status { get; set; }
 
-        [EnumDataType(typeof(EnumStatusRequest))]
-        public EnumStatusRequest? Status { get; set; }
-        
-        public ICollection<ReceiveRequestVoucherDetailModel> Details { get; set; }
+        public ICollection<ReceiveVoucherDetailModel> Details { get; set; }
     }
 }

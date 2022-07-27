@@ -410,6 +410,12 @@ namespace Data_EF
             modelBuilder.Entity<ReceiveRequestVoucherDetail>().HasData(DataHelper.ReadSeedData<ReceiveRequestVoucherDetail>(DataHelper.MapPath("SeedData/ReceiveRequestVoucherDetail.json")));
             modelBuilder.Entity<TransferRequestVoucher>().HasData(DataHelper.ReadSeedData<TransferRequestVoucher>(DataHelper.MapPath("SeedData/TransferRequestVoucher.json")));
             modelBuilder.Entity<TransferRequestVoucherDetail>().HasData(DataHelper.ReadSeedData<TransferRequestVoucherDetail>(DataHelper.MapPath("SeedData/TransferRequestVoucherDetail.json")));
+            modelBuilder.Entity<DeliveryVoucher>().HasData(DataHelper.ReadSeedData<DeliveryVoucher>(DataHelper.MapPath("SeedData/DeliveryVoucher.json")));
+            modelBuilder.Entity<DeliveryVoucherDetail>().HasData(DataHelper.ReadSeedData<DeliveryVoucherDetail>(DataHelper.MapPath("SeedData/DeliveryVoucherDetail.json")));
+            modelBuilder.Entity<ReceiveVoucher>().HasData(DataHelper.ReadSeedData<ReceiveVoucher>(DataHelper.MapPath("SeedData/ReceiveVoucher.json")));
+            modelBuilder.Entity<ReceiveVoucherDetail>().HasData(DataHelper.ReadSeedData<ReceiveVoucherDetail>(DataHelper.MapPath("SeedData/ReceiveVoucherDetail.json")));
+            modelBuilder.Entity<TransferVoucher>().HasData(DataHelper.ReadSeedData<TransferVoucher>(DataHelper.MapPath("SeedData/TransferVoucher.json")));
+            modelBuilder.Entity<TransferVoucherDetail>().HasData(DataHelper.ReadSeedData<TransferVoucherDetail>(DataHelper.MapPath("SeedData/TransferVoucherDetail.json")));
 
             // @formatter:on
 

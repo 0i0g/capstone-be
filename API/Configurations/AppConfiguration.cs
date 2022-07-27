@@ -36,6 +36,8 @@ namespace API.Configurations
             services.AddScoped<IFixingVoucherService, FixingVoucherService>();
             services.AddScoped<ITransferRequestVoucherService, TransferRequestVoucherService>();
             services.AddScoped<IDeliveryVoucherService, DeliveryVoucherService>();
+            services.AddScoped<IReceiveVoucherService, ReceiveVoucherService>();
+            services.AddScoped<ITransferVoucherService, TransferVoucherService>();
 
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();

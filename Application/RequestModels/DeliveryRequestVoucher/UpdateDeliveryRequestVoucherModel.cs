@@ -16,6 +16,7 @@ namespace Application.RequestModels
 
         public Guid? CustomerId { get; set; }
 
+        [EnumDataType(typeof(EnumStatusRequest))]
         public EnumStatusRequest? Status { get; set; }
 
         public ICollection<DeliveryRequestVoucherDetailModel> Details { get; set; }

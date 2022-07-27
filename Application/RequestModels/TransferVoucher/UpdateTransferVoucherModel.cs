@@ -5,7 +5,7 @@ using Data.Enums;
 
 namespace Application.RequestModels
 {
-    public class UpdateTransferRequestVoucherModel
+    public class UpdateTransferVoucherModel
     {
         [Required]
         public Guid Id { get; set; }
@@ -14,8 +14,8 @@ namespace Application.RequestModels
 
         public string Description { get; set; }
         
-        [EnumDataType(typeof(EnumStatusRequest))]
-        public EnumStatusRequest? Status { get; set; }
+        [EnumDataType(typeof(EnumStatusVoucher))]
+        public EnumStatusVoucher? Status { get; set; }
         
         public Guid? InboundWarehouseId { get; set; }
 
@@ -23,6 +23,6 @@ namespace Application.RequestModels
 
         public Guid? RecipientId { get; set; }
 
-        public ICollection<TransferRequestVoucherDetailModel> Details { get; set; }
+        public ICollection<TransferVoucherDetailModel> Details { get; set; }
     }
 }

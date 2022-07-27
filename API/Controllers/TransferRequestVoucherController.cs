@@ -9,7 +9,7 @@ namespace API.Controllers
 {
     [Authentication]
     [Route("transfer-request-voucher")]
-    public class TransferRequestVoucherController: BaseController
+    public class TransferRequestVoucherController : BaseController
     {
         private readonly ITransferRequestVoucherService _transferRequestVoucherService;
 
@@ -17,25 +17,25 @@ namespace API.Controllers
         {
             _transferRequestVoucherService = transferRequestVoucherService;
         }
-        
+
         [HttpPost]
         public Task<IActionResult> CreateTransferRequestVoucher(CreateTransferRequestVoucherModel model)
         {
             return _transferRequestVoucherService.CreateTransferRequestVoucher(model);
         }
-        
+
         [HttpPut]
         public Task<IActionResult> UpdateTransferRequestVoucher(UpdateTransferRequestVoucherModel model)
         {
             return _transferRequestVoucherService.UpdateTransferRequestVoucher(model);
         }
-        
+
         [HttpDelete]
         public Task<IActionResult> RemoveMulTransferRequestVoucher(Guid id)
         {
             return _transferRequestVoucherService.RemoveMulTransferRequestVoucher(id);
         }
-        
+
         [Route("lock")]
         [HttpPut]
         public Task<IActionResult> Lock(Guid id)
@@ -49,11 +49,18 @@ namespace API.Controllers
         {
             return _transferRequestVoucherService.Unlock(id);
         }
-        
+
         [HttpGet]
         public IActionResult GetTransferRequestVoucher(Guid id)
         {
             return _transferRequestVoucherService.GetTransferRequestVoucher(id);
+        }
+
+        [Route("fetch/inbound")]
+        [HttpPost]
+        public IActionResult FetchTransferRequestVoucherInbound(FetchModel model)
+        {
+            return _transferRequestVoucherService.FetchTransferRequestVoucherInbound(model);
         }
 
         [Route("fetch/outbound")]
@@ -62,41 +69,45 @@ namespace API.Controllers
         {
             return _transferRequestVoucherService.FetchTransferRequestVoucherOutbound(model);
         }
-        
-        [Route("fetch/inbound")]
+
+        [Route("search/inbound")]
         [HttpPost]
-        public IActionResult FetchTransferRequestVoucherInbound(FetchModel model)
+        public IActionResult SearchTransferRequestVoucherInInboundWarehouse(
+            SearchTransferRequestVoucherInWarehouseModel model)
         {
-            return _transferRequestVoucherService.FetchTransferRequestVoucherInbound(model);
+            return _transferRequestVoucherService.SearchTransferRequestVoucherInInboundWarehouse(model);
         }
-        
-        [Route("search")]
+
+        [Route("search/outbound")]
         [HttpPost]
-        public IActionResult SearchTransferRequestVoucherInWarehouse(SearchTransferRequestVoucherInWarehouseModel model)
+        public IActionResult SearchTransferRequestVoucherInOutboundWarehouse(
+            SearchTransferRequestVoucherInWarehouseModel model)
         {
-            return _transferRequestVoucherService.SearchTransferRequestVoucherInWarehouse(model);
+            return _transferRequestVoucherService.SearchTransferRequestVoucherInOutboundWarehouse(model);
         }
-        
+
         [Route("search/warehouse/inbound")]
         [HttpPost]
-        public IActionResult SearchTransferRequestVoucherByInboundWarehouse(SearchTransferRequestVoucherByWarehouseModel model)
+        public IActionResult SearchTransferRequestVoucherByInboundWarehouse(
+            SearchTransferRequestVoucherByWarehouseModel model)
         {
             return _transferRequestVoucherService.SearchTransferRequestVoucherByInboundWarehouse(model);
         }
-        
+
         [Route("search/warehouse/outbound")]
         [HttpPost]
-        public IActionResult SearchTransferRequestVoucherByOutboundWarehouse(SearchTransferRequestVoucherByWarehouseModel model)
+        public IActionResult SearchTransferRequestVoucherByOutboundWarehouse(
+            SearchTransferRequestVoucherByWarehouseModel model)
         {
             return _transferRequestVoucherService.SearchTransferRequestVoucherByOutboundWarehouse(model);
         }
-        
+
         [Route("search/all")]
         [HttpPost]
-        public IActionResult SearchTransferRequestVoucherAllWarehouse(SearchTransferRequestVoucherAllWarehouseModel model)
+        public IActionResult SearchTransferRequestVoucherAllWarehouse(
+            SearchTransferRequestVoucherAllWarehouseModel model)
         {
             return _transferRequestVoucherService.SearchTransferRequestVoucherAllWarehouse(model);
         }
-    
     }
 }
