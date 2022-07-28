@@ -10,6 +10,8 @@ namespace Application.ViewModels.UserGroup
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public bool CanUpdate { get; set; }
         
         #region Permission
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -32,17 +33,18 @@ namespace Application.Implementations
             _userGroupRepository = _unitOfWork.UserGroup;
             _userRepository = _unitOfWork.User;
             _permissionRepository = _unitOfWork.Permission;
+
             _userGroupInWarehouseQueryable = _userGroupRepository.GetMany(x =>
                 x.Type == EnumUserGroupType.Warehouse && x.InWarehouseId == CurrentUser.Warehouse &&
                 x.IsDeleted != true);
             _userGroupInSystemQueryable =
                 _userGroupRepository.GetMany(x => x.Type == EnumUserGroupType.System && x.IsDeleted != true);
+
             _logger = logger;
         }
 
 
-        public async Task<IActionResult> CreateUserGroup(CreateUserGroupModel model,
-            EnumUserGroupType type = EnumUserGroupType.Warehouse)
+        public async Task<IActionResult> CreateUserGroup(CreateUserGroupModel model, EnumUserGroupType type)
         {
             var queryable = type == EnumUserGroupType.Warehouse
                 ? _userGroupInWarehouseQueryable
@@ -59,7 +61,9 @@ namespace Application.Implementations
                 Name = model.Name,
                 Description = model.Description,
                 Type = type,
-                InWarehouseId = type == EnumUserGroupType.Warehouse ? CurrentUser.Warehouse!.Value : null
+                InWarehouseId = type == EnumUserGroupType.Warehouse ? CurrentUser.Warehouse!.Value : null,
+                Permissions = PermissionManager.GetValidWarehousePermission(model.Permissions)
+                    .Select(x => new Permission {Type = x}).ToList()
             });
 
             await _unitOfWork.SaveChanges();
@@ -67,8 +71,7 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> UpdateUserGroup(UpdateUserGroupModel model,
-            EnumUserGroupType type = EnumUserGroupType.Warehouse)
+        public async Task<IActionResult> UpdateUserGroup(UpdateUserGroupModel model, EnumUserGroupType type)
         {
             var queryable = type == EnumUserGroupType.Warehouse
                 ? _userGroupInWarehouseQueryable
@@ -82,7 +85,7 @@ namespace Application.Implementations
 
             if (userGroup.CanUpdate != true)
             {
-                return ApiResponse.NotFound(MessageConstant.CannotUpdateDefaultUserGroup);
+                return ApiResponse.BadRequest(MessageConstant.CannotUpdateDefaultUserGroup);
             }
 
             // check conflict name
@@ -97,9 +100,9 @@ namespace Application.Implementations
 
             userGroup.Name = model.Name ?? userGroup.Name;
             userGroup.Description = model.Description ?? userGroup.Description;
-            userGroup.Permissions =PermissionManager.GetValidWarehousePermission(model.Permissions)
+            userGroup.Permissions = PermissionManager.GetValidWarehousePermission(model.Permissions)
                 .Select(x => new Permission {Type = x}).ToList();
-            
+
             _userGroupRepository.Update(userGroup);
             await _unitOfWork.SaveChanges();
 
@@ -147,31 +150,33 @@ namespace Application.Implementations
             return ApiResponse.Ok();
         }
 
-        public async Task<IActionResult> RemoveUserGroup(RemoveModel model, EnumUserGroupType type)
+        public async Task<IActionResult> RemoveMulUserGroup(List<Guid> ids, EnumUserGroupType type)
         {
             var queryable = type == EnumUserGroupType.Warehouse
                 ? _userGroupInWarehouseQueryable
                 : _userGroupInSystemQueryable;
 
-            var userGroup = queryable.Where(x => x.Id == model.Id).Include(x => x.UserInGroups).FirstOrDefault();
-            if (userGroup == null)
+            var defaultGroups = queryable.Where(x => ids.Contains(x.Id) && x.CanUpdate == false).ToList();
+            if (defaultGroups.Count > 0)
             {
-                return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
+                return ApiResponse.BadRequest(
+                    MessageConstant.CannotDeleteDefaultUserGroup.WithValues(
+                        string.Join(", ", defaultGroups.Select(x => x.Name))));
             }
 
-            if (userGroup.UserInGroups.Count > 0 && model.ForceRemoveRef == false)
+            var userGroups = queryable.Where(x => ids.Contains(x.Id)).Include(x => x.UserInGroups).ToList();
+
+            var groupsHaveUser = userGroups.Where(x => x.UserInGroups.Count > 0).ToList();
+            if (groupsHaveUser.Count > 0)
             {
-                return ApiResponse.NotFound(MessageConstant.CannotRemoveUserGroupContainUser);
+                return ApiResponse.BadRequest(
+                    MessageConstant.CannotRemoveMulUserGroupContainUser.WithValues(
+                        string.Join(", ", groupsHaveUser.Select(x => x.Name))));
             }
 
-            if (userGroup.UserInGroups.Count > 0 && model.ForceRemoveRef)
-            {
-                userGroup.UserInGroups.Clear();
-            }
+            userGroups.ForEach(x => { x.IsDeleted = true; });
 
-            userGroup.IsDeleted = true;
-
-            _userGroupRepository.Update(userGroup);
+            _userGroupRepository.UpdateRange(userGroups);
             await _unitOfWork.SaveChanges();
 
             return ApiResponse.Ok();
@@ -232,7 +237,8 @@ namespace Application.Implementations
                 Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
-                Permissions = x.Permissions.Select(x => x.Type).ToList()
+                Permissions = x.Permissions.Select(x => x.Type).ToList(),
+                CanUpdate = x.CanUpdate.Value
             }).ToPagination(model.PageIndex, model.PageSize);
 
             return ApiResponse.Ok(data);

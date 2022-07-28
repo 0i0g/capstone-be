@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.RequestModels;
 using Data.Enums;
@@ -14,7 +15,7 @@ namespace Application.Interfaces
 
         Task<IActionResult> AddUserInToGroup(AddUserInToGroupModel model, EnumUserGroupType type);
 
-        Task<IActionResult> RemoveUserGroup(RemoveModel model, EnumUserGroupType type);
+        Task<IActionResult> RemoveMulUserGroup(List<Guid> ids, EnumUserGroupType type);
 
         IActionResult GetUserGroup(Guid id, EnumUserGroupType type);
 

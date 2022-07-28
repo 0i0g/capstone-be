@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Configurations.Filter;
 using Application.Interfaces;
@@ -50,9 +51,9 @@ namespace API.Controllers
         // [PermissionRequired("Permission.UserGroupSystem.Delete")]
         [Route("system/group")]
         [HttpDelete]
-        public async Task<IActionResult> RemoveUserGroupSystem(RemoveModel model)
+        public async Task<IActionResult> RemoveMulUserGroupSystem(List<Guid> ids)
         {
-            return await _userGroupService.RemoveUserGroup(model, EnumUserGroupType.System);
+            return await _userGroupService.RemoveMulUserGroup(ids, EnumUserGroupType.System);
         }
 
         [Authentication]
@@ -135,9 +136,9 @@ namespace API.Controllers
         // [PermissionRequired("Permission.UserGroupWarehouse.Delete")]
         [Route("warehouse/group")]
         [HttpDelete]
-        public async Task<IActionResult> RemoveUserGroupWarehouse(RemoveModel model)
+        public async Task<IActionResult> RemoveMulUserGroupWarehouse(List<Guid> ids)
         {
-            return await _userGroupService.RemoveUserGroup(model, EnumUserGroupType.Warehouse);
+            return await _userGroupService.RemoveMulUserGroup(ids, EnumUserGroupType.Warehouse);
         }
 
         [Authentication(warehouseRequired: true)]

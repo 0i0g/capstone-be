@@ -81,7 +81,9 @@ namespace Utilities.Constants
         public static ResponseMessage UserGroupNotFound => new() { Code = "4001", Value = "Group does not exist or has been deleted" };
         public static ResponseMessage DuplicateUserGroup => new() { Code = "4001", Value = "User already belongs to this group" };
         public static ResponseMessage CannotUpdateDefaultUserGroup => new() { Code = "4001", Value = "Cannot update default group" };
+        public static ResponseMessage CannotDeleteDefaultUserGroup => new() { Code = "4001", Value = "Cannot update default group ({0})" };
         public static ResponseMessage CannotRemoveUserGroupContainUser => new() { Code = "4001", Value = "Remove {0} users in this group before delete" };
+        public static ResponseMessage CannotRemoveMulUserGroupContainUser => new() { Code = "4001", Value = "Cannot delete Groups have Users ({0})" };
 
         /* User */
         public static ResponseMessage ProfileNotFound => new() { Code = "1004", Value = "User does not exist or has been deleted" };

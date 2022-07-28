@@ -349,7 +349,6 @@ namespace Data_EF
 
                 entity.Property(x => x.CanUpdate).HasDefaultValue(true);
                 entity.Property(x => x.Type).HasConversion<string>();
-                entity.HasIndex(x => new { x.Name, x.InWarehouseId }).IsUnique();
 
                 entity.HasOne(x => x.InWarehouse).WithMany(x => x.UserGroups).HasForeignKey(x => x.InWarehouseId)
                     .OnDelete(DeleteBehavior.NoAction);
