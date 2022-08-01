@@ -105,6 +105,9 @@
       <None Update="SqlQuery\Triggers\tr_add_beginning_voucher_custom_code.sql">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="SqlQuery\Triggers\tr_add_product_custom_code.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

@@ -43,5 +43,10 @@
     "Id": 9,
     "Name": "Phiếu kiểm kho",
     "Prefix": "PKK"
+  },
+  {
+    "Id": 10,
+    "Name": "Sản phẩm",
+    "Prefix": "SP"
   }
 ]

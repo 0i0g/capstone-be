@@ -10,6 +10,7 @@
        DeliveryRequest,
        DeliveryVoucher,
        FixingVoucher,
-       CheckingVoucher
+       CheckingVoucher,
+       Product
     }
 }

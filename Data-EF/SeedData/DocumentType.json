@@ -61,5 +61,12 @@
     "Name": "Phiếu kiểm kho",
     "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
     "Length": 10
+  },
+  {
+    "Id": 10,
+    "Type": "Product",
+    "Name": "Sản phẩm",
+    "Format": "[VC][AUTO_NUM]",
+    "Length": 8
   }
 ]

@@ -82,7 +82,9 @@ namespace API.Configurations
             #region Trigger
 
             dbContext.Database.ExecuteSqlRaw(
-                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_beginning_voucher_custom_code.sql")));
+                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_beginning_voucher_custom_code.sql")));   
+            dbContext.Database.ExecuteSqlRaw(
+                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_product_custom_code.sql")));
 
             #endregion
 

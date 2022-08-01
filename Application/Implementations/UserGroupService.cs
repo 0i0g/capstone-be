@@ -77,7 +77,7 @@ namespace Application.Implementations
                 ? _userGroupInWarehouseQueryable
                 : _userGroupInSystemQueryable;
 
-            var userGroup = queryable.FirstOrDefault(x => x.Id == model.Id);
+            var userGroup = queryable.Include(x=>x.Permissions).FirstOrDefault(x => x.Id == model.Id);
             if (userGroup == null)
             {
                 return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);

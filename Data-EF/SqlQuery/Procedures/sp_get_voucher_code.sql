@@ -73,8 +73,6 @@ begin
     ---- cal length
     set @num_length = @code_length - len(replace(@code_pattern, '[AUTO_NUM]', ''))
 
---     insert into DocumentType (Type, Name, Format, Length) values (@VC, @VC, @code_pattern, @num_length);
-
     if @num_length < 0 -- if total length less than regex length
         return cast(concat('Invalid pattern length ', @code_pattern,
                            len(replace(@code_pattern, '[AUTO_NUM]', ''))) as int)

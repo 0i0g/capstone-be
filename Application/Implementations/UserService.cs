@@ -388,11 +388,13 @@ namespace Application.Implementations
                 Avatar = user.Avatar,
                 Name = user.FullName,
                 Group = user.UserInGroups.Select(x => x.Group).Select(x => x.Name).FirstOrDefault(),
-                Permissions = user.UserInGroups.FirstOrDefault() != null
-                    ? user.UserInGroups.First().Group.Permissions.Select(x => x.Type).ToList()
-                    : new List<string>()
+                // Permissions = user.UserInGroups.FirstOrDefault() != null
+                //     ? user.UserInGroups.First().Group.Permissions.Select(x => x.Type).ToList()
+                //     : new List<string>()
+                Permissions = user.UserInGroups.SelectMany(x => x.Group.Permissions.Select(y => y.Type)).Distinct()
+                    .ToList()
             };
-            
+
             return ApiResponse.Ok(authUser);
         }
 
