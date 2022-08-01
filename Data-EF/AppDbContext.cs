@@ -365,8 +365,7 @@ namespace Data_EF
 
             modelBuilder.Entity<VoucherPrefixCode>(entity =>
             {
-                entity.Property(x => x.Id).HasDefaultValueSql("NEWID()");
-                entity.HasIndex(x => x.VoucherName).IsUnique();
+                entity.HasIndex(x => x.Name).IsUnique();
             });
 
             modelBuilder.Entity<Warehouse>(entity =>
@@ -379,6 +378,12 @@ namespace Data_EF
                     .HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.DeletedBy).WithMany(x => x.WarehousesDeleted)
                     .HasForeignKey(x => x.DeletedById).OnDelete(DeleteBehavior.NoAction);
+            });
+            
+
+            modelBuilder.Entity<DocumentType>(entity =>
+            {
+                entity.Property(x => x.Type).HasConversion<string>();
             });
 
             #endregion
@@ -415,6 +420,8 @@ namespace Data_EF
             modelBuilder.Entity<ReceiveVoucherDetail>().HasData(DataHelper.ReadSeedData<ReceiveVoucherDetail>(DataHelper.MapPath("SeedData/ReceiveVoucherDetail.json")));
             modelBuilder.Entity<TransferVoucher>().HasData(DataHelper.ReadSeedData<TransferVoucher>(DataHelper.MapPath("SeedData/TransferVoucher.json")));
             modelBuilder.Entity<TransferVoucherDetail>().HasData(DataHelper.ReadSeedData<TransferVoucherDetail>(DataHelper.MapPath("SeedData/TransferVoucherDetail.json")));
+            modelBuilder.Entity<DocumentType>().HasData(DataHelper.ReadSeedData<DocumentType>(DataHelper.MapPath("SeedData/DocumentType.json")));
+            modelBuilder.Entity<VoucherPrefixCode>().HasData(DataHelper.ReadSeedData<VoucherPrefixCode>(DataHelper.MapPath("SeedData/VoucherPrefixCode.json")));
 
             // @formatter:on
 

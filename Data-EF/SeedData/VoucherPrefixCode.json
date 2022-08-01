@@ -1,0 +1,47 @@
+[
+  {
+    "Id": 1,
+    "Name": "Phiếu dư đầu kỳ",
+    "Prefix": "DK"
+  },
+  {
+    "Id": 2,
+    "Name": "Phiếu đề nghị nhập kho",
+    "Prefix": "DNNK"
+  },
+  {
+    "Id": 3,
+    "Name": "Phiếu nhập kho",
+    "Prefix": "PNK"
+  },
+  {
+    "Id": 4,
+    "Name": "Phiếu đề nghị chuyển kho",
+    "Prefix": "DNCK"
+  },
+  {
+    "Id": 5,
+    "Name": "Phiếu chuyển kho",
+    "Prefix": "PCK"
+  },
+  {
+    "Id": 6,
+    "Name": "Phiếu đề nghị xuất kho",
+    "Prefix": "DNXK"
+  },
+  {
+    "Id": 7,
+    "Name": "Phiếu xuất kho",
+    "Prefix": "PXK"
+  },
+  {
+    "Id": 8,
+    "Name": "Phiếu chỉnh kho",
+    "Prefix": "PCK"
+  },
+  {
+    "Id": 9,
+    "Name": "Phiếu kiểm kho",
+    "Prefix": "PKK"
+  }
+]

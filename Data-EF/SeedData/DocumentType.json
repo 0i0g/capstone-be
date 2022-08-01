@@ -1,0 +1,65 @@
+﻿[
+  {
+    "Id": 1,
+    "Type": "BeginningVoucher",
+    "Name": "Phiếu dư đầu kỳ",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 2,
+    "Type": "ReceiveRequest",
+    "Name": "Phiếu đề nghị nhập kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 12
+  },
+  {
+    "Id": 3,
+    "Type": "ReceiveVoucher",
+    "Name": "Phiếu nhập kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 4,
+    "Type": "TransferRequest",
+    "Name": "Phiếu đề nghị chuyển kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 5,
+    "Type": "TransferVoucher",
+    "Name": "Phiếu chuyển kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 6,
+    "Type": "DeliveryRequest",
+    "Name": "Phiếu đề nghị xuất kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 7,
+    "Type": "DeliveryVoucher",
+    "Name": "Phiếu xuất kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 8,
+    "Type": "FixingVoucher",
+    "Name": "Phiếu chỉnh kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  },
+  {
+    "Id": 9,
+    "Type": "CheckingVoucher",
+    "Name": "Phiếu kiểm kho",
+    "Format": "[VC]/[MM]/[YY]/[AUTO_NUM]",
+    "Length": 10
+  }
+]

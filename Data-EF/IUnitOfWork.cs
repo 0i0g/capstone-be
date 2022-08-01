@@ -57,6 +57,8 @@ namespace Data_EF
 
         public ITransferVoucherRepository TransferVoucher { get; }
 
+        public IDocumentTypeRepository DocumentType { get; }
+
         #endregion
 
         #region DB method

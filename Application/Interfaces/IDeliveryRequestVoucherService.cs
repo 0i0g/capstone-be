@@ -34,5 +34,7 @@ namespace Application.Interfaces
         IActionResult SearchDeliveryRequestVoucherByWarehouse(SearchDeliveryRequestVoucherByWarehouseModel model);
 
         IActionResult SearchDeliveryRequestVoucherAllWarehouse(SearchDeliveryRequestVoucherAllWarehouseModel model);
+        
+        IActionResult GetDeliveryRequestDetails(Guid id);
     }
 }

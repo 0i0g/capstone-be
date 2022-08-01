@@ -32,7 +32,7 @@ namespace Application.Implementations
                 .Include(x => x.Details);
             _productRepository = _unitOfWork.Product;
             _productsQueryable =
-                _productRepository.GetMany(x => x.IsDeleted != true  && x.IsActive == true);
+                _productRepository.GetMany(x => x.IsDeleted != true && x.IsActive == true);
         }
 
         public async Task<IActionResult> CreateFixingVoucher(CreateFixingVoucherModel model)
@@ -75,7 +75,7 @@ namespace Application.Implementations
                     Type = x.Type,
                     VoucherId = newFixingVoucher.Id,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 
@@ -97,7 +97,7 @@ namespace Application.Implementations
 
             fixingVoucher.ReportingDate = model.ReportingDate ?? fixingVoucher.ReportingDate;
             fixingVoucher.Description = model.Description ?? fixingVoucher.Description;
-            
+
             if (model.Details != null)
             {
                 if (model.Details.Count == 0)
@@ -125,7 +125,7 @@ namespace Application.Implementations
                     Quantity = x.Quantity,
                     Type = x.Type,
                     ProductId = x.ProductId,
-                    ProductName = _productsQueryable.FirstOrDefault(y=>y.Id == x.ProductId)?.Name
+                    ProductName = _productsQueryable.FirstOrDefault(y => y.Id == x.ProductId)?.Name
                 }).ToList();
             }
 

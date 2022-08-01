@@ -131,6 +131,14 @@ namespace Utilities.Constants
         /* Warehouse */
         public static ResponseMessage WarehouseNameExisted => new() { Code = "4001", Value = "Warehouse name already exists" };
         public static ResponseMessage WarehouseNotFound => new() { Code = "4001", Value = "Warehouse does not exist" };
+        
+        /* DocumentType */
+        public static ResponseMessage DuplicateClassDocumentType => new() { Code = "27001", Value = "Some classes input are duplicated" };
+        public static ResponseMessage DuplicateYearClassDocumentType => new() { Code = "27002", Value = "Year class input are duplicated with 2 type (2 num and 4 num)" };
+        public static ResponseMessage DocumentTypeNotFound => new() { Code = "27003", Value = "DocumentType does not exist or has been deleted" };
+        public static ResponseMessage LengthDocumentTypeWrong => new() { Code = "27004", Value = "Length DocumentType is unreasonable" };
+        public static ResponseMessage LengthTypeDocumentTypeWrong => new() { Code = "27005", Value = "Length type DocumentType is unreasonable" };
+        
         // @formatter:on
     }
 

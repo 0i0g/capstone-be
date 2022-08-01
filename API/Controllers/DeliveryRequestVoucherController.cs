@@ -125,5 +125,13 @@ namespace API.Controllers
         {
             return _deliveryRequestVoucherService.SearchDeliveryRequestVoucherAllWarehouse(model);
         }
+
+        [Route("details")]
+        [Authentication]
+        [HttpGet]
+        public IActionResult GetDeliveryRequestDetails(Guid id)
+        {
+            return _deliveryRequestVoucherService.GetDeliveryRequestDetails(id);
+        }
     }
 }

@@ -27,12 +27,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(ConfigurationHelper.Configuration.GetConnectionString("Default"),
-                    x => x.MigrationsAssembly("Data-EF"));
-                // options.UseTriggers(triggerOptions => { triggerOptions.AddTrigger<CustomerTrigger>(); });
-            });
+            services.AddTrigger();
+            
             services.AddDependenceInjection();
 
             services.AddSwaggerGen(c =>
@@ -98,6 +94,10 @@ namespace API
             }
 
             var newDb = dbContext.Database.EnsureCreated();
+            if (newDb)
+            {
+                app.AddExecuteSqlRaw(dbContext);
+            }
 
             app.UseDeveloperExceptionPage();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
@@ -11,6 +12,7 @@ using Data.Enums;
 using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Utilities.Constants;
 using Utilities.Extensions;
 
@@ -64,7 +66,7 @@ namespace Application.Implementations
                 var productsExist = _productQueryable.Where(x => productsInModel.Contains(x.Id)).Select(x => x.Id);
                 var productsNotExist = productsInModel.Except(productsExist).ToList();
 
-                if (productsNotExist is { Count: > 0 })
+                if (productsNotExist is {Count: > 0})
                     return ApiResponse.NotFound(
                         MessageConstant.ProductsNotFound.WithValues(string.Join(", ", productsNotExist)));
             }
@@ -79,7 +81,7 @@ namespace Application.Implementations
                 Status = EnumStatusRequest.Pending,
                 Locked = false,
                 CustomerId = model.CustomerId,
-                WarehouseId = (Guid)CurrentUser.Warehouse!,
+                WarehouseId = (Guid) CurrentUser.Warehouse!,
                 Details = model.Details?.Select(x => new DeliveryRequestVoucherDetail()
                 {
                     Quantity = x.Quantity,
@@ -129,7 +131,7 @@ namespace Application.Implementations
                 var productsExist = _productQueryable.Where(x => productsInModel.Contains(x.Id)).Select(x => x.Id);
                 var productsNotExist = productsInModel.Except(productsExist).ToList();
 
-                if (productsNotExist is { Count: > 0 })
+                if (productsNotExist is {Count: > 0})
                     return ApiResponse.NotFound(
                         MessageConstant.ProductsNotFound.WithValues(string.Join(", ", productsNotExist)));
 
@@ -562,6 +564,27 @@ namespace Application.Implementations
                     }).ToList();
 
             return ApiResponse.Ok(vouchers);
+        }
+
+        public IActionResult GetDeliveryRequestDetails(Guid id)
+        {
+            var details = _deliveryRequestVoucherQueryable.Where(x => x.Id == id).Include(x => x.Details)
+                .Select(x => x.Details.Select(y => new DeliveryRequestVoucherDetailViewModel
+                {
+                    Quantity = y.Quantity,
+                    Product = new FetchProductViewModel
+                    {
+                        Id = y.ProductId,
+                        Name = y.Product.Name
+                    }
+                })).FirstOrDefault();
+
+            if (details == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.DeliveryRequestVoucherNotFound);
+            }
+
+            return ApiResponse.Ok(details);
         }
     }
 }

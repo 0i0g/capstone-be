@@ -64,6 +64,8 @@ namespace Data_EF
         private IReceiveVoucherRepository _receiveVoucher;
 
         private ITransferVoucherRepository _transferVoucher;
+        
+        private IDocumentTypeRepository _documentType;
 
         #endregion
 
@@ -199,6 +201,8 @@ namespace Data_EF
         {
             get { return _transferVoucher ??= new TransferVoucherRepository(_db); }
         }
+
+        public IDocumentTypeRepository DocumentType { get { return _documentType ??= new DocumentTypeRepository(_db, _httpContextAccessor); } }
 
         #endregion
 

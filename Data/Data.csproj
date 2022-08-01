@@ -10,4 +10,10 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.15" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Entities\VoucherPrefixCode.cs">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
+
 </Project>
