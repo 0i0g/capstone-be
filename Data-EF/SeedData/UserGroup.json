@@ -1,12 +1,15 @@
 [
   {
-    "Id": "C7B455F8-7412-4130-8521-F41FDE0BA086",
-    "Name": "Warehouse Manager",
-    "Description": "The default group for warehouse manager",
+    "Id": "94EF54C1-4BB3-4CAD-A7E5-533180990169",
+    "Name": "Master",
+    "Description": "All permission",
     "Type": "Warehouse",
-    "CanUpdate": false,
+    "CanUpdate": true,
     "InWarehouseId": "5397D718-A161-4C03-8A40-5030E1059BC1",
-    "CreatedAt": "2022-06-09T00:06:20.7366667",
+    "CreatedAt": "2022-08-04T15:04:38.2833333",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "UpdatedAt": "2022-08-04T15:07:07.8891064",
+    "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
     "IsDeleted": false
   }
 ]

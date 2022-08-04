@@ -17,7 +17,7 @@ namespace API.Controllers
             _documentTypeService = documentTypeService;
         }
         
-        [PermissionRequired("Permission.DocumentType.Update", "Permission.System.BuManager")]
+        [PermissionRequired("Permission.DocumentType.Update")]
         [Route("documentType")]
         [HttpPut]
         public async Task<IActionResult> UpdateDocumentType(UpdateDocumentTypeModel model)
@@ -25,7 +25,7 @@ namespace API.Controllers
             return await _documentTypeService.UpdateDocumentType(model);
         }
 
-        [PermissionRequired("Permission.DocumentType.Read", "Permission.System.BuManager")]
+        [PermissionRequired("Permission.DocumentType.Read")]
         [Route("documentType")]
         [HttpGet]
         public IActionResult GetDocumentType(int id)
@@ -33,7 +33,7 @@ namespace API.Controllers
             return _documentTypeService.GetDocumentType(id);
         }
 
-        [PermissionRequired("Permission.DocumentType.Read", "Permission.System.BuManager")]
+        [PermissionRequired("Permission.DocumentType.Read")]
         [Route("documentType/all")]
         [HttpGet]
         public IActionResult GetAllDocumentType()

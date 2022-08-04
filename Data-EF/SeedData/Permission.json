@@ -1,1 +1,210 @@
-[]
+[
+  {
+    "Type": "Permission.BeginningInventoryVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.BeginningInventoryVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.BeginningInventoryVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.BeginningInventoryVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Customer.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Customer.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Customer.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Customer.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryRequestVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryRequestVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryRequestVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryRequestVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.DeliveryVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryCheckingVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryCheckingVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryCheckingVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryCheckingVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryFixingVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryFixingVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryFixingVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.InventoryFixingVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Product.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Product.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Product.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Product.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveRequestVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveRequestVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveRequestVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveRequestVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.ReceiveVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferRequestVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferRequestVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferRequestVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferRequestVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferVoucher.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferVoucher.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferVoucher.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.TransferVoucher.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.User.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.User.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.User.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.User.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Warehouse.Create",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Warehouse.Delete",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Warehouse.Read",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  },
+  {
+    "Type": "Permission.Warehouse.Update",
+    "UserGroupId": "94EF54C1-4BB3-4CAD-A7E5-533180990169"
+  }
+]
