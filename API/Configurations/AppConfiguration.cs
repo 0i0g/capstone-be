@@ -48,7 +48,7 @@ namespace API.Configurations
 
             #endregion
         }
-        
+
         public static void AddTrigger(this IServiceCollection services)
         {
             #region Trigger
@@ -68,7 +68,6 @@ namespace API.Configurations
 
             // dbContext.Database.ExecuteSqlRaw(
             //     File.ReadAllText(DataHelper.MapPath("SqlQuery/Functions/function.sql")));
-        
 
             #endregion
 
@@ -82,7 +81,7 @@ namespace API.Configurations
             #region Trigger
 
             dbContext.Database.ExecuteSqlRaw(
-                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_beginning_voucher_custom_code.sql")));   
+                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_beginning_voucher_custom_code.sql")));
             dbContext.Database.ExecuteSqlRaw(
                 File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_product_custom_code.sql")));
 
@@ -90,8 +89,7 @@ namespace API.Configurations
 
             #region View
 
-            // dbContext.Database.ExecuteSqlRaw(
-            //     File.ReadAllText(DataHelper.MapPath("SqlQuery/Views/view.sql")));
+            dbContext.Database.ExecuteSqlRaw(File.ReadAllText(DataHelper.MapPath("SqlQuery/Views/vw_sum_product.sql")));
 
             #endregion
         }

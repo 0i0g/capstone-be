@@ -72,5 +72,21 @@ namespace API.Controllers
         {
             return _productService.GetAllProducts();
         }
+        
+        // [PermissionRequired("Permission.Product.Read")]
+        [Route("product/all-warehouse")]
+        [HttpPost]
+        public IActionResult SearchSumProductAllWarehouse(SearchSumProductModel model)
+        {
+            return _productService.SearchSumProduct(model, false);
+        } 
+        
+        // [PermissionRequired("Permission.Product.Read")]
+        [Route("product/in-warehouse")]
+        [HttpPost]
+        public IActionResult SearchSumProductInWarehouse(SearchSumProductModel model)
+        {
+            return _productService.SearchSumProduct(model, true);
+        }
     }
 }

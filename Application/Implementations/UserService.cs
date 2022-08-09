@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
 using Application.ViewModels.UserGroup;
+using Data.Enums;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,14 +23,18 @@ namespace Application.Implementations
     public class UserService : BaseService, IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IQueryable<User> _userQueryable;
+        private readonly IQueryable<UserGroup> _userGroupQueryable;
 
         private readonly ILogger<UserService> _logger;
 
         public UserService(IServiceProvider provider, ILogger<UserService> logger) : base(provider)
         {
             _userRepository = _unitOfWork.User;
+            _userGroupRepository = _unitOfWork.UserGroup;
             _userQueryable = _userRepository.GetMany(x => x.IsDeleted != true);
+            _userGroupQueryable = _userGroupRepository.GetMany(x => x.IsDeleted != true);
             _logger = logger;
         }
 
@@ -430,6 +435,57 @@ namespace Application.Implementations
             if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);
 
             return ApiResponse.Ok(user);
+        }
+
+        public async Task<IActionResult> SetUserGroup(SetUserPermissionModel model)
+        {
+            var user = _userQueryable.Where(x => x.Id == model.UserId).Include(x => x.UserInGroups).FirstOrDefault();
+            if (user == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserNotFound);
+            }
+
+            var group = _userGroupQueryable.FirstOrDefault(x => x.Id == model.GroupId);
+            if (group == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
+            }
+
+            user.UserInGroups = new List<UserInGroup> {new() {GroupId = model.GroupId}};
+            _userRepository.Update(user);
+
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+
+        public async Task<IActionResult> SetEmployeeGroup(SetUserPermissionModel model)
+        {
+            var user = _userQueryable.Where(x => x.Id == model.UserId && x.InWarehouseId == CurrentUser.Warehouse)
+                .Include(x => x.UserInGroups).FirstOrDefault();
+            if (user == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserNotFound);
+            }
+
+            if (user.UserInGroups.FirstOrDefault()?.Group.Type == EnumUserGroupType.System)
+            {
+                return ApiResponse.NotFound(MessageConstant.CannotChangeGroupUserHasHigherPermission);
+            }
+
+            var group = _userGroupQueryable.FirstOrDefault(
+                x => x.Id == model.GroupId && x.Type == EnumUserGroupType.Warehouse);
+            if (group == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
+            }
+
+            user.UserInGroups = new List<UserInGroup> {new() {GroupId = model.GroupId}};
+            _userRepository.Update(user);
+
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
         }
     }
 }

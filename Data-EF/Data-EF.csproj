@@ -108,11 +108,13 @@
       <None Update="SqlQuery\Triggers\tr_add_product_custom_code.sql">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="SqlQuery\Views\vw_sum_product.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="SqlQuery\Functions" />
-      <Folder Include="SqlQuery\Views" />
     </ItemGroup>
 
 </Project>
