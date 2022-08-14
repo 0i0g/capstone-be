@@ -11,6 +11,7 @@ using Data.Entities;
 using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Utilities.Constants;
 using Utilities.Extensions;
 
@@ -21,12 +22,15 @@ namespace Application.Implementations
         private readonly IProductRepository _productRepository;
         private readonly ISumProductRepository _sumProductRepository;
         private readonly IQueryable<Product> _productsQueryable;
+        private readonly IUploadService _uploadService;
+        
 
         public ProductService(IServiceProvider provider) : base(provider)
         {
             _productRepository = _unitOfWork.Product;
             _sumProductRepository = _unitOfWork.SumProduct;
             _productsQueryable = _productRepository.GetMany(x => x.IsDeleted != true).Include(x => x.ProductCategories);
+            _uploadService = provider.GetService<IUploadService>();
         }
 
         public async Task<IActionResult> CreateProduct(CreateProductModel model)
@@ -36,6 +40,9 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.ProductNameExisted);
             }
+            
+            // upload image
+            var fileName = await _uploadService.UploadFile(model.Image);
 
             var newProduct = new Product
             {
@@ -43,6 +50,7 @@ namespace Application.Implementations
                 Description = model.Description,
                 OnHandMin = model.OnHandMin,
                 OnHandMax = model.OnHandMax,
+                Image = fileName
             };
 
             _productRepository.Add(newProduct);

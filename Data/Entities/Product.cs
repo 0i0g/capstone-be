@@ -28,7 +28,7 @@ namespace Data.Entities
 
         public Guid? ImageId { get; set; }
 
-        public Attachment Image { get; set; }
+        public string Image { get; set; }
 
         #endregion
 

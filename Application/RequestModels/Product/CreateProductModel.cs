@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.RequestModels
 {
@@ -14,6 +15,8 @@ namespace Application.RequestModels
         public int? OnHandMin { get; set; }
 
         public int? OnHandMax { get; set; }
+
+        public IFormFile Image { get; set; }
 
         public ICollection<Guid> Categories { get; set; }
     }

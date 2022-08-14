@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using API.Configurations;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
@@ -28,7 +30,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTrigger();
-            
+
             services.AddDependenceInjection();
 
             services.AddSwaggerGen(c =>
@@ -109,6 +111,11 @@ namespace API
                 .AllowAnyOrigin());
 
             app.UseHttpsRedirection();
+            app.UseFileServer(new FileServerOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "StaticFile")),
+                RequestPath = "/files"
+            });
 
             if (!ConfigurationHelper.Configuration.GetValue<bool>("ShowServerErrors"))
             {
