@@ -47,6 +47,12 @@ namespace Data.Entities
 
         #endregion
 
+        #region DeliveryVoucher
+
+        public ICollection<DeliveryVoucher> DeliveryVouchers { get; set; }
+
+        #endregion
+
         #region Safe entity
 
         [Required]

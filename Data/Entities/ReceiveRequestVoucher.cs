@@ -39,6 +39,12 @@ namespace Data.Entities
         public Warehouse Warehouse { get; set; }
 
         #endregion
+
+        #region ReceiveVoucher
+
+        public ICollection<ReceiveVoucher> ReceiveVouchers { get; set; }
+
+        #endregion
         
         #region Detail
 
