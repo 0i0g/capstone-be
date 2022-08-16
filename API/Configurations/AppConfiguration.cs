@@ -43,7 +43,10 @@ namespace API.Configurations
             services.AddScoped<IReceiveVoucherService, ReceiveVoucherService>();
             services.AddScoped<ITransferVoucherService, TransferVoucherService>();
             services.AddScoped<IUploadService, UploadService>();
-
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddSingleton(ConfigurationHelper.Configuration
+                .GetSection("SmtpAccount").Get<SmtpConfiguration>());
+            
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
