@@ -26,11 +26,13 @@ namespace Application.Implementations
         private readonly IUserGroupRepository _userGroupRepository;
         private readonly IQueryable<User> _userQueryable;
         private readonly IQueryable<UserGroup> _userGroupQueryable;
-
+        private readonly IEmailService _emailService;
+        
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IServiceProvider provider, ILogger<UserService> logger) : base(provider)
+        public UserService(IServiceProvider provider, ILogger<UserService> logger, IEmailService emailService) : base(provider)
         {
+            _emailService = emailService;
             _userRepository = _unitOfWork.User;
             _userGroupRepository = _unitOfWork.UserGroup;
             _userQueryable = _userRepository.GetMany(x => x.IsDeleted != true);
@@ -75,10 +77,11 @@ namespace Application.Implementations
                 return ApiResponse.BadRequest(msg);
             }
 
+            var generatedPassword = GenerateHelper.RandomString(6);
             var newUser = new User
             {
                 Username = model.Username,
-                Password = PasswordHelper.Hash(GenerateHelper.RandomString(6)),
+                Password = PasswordHelper.Hash(generatedPassword),
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -89,10 +92,14 @@ namespace Application.Implementations
             _userRepository.Add(newUser);
 
             await _unitOfWork.SaveChanges();
-
+            
+            _emailService.SendConfirmPasswordEmail(
+                to: newUser.Email, 
+                password: generatedPassword);
+            
             return ApiResponse.Ok();
         }
-
+        
         public async Task<IActionResult> CreateUserInWarehouse(CreateUserModel model)
         {
             var user = _userQueryable.FirstOrDefault(x => x.Username == model.Username || x.Email == model.Email);
