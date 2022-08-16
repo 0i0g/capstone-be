@@ -264,9 +264,18 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
+                UserGroups = x.UserInGroups != null
+                    ? x.UserInGroups.Select(userInGroup => userInGroup.Group)
+                        .Select(userGroup => new UserGroupViewModel()
+                        {
+                            Id = userGroup.Id,
+                            Name = userGroup.Name,
+                            Description = userGroup.Description
+                        }).ToList()
+                    : null,
             }).ToPagination(model.PageIndex, model.PageSize);
 
             return ApiResponse.Ok(data);
@@ -309,7 +318,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -356,7 +365,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToList();
@@ -451,7 +460,7 @@ namespace Application.Implementations
                 return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
             }
 
-            user.UserInGroups = new List<UserInGroup> {new() {GroupId = model.GroupId}};
+            user.UserInGroups = new List<UserInGroup> { new() { GroupId = model.GroupId } };
             _userRepository.Update(user);
 
             await _unitOfWork.SaveChanges();
@@ -480,7 +489,7 @@ namespace Application.Implementations
                 return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
             }
 
-            user.UserInGroups = new List<UserInGroup> {new() {GroupId = model.GroupId}};
+            user.UserInGroups = new List<UserInGroup> { new() { GroupId = model.GroupId } };
             _userRepository.Update(user);
 
             await _unitOfWork.SaveChanges();
