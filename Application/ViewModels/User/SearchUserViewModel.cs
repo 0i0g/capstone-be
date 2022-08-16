@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Application.ViewModels.UserGroup;
 using Application.ViewModels.Warehouse;
 using Data.Enums;
 
@@ -25,5 +27,7 @@ namespace Application.ViewModels
         public bool? IsActive { get; set; }
         
         public FetchWarehouseViewModel InWarehouse { get; set; }
+
+        public List<UserGroupViewModel> UserGroups { get; set; }
     }
 }
