@@ -276,11 +276,10 @@ namespace Application.Implementations
                 IsActive = x.IsActive,
                 UserGroups = x.UserInGroups != null
                     ? x.UserInGroups.Select(userInGroup => userInGroup.Group)
-                        .Select(userGroup => new UserGroupViewModel()
+                        .Select(userGroup => new FetchUserGroupViewModel()
                         {
                             Id = userGroup.Id,
-                            Name = userGroup.Name,
-                            Description = userGroup.Description
+                            Name = userGroup.Name
                         }).ToList()
                     : null,
             }).ToPagination(model.PageIndex, model.PageSize);
