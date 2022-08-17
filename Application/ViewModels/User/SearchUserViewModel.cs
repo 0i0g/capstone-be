@@ -28,6 +28,6 @@ namespace Application.ViewModels
         
         public FetchWarehouseViewModel InWarehouse { get; set; }
 
-        public List<UserGroupViewModel> UserGroups { get; set; }
+        public List<FetchUserGroupViewModel> UserGroups { get; set; }
     }
 }
