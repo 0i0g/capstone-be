@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [Authentication]
     public class ProductController : BaseController
     {
         private IProductService _productService;
@@ -20,7 +21,7 @@ namespace API.Controllers
         // [PermissionRequired("Permission.Product.Create")]
         [Route("product")]
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductModel model)
+        public async Task<IActionResult> CreateProduct([FromForm]CreateProductModel model)
         {
             return await _productService.CreateProduct(model);
         }
@@ -71,6 +72,22 @@ namespace API.Controllers
         public IActionResult GetAllProducts()
         {
             return _productService.GetAllProducts();
+        }
+        
+        // [PermissionRequired("Permission.Product.Read")]
+        [Route("product/all-warehouse")]
+        [HttpPost]
+        public IActionResult SearchSumProductAllWarehouse(SearchSumProductModel model)
+        {
+            return _productService.SearchSumProduct(model, false);
+        } 
+        
+        // [PermissionRequired("Permission.Product.Read")]
+        [Route("product/in-warehouse")]
+        [HttpPost]
+        public IActionResult SearchSumProductInWarehouse(SearchSumProductModel model)
+        {
+            return _productService.SearchSumProduct(model, true);
         }
     }
 }

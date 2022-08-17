@@ -58,6 +58,8 @@ namespace Data_EF
         public ITransferVoucherRepository TransferVoucher { get; }
 
         public IDocumentTypeRepository DocumentType { get; }
+        
+        public ISumProductRepository SumProduct { get; }
 
         #endregion
 

@@ -62,6 +62,12 @@ namespace Data.Entities
         public User Recipient { get; set; }
 
         #endregion
+
+        #region TransferVoucher
+
+        public ICollection<TransferVoucher> TransferVouchers { get; set; }
+
+        #endregion
         
         #region Safe entity
 

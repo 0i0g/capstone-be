@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.RequestModels.User;
 using Application.ViewModels.UserGroup;
+using Data.Enums;
 using Data.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,14 +23,20 @@ namespace Application.Implementations
     public class UserService : BaseService, IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserGroupRepository _userGroupRepository;
         private readonly IQueryable<User> _userQueryable;
-
+        private readonly IQueryable<UserGroup> _userGroupQueryable;
+        private readonly IEmailService _emailService;
+        
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IServiceProvider provider, ILogger<UserService> logger) : base(provider)
+        public UserService(IServiceProvider provider, ILogger<UserService> logger, IEmailService emailService) : base(provider)
         {
+            _emailService = emailService;
             _userRepository = _unitOfWork.User;
+            _userGroupRepository = _unitOfWork.UserGroup;
             _userQueryable = _userRepository.GetMany(x => x.IsDeleted != true);
+            _userGroupQueryable = _userGroupRepository.GetMany(x => x.IsDeleted != true);
             _logger = logger;
         }
 
@@ -70,10 +77,11 @@ namespace Application.Implementations
                 return ApiResponse.BadRequest(msg);
             }
 
+            var generatedPassword = GenerateHelper.RandomString(6);
             var newUser = new User
             {
                 Username = model.Username,
-                Password = PasswordHelper.Hash(GenerateHelper.RandomString(6)),
+                Password = PasswordHelper.Hash(generatedPassword),
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -84,10 +92,14 @@ namespace Application.Implementations
             _userRepository.Add(newUser);
 
             await _unitOfWork.SaveChanges();
-
+            
+            _emailService.SendConfirmPasswordEmail(
+                to: newUser.Email, 
+                password: generatedPassword);
+            
             return ApiResponse.Ok();
         }
-
+        
         public async Task<IActionResult> CreateUserInWarehouse(CreateUserModel model)
         {
             var user = _userQueryable.FirstOrDefault(x => x.Username == model.Username || x.Email == model.Email);
@@ -259,9 +271,17 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
+                UserGroups = x.UserInGroups != null
+                    ? x.UserInGroups.Select(userInGroup => userInGroup.Group)
+                        .Select(userGroup => new FetchUserGroupViewModel()
+                        {
+                            Id = userGroup.Id,
+                            Name = userGroup.Name
+                        }).ToList()
+                    : null,
             }).ToPagination(model.PageIndex, model.PageSize);
 
             return ApiResponse.Ok(data);
@@ -304,7 +324,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToPagination(model.PageIndex, model.PageSize);
@@ -351,7 +371,7 @@ namespace Application.Implementations
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
                 InWarehouse = x.InWarehouseId != null
-                    ? new FetchWarehouseViewModel() {Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name}
+                    ? new FetchWarehouseViewModel() { Id = x.InWarehouseId!.Value, Name = x.InWarehouse.Name }
                     : null,
                 IsActive = x.IsActive,
             }).ToList();
@@ -430,6 +450,57 @@ namespace Application.Implementations
             if (user == null) return ApiResponse.NotFound(MessageConstant.ProfileNotFound);
 
             return ApiResponse.Ok(user);
+        }
+
+        public async Task<IActionResult> SetUserGroup(SetUserPermissionModel model)
+        {
+            var user = _userQueryable.Where(x => x.Id == model.UserId).Include(x => x.UserInGroups).FirstOrDefault();
+            if (user == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserNotFound);
+            }
+
+            var group = _userGroupQueryable.FirstOrDefault(x => x.Id == model.GroupId);
+            if (group == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
+            }
+
+            user.UserInGroups = new List<UserInGroup> { new() { GroupId = model.GroupId } };
+            _userRepository.Update(user);
+
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
+        }
+
+        public async Task<IActionResult> SetEmployeeGroup(SetUserPermissionModel model)
+        {
+            var user = _userQueryable.Where(x => x.Id == model.UserId && x.InWarehouseId == CurrentUser.Warehouse)
+                .Include(x => x.UserInGroups).FirstOrDefault();
+            if (user == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserNotFound);
+            }
+
+            if (user.UserInGroups.FirstOrDefault()?.Group.Type == EnumUserGroupType.System)
+            {
+                return ApiResponse.NotFound(MessageConstant.CannotChangeGroupUserHasHigherPermission);
+            }
+
+            var group = _userGroupQueryable.FirstOrDefault(
+                x => x.Id == model.GroupId && x.Type == EnumUserGroupType.Warehouse);
+            if (group == null)
+            {
+                return ApiResponse.NotFound(MessageConstant.UserGroupNotFound);
+            }
+
+            user.UserInGroups = new List<UserInGroup> { new() { GroupId = model.GroupId } };
+            _userRepository.Update(user);
+
+            await _unitOfWork.SaveChanges();
+
+            return ApiResponse.Ok();
         }
     }
 }

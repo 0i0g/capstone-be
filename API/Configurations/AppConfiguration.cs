@@ -42,13 +42,17 @@ namespace API.Configurations
             services.AddScoped<IDeliveryVoucherService, DeliveryVoucherService>();
             services.AddScoped<IReceiveVoucherService, ReceiveVoucherService>();
             services.AddScoped<ITransferVoucherService, TransferVoucherService>();
-
+            services.AddScoped<IUploadService, UploadService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddSingleton(ConfigurationHelper.Configuration
+                .GetSection("SmtpAccount").Get<SmtpConfiguration>());
+            
             // Every controller and every service
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             #endregion
         }
-        
+
         public static void AddTrigger(this IServiceCollection services)
         {
             #region Trigger
@@ -68,7 +72,6 @@ namespace API.Configurations
 
             // dbContext.Database.ExecuteSqlRaw(
             //     File.ReadAllText(DataHelper.MapPath("SqlQuery/Functions/function.sql")));
-        
 
             #endregion
 
@@ -82,7 +85,7 @@ namespace API.Configurations
             #region Trigger
 
             dbContext.Database.ExecuteSqlRaw(
-                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_beginning_voucher_custom_code.sql")));   
+                File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_beginning_voucher_custom_code.sql")));
             dbContext.Database.ExecuteSqlRaw(
                 File.ReadAllText(DataHelper.MapPath("SqlQuery/Triggers/tr_add_product_custom_code.sql")));
 
@@ -90,8 +93,7 @@ namespace API.Configurations
 
             #region View
 
-            // dbContext.Database.ExecuteSqlRaw(
-            //     File.ReadAllText(DataHelper.MapPath("SqlQuery/Views/view.sql")));
+            dbContext.Database.ExecuteSqlRaw(File.ReadAllText(DataHelper.MapPath("SqlQuery/Views/vw_sum_product.sql")));
 
             #endregion
         }

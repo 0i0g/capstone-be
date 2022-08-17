@@ -68,7 +68,7 @@ namespace Application.Utilities
                 "Permission.TransferVoucher.Read",
                 "Permission.TransferVoucher.Update",
                 "Permission.TransferVoucher.Delete",
-                
+
                 "Permission.Warehouse.Create",
                 "Permission.Warehouse.Read",
                 "Permission.Warehouse.Update",
@@ -79,8 +79,6 @@ namespace Application.Utilities
             new List<string>
             {
                 "Permission.System.Master",
-                "Permission.System.Admin",
-                "Permission.System.BuManager"
             };
 
         public static ICollection<string> GetValidWarehousePermission(IEnumerable<string> values)

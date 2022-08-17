@@ -11,5 +11,17 @@
     "UpdatedAt": "2022-08-04T15:07:07.8891064",
     "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
     "IsDeleted": false
+  },
+  {
+    "Id": "D5F3CE6F-5CC0-4FAE-A630-EBF99809C44F",
+    "Name": "Master",
+    "Description": "System Master",
+    "Type": "System",
+    "CanUpdate": false,
+    "CreatedAt": "2022-08-04T15:04:38.2833333",
+    "CreatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "UpdatedAt": "2022-08-04T15:07:07.8891064",
+    "UpdatedById": "7882454B-34D2-4552-AFBE-0B9BBE93C16A",
+    "IsDeleted": false
   }
 ]

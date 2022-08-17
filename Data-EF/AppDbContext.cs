@@ -198,7 +198,7 @@ namespace Data_EF
 
             modelBuilder.Entity<Permission>(entity =>
             {
-                entity.HasKey(x => new { x.Type, x.UserGroupId });
+                entity.HasKey(x => new {x.Type, x.UserGroupId});
                 entity.HasOne(x => x.UserGroup).WithMany(x => x.Permissions).HasForeignKey(x => x.UserGroupId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
@@ -214,7 +214,7 @@ namespace Data_EF
 
             modelBuilder.Entity<ProductCategory>(entity =>
             {
-                entity.HasKey(x => new { x.ProductId, x.CategoryId });
+                entity.HasKey(x => new {x.ProductId, x.CategoryId});
                 entity.HasOne(x => x.Product).WithMany(x => x.ProductCategories).HasForeignKey(x => x.ProductId)
                     .OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.Category).WithMany(x => x.ProductCategories).HasForeignKey(x => x.CategoryId)
@@ -356,17 +356,14 @@ namespace Data_EF
 
             modelBuilder.Entity<UserInGroup>(entity =>
             {
-                entity.HasKey(x => new { x.UserId, x.GroupId });
+                entity.HasKey(x => new {x.UserId, x.GroupId});
                 entity.HasOne(x => x.User).WithMany(x => x.UserInGroups).HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.NoAction);
                 entity.HasOne(x => x.Group).WithMany(x => x.UserInGroups).HasForeignKey(x => x.GroupId)
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
-            modelBuilder.Entity<VoucherPrefixCode>(entity =>
-            {
-                entity.HasIndex(x => x.Name).IsUnique();
-            });
+            modelBuilder.Entity<VoucherPrefixCode>(entity => { entity.HasIndex(x => x.Name).IsUnique(); });
 
             modelBuilder.Entity<Warehouse>(entity =>
             {
@@ -379,11 +376,18 @@ namespace Data_EF
                 entity.HasOne(x => x.DeletedBy).WithMany(x => x.WarehousesDeleted)
                     .HasForeignKey(x => x.DeletedById).OnDelete(DeleteBehavior.NoAction);
             });
-            
 
-            modelBuilder.Entity<DocumentType>(entity =>
+
+            modelBuilder.Entity<DocumentType>(entity => { entity.Property(x => x.Type).HasConversion<string>(); });
+
+            #endregion
+
+            #region Views
+
+            modelBuilder.Entity<SumProduct>(entity =>
             {
-                entity.Property(x => x.Type).HasConversion<string>();
+                entity.HasNoKey();
+                entity.ToView("vw_sum_product");
             });
 
             #endregion

@@ -52,13 +52,13 @@ namespace API.Controllers
         // {
         //     return await _userService.RemoveUser(id);
         // }   
-        
+
         [HttpDelete]
         public async Task<IActionResult> RemoveMulUser(List<Guid> ids)
         {
             return await _userService.RemoveMulUser(ids);
         }
-        
+
         [Route("search")]
         [HttpPost]
         public IActionResult SearchUser(SearchUserModel model)
@@ -86,19 +86,35 @@ namespace API.Controllers
         {
             return await _userService.SelfUpdate(model);
         }
-        
+
         [Route("authuser")]
         [HttpGet]
         public IActionResult GetAuthUser()
         {
-            return  _userService.GetAuthUser();
+            return _userService.GetAuthUser();
         }
-        
-            
+
+
         [HttpGet]
         public IActionResult GetUser(Guid id)
         {
-            return  _userService.GetUser(id);
+            return _userService.GetUser(id);
+        }
+
+        [PermissionRequired("Permission.System.Master")]
+        [Route("set-user-group")]
+        [HttpPut]
+        public async Task<IActionResult> SetUserGroup(SetUserPermissionModel model)
+        {
+            return await _userService.SetUserGroup(model);
+        }
+
+        [PermissionRequired("Permission.User.Update")]
+        [Route("set-employee-group")]
+        [HttpPut]
+        public async Task<IActionResult> SetEmployeeGroup(  SetUserPermissionModel model)
+        {
+            return await _userService.SetEmployeeGroup(model);
         }
     }
 }

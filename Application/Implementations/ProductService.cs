@@ -11,6 +11,7 @@ using Data.Entities;
 using Data_EF.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Utilities.Constants;
 using Utilities.Extensions;
 
@@ -19,12 +20,17 @@ namespace Application.Implementations
     public class ProductService : BaseService, IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly ISumProductRepository _sumProductRepository;
         private readonly IQueryable<Product> _productsQueryable;
+        private readonly IUploadService _uploadService;
+        
 
         public ProductService(IServiceProvider provider) : base(provider)
         {
             _productRepository = _unitOfWork.Product;
+            _sumProductRepository = _unitOfWork.SumProduct;
             _productsQueryable = _productRepository.GetMany(x => x.IsDeleted != true).Include(x => x.ProductCategories);
+            _uploadService = provider.GetService<IUploadService>();
         }
 
         public async Task<IActionResult> CreateProduct(CreateProductModel model)
@@ -34,6 +40,9 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.ProductNameExisted);
             }
+            
+            // upload image
+            var fileName = await _uploadService.UploadFile(model.Image);
 
             var newProduct = new Product
             {
@@ -41,6 +50,7 @@ namespace Application.Implementations
                 Description = model.Description,
                 OnHandMin = model.OnHandMin,
                 OnHandMax = model.OnHandMax,
+                Image = fileName
             };
 
             _productRepository.Add(newProduct);
@@ -213,6 +223,49 @@ namespace Application.Implementations
             }).ToList();
 
             return ApiResponse.Ok(products);
+        }
+
+        public IActionResult SearchSumProduct(SearchSumProductModel model, bool isInCurrentWarehouse)
+        {
+            if (isInCurrentWarehouse)
+            {
+                model.Id = CurrentUser.Warehouse;
+            }
+
+            var query = _sumProductRepository.GetMany(x =>
+                    (model.Id == null || x.WarehouseId == model.Id) &&
+                    (model.Name == null || x.ProductName.Contains(model.Name)))
+                .AsNoTracking()
+                .GroupBy(x => new {x.ProductId, x.ProductName}).Select(x => new SumProductViewModel
+                {
+                    ProductId = x.Key.ProductId,
+                    ProductName = x.Key.ProductName,
+                    Quantity = x.Sum(y => y.Quantity)
+                });
+
+            switch (model.OrderByName)
+            {
+                case "":
+                    query = query.OrderByDescending(x => x.ProductName);
+                    break;
+                case "NAME":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.ProductName)
+                        : query.OrderByDescending(x => x.ProductName);
+                    break;
+                case "QUANTITY":
+                    query = model.IsSortAsc
+                        ? query.OrderBy(x => x.Quantity)
+                        : query.OrderByDescending(x => x.Quantity);
+                    break;
+                default:
+                    return ApiResponse.BadRequest(MessageConstant.OrderByInvalid.WithValues("Name, Quantity"));
+            }
+
+            var data = query
+                .ToPagination(model.PageIndex, model.PageSize);
+
+            return ApiResponse.Ok(data);
         }
     }
 }
