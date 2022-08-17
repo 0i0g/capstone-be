@@ -23,4 +23,10 @@
       <Folder Include="StaticFile\uploads" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="StaticFile\uploads\test.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
