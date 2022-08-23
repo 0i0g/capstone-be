@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Application.ViewModels.Category;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.RequestModels
 {
@@ -21,6 +22,8 @@ namespace Application.RequestModels
 
         public int? OnHandMax { get; set; }
 
-        public ICollection<Guid> Categories { get; set; }
+        public Guid? Category { get; set; }
+        
+        public IFormFile Image { get; set; }
     }
 }

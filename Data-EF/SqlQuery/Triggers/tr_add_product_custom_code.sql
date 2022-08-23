@@ -9,7 +9,7 @@ begin
 
     exec dbo.sp_get_voucher_code 10, @reporting_date, 'Product', @output = @new_code output
 
-    insert into Product (Id, Code, Name, IsActive, Description, OnHandMin, OnHandMax, ImageId, CreatedAt, CreatedById, UpdatedAt, UpdatedById, DeletedAt, DeletedById, IsDeleted) 
+    insert into Product (Id, Code, Name, IsActive, Description, OnHandMin, OnHandMax, CreatedAt, CreatedById, UpdatedAt, UpdatedById, DeletedAt, DeletedById, IsDeleted) 
     select inserted.Id,
            @new_code,
            inserted.Name,
@@ -17,7 +17,6 @@ begin
            inserted.Description,
            inserted.OnHandMin,
            inserted.OnHandMax,
-           inserted.ImageId,
            inserted.CreatedAt,
            inserted.CreatedById,
            inserted.UpdatedAt,

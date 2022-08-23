@@ -26,15 +26,15 @@ namespace Data.Entities
 
         #region Image
 
-        public Guid? ImageId { get; set; }
-
         public string Image { get; set; }
 
         #endregion
 
-        #region Product category
+        #region Category
 
-        public ICollection<ProductCategory> ProductCategories { get; set; }
+        public Guid? CategoryId { get; set; }
+
+        public Category Category { get; set; }
 
         #endregion
 

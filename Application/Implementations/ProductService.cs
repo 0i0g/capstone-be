@@ -22,14 +22,15 @@ namespace Application.Implementations
         private readonly IProductRepository _productRepository;
         private readonly ISumProductRepository _sumProductRepository;
         private readonly IQueryable<Product> _productsQueryable;
+        private readonly IQueryable<Category> _categoriesQueryable;
         private readonly IUploadService _uploadService;
-        
 
         public ProductService(IServiceProvider provider) : base(provider)
         {
             _productRepository = _unitOfWork.Product;
             _sumProductRepository = _unitOfWork.SumProduct;
-            _productsQueryable = _productRepository.GetMany(x => x.IsDeleted != true).Include(x => x.ProductCategories);
+            _productsQueryable = _productRepository.GetMany(x => x.IsDeleted != true).Include(x => x.Category);
+            _categoriesQueryable = _unitOfWork.Category.GetMany(x => x.IsDeleted != true);
             _uploadService = provider.GetService<IUploadService>();
         }
 
@@ -40,7 +41,12 @@ namespace Application.Implementations
             {
                 return ApiResponse.BadRequest(MessageConstant.ProductNameExisted);
             }
-            
+
+            if (model.Category != null && _categoriesQueryable.FirstOrDefault(x => x.Id == model.Category) == null)
+            {
+                return ApiResponse.BadRequest(MessageConstant.CategoryNotFound);
+            }
+
             // upload image
             var fileName = await _uploadService.UploadFile(model.Image);
 
@@ -50,19 +56,11 @@ namespace Application.Implementations
                 Description = model.Description,
                 OnHandMin = model.OnHandMin,
                 OnHandMax = model.OnHandMax,
-                Image = fileName
+                Image = fileName,
+                CategoryId = model.Category
             };
 
             _productRepository.Add(newProduct);
-
-            if (model.Categories != null)
-            {
-                newProduct.ProductCategories = model.Categories.Select(x => new ProductCategory
-                {
-                    CategoryId = x,
-                    ProductId = newProduct.Id
-                }).ToList();
-            }
 
             await _unitOfWork.SaveChanges();
 
@@ -93,22 +91,16 @@ namespace Application.Implementations
                     return ApiResponse.BadRequest(MessageConstant.OrderByInvalid.WithValues("Name, CreatedAt"));
             }
 
-            var data = query.Select(x => new ProductViewModel()
+            var data = query.Select(x => new
             {
-                Id = x.Id,
-                Code = x.Code,
-                Name = x.Name,
-                Description = x.Description,
-                IsActive = x.IsActive,
-                OnHandMin = x.OnHandMin,
-                OnHandMax = x.OnHandMax,
-                Categories = x.ProductCategories == null
-                    ? null
-                    : x.ProductCategories.Select(y => new FetchCategoryViewModel
-                    {
-                        Id = y.CategoryId,
-                        Name = y.Category.Name,
-                    }).ToList()
+                x.Id,
+                x.Code,
+                x.Name,
+                x.Description,
+                x.IsActive,
+                x.OnHandMin,
+                x.OnHandMax,
+                Categories = x.Category != null ? new {x.Category.Id, x.Category.Name} : null
             }).ToPagination(model.PageIndex, model.PageSize);
 
             return ApiResponse.Ok(data);
@@ -146,14 +138,13 @@ namespace Application.Implementations
             product.Description = model.Description ?? product.Description;
             product.OnHandMin = model.OnHandMin ?? product.OnHandMin;
             product.OnHandMax = model.OnHandMax ?? product.OnHandMax;
-            if (model.Categories != null)
+            product.CategoryId = model.Category;
+
+            if (model.Image != null)
             {
-                product.ProductCategories.Clear();
-                product.ProductCategories = model.Categories.Select(x => new ProductCategory
-                {
-                    CategoryId = x,
-                    ProductId = product.Id
-                }).ToList();
+                _uploadService.DeleteFile(product.Image);
+                var fileName = await _uploadService.UploadFile(model.Image);
+                product.Image = fileName;
             }
 
             _productRepository.Update(product);
@@ -180,22 +171,17 @@ namespace Application.Implementations
 
         public IActionResult GetProduct(Guid id)
         {
-            var product = _productsQueryable.Select(x => new ProductViewModel
+            var product = _productsQueryable.Select(x => new
             {
-                Id = x.Id,
-                Code = x.Code,
-                Name = x.Name,
-                IsActive = x.IsActive,
-                Description = x.Description,
-                OnHandMin = x.OnHandMin,
-                OnHandMax = x.OnHandMax,
-                Categories = x.ProductCategories == null
-                    ? null
-                    : x.ProductCategories.Select(y => new FetchCategoryViewModel
-                    {
-                        Id = y.CategoryId,
-                        Name = y.Category.Name
-                    }).ToList()
+                x.Id,
+                x.Code,
+                x.Name,
+                x.IsActive,
+                x.Description,
+                x.OnHandMin,
+                x.OnHandMax,
+                Categories = x.Category != null ? new {x.Category.Id, x.Category.Name} : null,
+                x.Image
             }).FirstOrDefault(x => x.Id == id);
             if (product == null) return ApiResponse.BadRequest(MessageConstant.ProductNotFound);
 
@@ -204,22 +190,16 @@ namespace Application.Implementations
 
         public IActionResult GetAllProducts()
         {
-            var products = _productsQueryable.Select(x => new ProductViewModel
+            var products = _productsQueryable.Select(x => new
             {
-                Id = x.Id,
-                Code = x.Code,
-                Name = x.Name,
-                IsActive = x.IsActive,
-                Description = x.Description,
-                OnHandMin = x.OnHandMin,
-                OnHandMax = x.OnHandMax,
-                Categories = x.ProductCategories == null
-                    ? null
-                    : x.ProductCategories.Select(x => new FetchCategoryViewModel
-                    {
-                        Id = x.CategoryId,
-                        Name = x.Category.Name
-                    }).ToList()
+                x.Id,
+                x.Code,
+                x.Name,
+                x.IsActive,
+                x.Description,
+                x.OnHandMin,
+                x.OnHandMax,
+                Categories = x.Category != null ? new {x.Category.Id, x.Category.Name} : null,
             }).ToList();
 
             return ApiResponse.Ok(products);

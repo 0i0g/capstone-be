@@ -18,6 +18,6 @@ namespace Application.RequestModels
 
         public IFormFile Image { get; set; }
 
-        public ICollection<Guid> Categories { get; set; }
+        public Guid? Category { get; set; }
     }
 }

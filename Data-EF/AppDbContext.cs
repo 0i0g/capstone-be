@@ -210,15 +210,8 @@ namespace Data_EF
                 entity.Property(x => x.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(x => x.IsActive).HasDefaultValue(true);
-            });
 
-            modelBuilder.Entity<ProductCategory>(entity =>
-            {
-                entity.HasKey(x => new {x.ProductId, x.CategoryId});
-                entity.HasOne(x => x.Product).WithMany(x => x.ProductCategories).HasForeignKey(x => x.ProductId)
-                    .OnDelete(DeleteBehavior.NoAction);
-                entity.HasOne(x => x.Category).WithMany(x => x.ProductCategories).HasForeignKey(x => x.CategoryId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(x => x.Category).WithMany(x => x.Products).OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<ReceiveRequestVoucher>(entity =>

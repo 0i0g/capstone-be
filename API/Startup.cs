@@ -8,7 +8,6 @@ using API.Configurations.Middleware;
 using Data_EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -95,11 +94,8 @@ namespace API
             {
             }
 
-            var newDb = dbContext.Database.EnsureCreated();
-            if (newDb)
-            {
-                app.AddExecuteSqlRaw(dbContext);
-            }
+            dbContext.Database.EnsureCreated();
+            app.AddExecuteSqlRaw(dbContext);
 
             app.UseDeveloperExceptionPage();
 

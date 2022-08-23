@@ -15,11 +15,7 @@ namespace Data.Entities
 
         public string Description { get; set; }
 
-        #region Product category
-
-        public ICollection<ProductCategory> ProductCategories { get; set; }
-
-        #endregion
+        public ICollection<Product> Products { get; set; }
 
         #region Safe entity
 
